@@ -2,15 +2,23 @@ package com.muhammadv2.going_somewhere.model;
 
 import org.parceler.Parcel;
 
+import java.util.List;
+
 @Parcel
-class City {
+final class City {
 
     String cityName;
     int tripId;
+    List<Place> places;
 
-    public City(String name, int tripId) {
+    public List<Place> getPlaces() {
+        return places;
+    }
+
+    public City(String name, int tripId, List<Place> places) {
         this.cityName = name;
         this.tripId = tripId;
+        this.places = places;
     }
 
     public String getCityName() {
