@@ -7,20 +7,20 @@ import java.util.List;
 @Parcel
 public final class Trip {
 
-     String name;
+     String tripName;
      int startTime;
      int endTime;
      List<City> cities;
 
     public Trip(String name, int startTime, int endTime, List<City> cities) {
-        this.name = name;
+        this.tripName = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.cities = cities;
     }
 
-    public String getName() {
-        return name;
+    public String getTripName() {
+        return tripName;
     }
 
     public int getStartTime() {
