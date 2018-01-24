@@ -1,17 +1,19 @@
 package com.muhammadv2.going_somewhere.model;
 
 import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
 
 @Parcel
-final class Place {
+public final class Place {
 
     String placeName;
     int cityId;
     int timeStart;
     int timeEnd;
 
-    public Place(String name, int cityId, int timeStart, int timeEnd) {
-        this.placeName = name;
+    @ParcelConstructor
+    public Place(String placeName, int cityId, int timeStart, int timeEnd) {
+        this.placeName = placeName;
         this.cityId = cityId;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;

@@ -1,19 +1,21 @@
 package com.muhammadv2.going_somewhere.model;
 
 import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
 
 import java.util.List;
 
 @Parcel
 public final class Trip {
 
-     String tripName;
-     int startTime;
-     int endTime;
-     List<City> cities;
+    String tripName;
+    int startTime;
+    int endTime;
+    List<City> cities;
 
-    public Trip(String name, int startTime, int endTime, List<City> cities) {
-        this.tripName = name;
+    @ParcelConstructor
+    public Trip(String tripName, int startTime, int endTime, List<City> cities) {
+        this.tripName = tripName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.cities = cities;
