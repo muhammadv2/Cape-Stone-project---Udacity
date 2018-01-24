@@ -28,11 +28,6 @@ public class DbTest {
     /* Class reference to help load the constructor on runtime */
     private final Class mDbHelperClass = TravelsDbHelper.class;
 
-    /**
-     * Because we annotate this method with the @Before annotation, this method will be called
-     * before every single method with an @Test annotation. We want to start each test clean, so we
-     * delete the database to do so.
-     */
     @Before
     public void setUp() {
         deleteTheDatabase();
@@ -41,20 +36,15 @@ public class DbTest {
     /**
      * This method tests that our database contains all of the tables that we think it should
      * contain.
-     *
-     * @throws Exception in case the constructor hasn't been implemented yet
      */
     @Test
     public void create_database_test() throws Exception {
-
 
         /* Use reflection to try to run the correct constructor whenever implemented */
         SQLiteOpenHelper dbHelper =
                 (SQLiteOpenHelper) mDbHelperClass.getConstructor(Context.class).newInstance(mContext);
 
-        /* Use WaitlistDbHelper to get access to a writable database */
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
 
         /* We think the database is open, let's verify that here */
         String databaseIsNotOpen = "The database should be open and isn't";
@@ -86,10 +76,8 @@ public class DbTest {
     }
 
     /**
-     * This method tests inserting a single record into an empty table from a brand new database.
-     * The purpose is to test that the database is working as expected
-     *
-     * @throws Exception in case the constructor hasn't been implemented yet
+     * This method tests inserting a single record into a single table case Trip table and ensures
+     * that the table validate the insertion.
      */
     @Test
     public void insert_single_record_test() throws Exception {
@@ -98,12 +86,12 @@ public class DbTest {
         SQLiteOpenHelper dbHelper =
                 (SQLiteOpenHelper) mDbHelperClass.getConstructor(Context.class).newInstance(mContext);
 
-        /* Use WaitlistDbHelper to get access to a writable database */
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         ContentValues testValues = new ContentValues();
         testValues.put(TravelsDbContract.TripEntry.COLUMN_TRIP_NAME, "test name");
         testValues.put(TravelsDbContract.TripEntry.COLUMN_TIME_START, "12/12/2012");
+        testValues.put(TravelsDbContract.TripEntry.COLUMN_TIME_END, "12/12/2012");
 
         /* Insert ContentValues into database and get first row ID back */
         long firstRowId = database.insert(
@@ -135,7 +123,7 @@ public class DbTest {
                 null);
 
         /* Cursor.moveToFirst will return false if there are no records returned from your query */
-        String emptyQueryError = "Error: No Records returned from waitlist query";
+        String emptyQueryError = "Error: No Records returned";
         assertTrue(emptyQueryError,
                 wCursor.moveToFirst());
 
