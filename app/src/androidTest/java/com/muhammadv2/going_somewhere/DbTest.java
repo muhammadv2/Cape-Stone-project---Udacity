@@ -34,8 +34,8 @@ public class DbTest {
     }
 
     /**
-     * This method tests that our database contains all of the tables that we think it should
-     * contain.
+     * This method tests that our database contains Trip table to be ensure that it created
+     * correctly
      */
     @Test
     public void create_database_test() throws Exception {

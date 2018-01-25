@@ -21,15 +21,10 @@ import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.TRIPS;
 
 public class TravelsContentProvider extends ContentProvider {
 
+    // Help determine what kind of URI the provider receives and match it to an integer constant
     private static final UriMatcher sUriMatcher = UriMatcherUtils.buildUriMatcher();
 
     private TravelsDbHelper mTravelsDbHelper;
-
-    // Help determine what kind of URI the provider receives and match it to an integer constant
-
-
-    public TravelsContentProvider() {
-    }
 
     @Override
     public boolean onCreate() {
@@ -44,45 +39,49 @@ public class TravelsContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
 
-
         // Find a matching uri using the helper method of UriMatcher
         int match = sUriMatcher.match(uri);
 
         Uri returnUri;
-        // Switch between the different tables and insert into the one that matches our uri
+        // Switch between the different tables and insert into the one that matches received uri
         switch (match) {
             case TRIPS:
-                returnUri = tryToInsertIntoDifferentTables(TripEntry.TABLE_NAME, values);
+                returnUri = tryToInsert(TripEntry.TABLE_NAME, values, TripEntry.CONTENT_URI);
                 break;
-
             case CITIES:
-                returnUri = tryToInsertIntoDifferentTables(CityEntry.TABLE_NAME, values);
+                returnUri = tryToInsert(CityEntry.TABLE_NAME, values, CityEntry.CONTENT_URI);
                 break;
             case PLACES:
-                returnUri = tryToInsertIntoDifferentTables(PlaceEntry.TABLE_NAME, values);
+                returnUri = tryToInsert(PlaceEntry.TABLE_NAME, values, PlaceEntry.CONTENT_URI);
                 break;
             case NOTES:
-                returnUri = tryToInsertIntoDifferentTables(NoteEntry.TABLE_NAME, values);
+                returnUri = tryToInsert(NoteEntry.TABLE_NAME, values, NoteEntry.CONTENT_URI);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
-
         return returnUri;
-
     }
 
-    private Uri tryToInsertIntoDifferentTables(String tableName, ContentValues values) {
+    /**
+     * To help not duplicate code a method working for all insert cases into different tables
+     * that accepts
+     *
+     * @param tableName to determine which table to insert too
+     * @param values    which values to insert into that table
+     */
+    private Uri tryToInsert(String tableName, ContentValues values,
+                            Uri contentUri) {
 
         // Get access to the writable database creating SQLiteDatabase object
         final SQLiteDatabase db = mTravelsDbHelper.getWritableDatabase();
 
-        // Inserting values into Trips table
+        // Inserting values into the associated table
         long id = db.insert(tableName, null, values);
 
         if (id > 0) {
             //success insertion
-            return ContentUris.withAppendedId(TripEntry.CONTENT_URI, id);
+            return ContentUris.withAppendedId(contentUri, id);
         } else {
             throw new SQLException("Failed insert row ");
         }
