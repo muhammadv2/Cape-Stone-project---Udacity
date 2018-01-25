@@ -1,4 +1,4 @@
-package com.muhammadv2.going_somewhere.model.database;
+package com.muhammadv2.going_somewhere.model.data;
 
 
 import android.net.Uri;
@@ -33,8 +33,8 @@ public final class TravelsDbContract {
 
 
     /* Inner class that defines City table contents */
-    static final class CityEntry implements BaseColumns {
-        static final String TABLE_NAME = "cities";
+    public static final class CityEntry implements BaseColumns {
+        public static final String TABLE_NAME = "cities";
 
         //CityEntry content URI = base content URI + path(table name);
         public static final Uri CONTENT_URI =
@@ -46,8 +46,8 @@ public final class TravelsDbContract {
 
 
     /* Inner class that defines Place table contents */
-    static final class PlaceEntry implements BaseColumns {
-        static final String TABLE_NAME = "places";
+    public static final class PlaceEntry implements BaseColumns {
+        public static final String TABLE_NAME = "places";
 
         //PlaceEntry content URI = base content URI + path(table name);
         public static final Uri CONTENT_URI =
@@ -61,8 +61,8 @@ public final class TravelsDbContract {
 
 
     /* Inner class that defines Note table contents */
-    static final class NoteEntry implements BaseColumns {
-        static final String TABLE_NAME = "notes";
+    public static final class NoteEntry implements BaseColumns {
+        public static final String TABLE_NAME = "notes";
 
         //NoteEntry content URI = base content URI + path(table name);
         public static final Uri CONTENT_URI =

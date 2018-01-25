@@ -1,10 +1,10 @@
-package com.muhammadv2.going_somewhere.model.database;
+package com.muhammadv2.going_somewhere.model.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.muhammadv2.going_somewhere.model.database.TravelsDbContract.*;
+import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.*;
 
 
 public class TravelsDbHelper extends SQLiteOpenHelper {

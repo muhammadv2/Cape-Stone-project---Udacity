@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.muhammadv2.going_somewhere.model.database.TravelsDbContract;
-import com.muhammadv2.going_somewhere.model.database.TravelsDbHelper;
+import com.muhammadv2.going_somewhere.model.data.TravelsDbContract;
+import com.muhammadv2.going_somewhere.model.data.TravelsDbHelper;
 
 import org.junit.Before;
 import org.junit.Test;

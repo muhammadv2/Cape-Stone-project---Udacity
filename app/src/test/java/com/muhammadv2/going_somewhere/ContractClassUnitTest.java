@@ -2,11 +2,10 @@ package com.muhammadv2.going_somewhere;
 
 import android.provider.BaseColumns;
 
-import com.muhammadv2.going_somewhere.model.database.TravelsDbContract;
+import com.muhammadv2.going_somewhere.model.data.TravelsDbContract;
 
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static org.junit.Assert.assertEquals;
