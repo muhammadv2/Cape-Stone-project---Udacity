@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import timber.log.Timber;
+
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.*;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.*;
 
@@ -39,6 +41,7 @@ public class TravelsProvider extends ContentProvider {
 
         Uri returnUri;
         // Switch between the different tables and insert into the one that matches received uri
+        // Insert done on the whole table so the use case used will be only the directory
         switch (match) {
             case TRIPS:
                 returnUri = tryToInsert(TripEntry.TABLE_NAME, values, TripEntry.CONTENT_URI);
@@ -102,35 +105,24 @@ public class TravelsProvider extends ContentProvider {
         Cursor returnCursor;
 
         // Switch between the different tables and query the one that matches received uri
+        // This application will display the whole table when needed so no need to query single ID
         switch (match) {
             case TRIPS:
                 returnCursor = tryToQueryWholeTable(db, TripEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-//            case TRIPS_WITH_ID:
-//                returnCursor = tryToQuerySingleItem(db, TripEntry.TABLE_NAME, uri, projection, sortOrder);
-//                break;
             case CITIES:
                 returnCursor = tryToQueryWholeTable(db, CityEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-//            case CITY_WITH_ID:
-//                returnCursor = tryToQuerySingleItem(db, TripEntry.TABLE_NAME, uri, projection, sortOrder);
-//                break;
             case PLACES:
                 returnCursor = tryToQueryWholeTable(db, PlaceEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-//            case PLACE_WITH_ID:
-//                returnCursor = tryToQuerySingleItem(db, TripEntry.TABLE_NAME, uri, projection, sortOrder);
-//                break;
             case NOTES:
                 returnCursor = tryToQueryWholeTable(db, NoteEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-//            case NOTE_WITH_ID:
-//                returnCursor = tryToQuerySingleItem(db, TripEntry.TABLE_NAME, uri, projection, sortOrder);
-//                break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
@@ -149,23 +141,6 @@ public class TravelsProvider extends ContentProvider {
                 null, sortOrder);
     }
 
-//    private Cursor tryToQuerySingleItem(SQLiteDatabase db, String tableName, Uri uri,
-//                                        String[] projection, String sortOrder) {
-//
-//        // Using selection and selectionArgs to specify which row to query
-//        String id = uri.getPathSegments().get(1);
-//
-//        String mSelection = "_id=?";
-//        String[] mSelectionArgs = {id};
-//
-//        return db.query(tableName,
-//                projection,
-//                mSelection,
-//                mSelectionArgs,
-//                null,
-//                null, sortOrder);
-//    }
-
     //endregion
 
     @Override
@@ -175,11 +150,52 @@ public class TravelsProvider extends ContentProvider {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    //region Delete
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        // Implement this to handle requests to delete one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        // Find a matching uri using the helper method of UriMatcher
+        int match = sUriMatcher.match(uri);
+
+        int rowsDeleted;
+        // Switch between the different tables and insert into the one that matches received uri
+        // Insert done on the whole table so the use case used will be only the directory
+        switch (match) {
+            case TRIP_WITH_ID:
+                rowsDeleted = tryToDeleteOneRow(uri, TripEntry.TABLE_NAME);
+                break;
+            case CITY_WITH_ID:
+                rowsDeleted = tryToDeleteOneRow(uri, CityEntry.TABLE_NAME);
+                break;
+            case PLACE_WITH_ID:
+                rowsDeleted = tryToDeleteOneRow(uri, PlaceEntry.TABLE_NAME);
+                break;
+            case NOTE_WITH_ID:
+                rowsDeleted = tryToDeleteOneRow(uri, NoteEntry.TABLE_NAME);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown Uri " + uri);
+        }
+
+        if (rowsDeleted != 0) {
+            // delete done Successfully , notify the resolver
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsDeleted;
     }
+
+    private int tryToDeleteOneRow(@NonNull Uri uri, String tableName) {
+
+        final SQLiteDatabase db = mTravelsDbHelper.getWritableDatabase();
+
+        //Using selection and selectionArgs to specify which row to delete
+        String id = uri.getPathSegments().get(1);
+        String mSelection = "_id=?";
+        String[] mSelectionArgs = {id};
+
+        return db.delete(tableName, mSelection, mSelectionArgs);
+    }
+    //endregion
 
     @Override
     public String getType(@NonNull Uri uri) {

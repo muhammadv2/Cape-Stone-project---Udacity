@@ -1,5 +1,7 @@
 package com.muhammadv2.going_somewhere;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,21 +11,30 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.muhammadv2.going_somewhere.model.data.TravelsDbContract;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Uri uri = TravelsDbContract.TripEntry.CONTENT_URI;
+
+                ContentValues testValues = new ContentValues();
+                testValues.put(TravelsDbContract.TripEntry.COLUMN_TRIP_NAME, "test name");
+                testValues.put(TravelsDbContract.TripEntry.COLUMN_TIME_START, "12/12/2012");
+                testValues.put(TravelsDbContract.TripEntry.COLUMN_TIME_END, "12/12/2012");
+
+                getContentResolver().insert(uri, testValues);
+
             }
         });
     }

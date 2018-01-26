@@ -16,7 +16,7 @@ public final class UriMatcherUtils {
 
     //Defining final integers for the directory of tables and each item
     public static final int TRIPS = 100;
-    public static final int TRIPS_WITH_ID = 101;
+    public static final int TRIP_WITH_ID = 101;
 
     public static final int CITIES = 200;
     public static final int CITY_WITH_ID = 201;
@@ -33,7 +33,7 @@ public final class UriMatcherUtils {
 
         // Add matches with addURI *TravelsDbContract added as static import*
         uriMatcher.addURI(AUTHORITY, TravelsDbContract.TripEntry.TABLE_NAME, TRIPS); //trip directory
-        uriMatcher.addURI(AUTHORITY, TravelsDbContract.TripEntry.TABLE_NAME + "/#", TRIPS_WITH_ID); //single item
+        uriMatcher.addURI(AUTHORITY, TravelsDbContract.TripEntry.TABLE_NAME + "/#", TRIP_WITH_ID); //single item
 
         uriMatcher.addURI(AUTHORITY, TravelsDbContract.CityEntry.TABLE_NAME, CITIES); //city directory
         uriMatcher.addURI(AUTHORITY, TravelsDbContract.CityEntry.TABLE_NAME + "/#", CITY_WITH_ID); //single item

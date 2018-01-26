@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.test.ProviderTestCase2;
 
-import com.muhammadv2.going_somewhere.model.Note;
-import com.muhammadv2.going_somewhere.model.data.TravelsDbContract;
 import com.muhammadv2.going_somewhere.model.data.TravelsProvider;
 
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.*;
@@ -55,7 +53,6 @@ public class ProviderTest extends ProviderTestCase2<TravelsProvider> {
     //endregion
 
     //region queryTest
-
     public void testQuery() {
 
         Uri uri = PlaceEntry.CONTENT_URI;
@@ -67,18 +64,7 @@ public class ProviderTest extends ProviderTestCase2<TravelsProvider> {
         assertNotNull("returned cursor is empty", cursor);
 
         assertTrue("cursor has no data", cursor.moveToNext());
-
-//        uri = Uri.withAppendedPath(PlaceEntry.CONTENT_URI, "3");
-//
-//        cursor = getMockContentResolver()
-//                .query(uri, null, null, null, null);
-//
-//        assertNotNull("returned cursor is empty", cursor);
-//
-//        assertTrue("cursor has no data", cursor.moveToNext());
-
     }
-
     //endregion
 
 }

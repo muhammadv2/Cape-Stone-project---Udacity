@@ -19,11 +19,11 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
 
     // String that creates Trip table with the needed columns
     private static final String CREATE_TRIP_TABLE =
-            "CREATE TABLE " + TripEntry.TABLE_NAME + " (" +
+            "CREATE TABLE " + TripEntry.TABLE_NAME + " ( " +
                     TripEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     TripEntry.COLUMN_TRIP_NAME + " TEXT NOT NULL," +
                     TripEntry.COLUMN_TIME_START + " INTEGER NOT NULL," +
-                    TripEntry.COLUMN_TIME_END + " INTEGER NOT NULL)";
+                    TripEntry.COLUMN_TIME_END + " INTEGER NOT NULL);";
 
 
     // String that creates City table with the needed columns
