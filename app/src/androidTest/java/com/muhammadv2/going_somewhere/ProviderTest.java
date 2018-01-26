@@ -55,7 +55,7 @@ public class ProviderTest extends ProviderTestCase2<TravelsProvider> {
     //region queryTest
     public void testQuery() {
 
-        Uri uri = PlaceEntry.CONTENT_URI;
+        Uri uri = TripEntry.CONTENT_URI;
 
         Cursor cursor = getMockContentResolver()
                 .query(uri, null, null, null, null);
@@ -64,7 +64,40 @@ public class ProviderTest extends ProviderTestCase2<TravelsProvider> {
         assertNotNull("returned cursor is empty", cursor);
 
         assertTrue("cursor has no data", cursor.moveToNext());
+
+
     }
     //endregion
+
+    //region deleteTest
+    public void testDelete() {
+
+        Uri uri = Uri.withAppendedPath(TripEntry.CONTENT_URI, "0");
+
+        long rows = getMockContentResolver().delete(uri, null, null);
+
+        assertNotNull(rows);
+        assertTrue("insert failed", rows != -1);
+
+    }
+    //endregion
+
+    public void testUpdate() {
+
+        Uri uri = Uri.withAppendedPath(TripEntry.CONTENT_URI, "0");
+
+        ContentValues cv = new ContentValues();
+        cv.put(TripEntry.COLUMN_TRIP_NAME, "sss");
+        cv.put(TripEntry.COLUMN_TIME_START, 2222);
+        cv.put(TripEntry.COLUMN_TIME_END, 2222);
+
+
+        long rows = getMockContentResolver().update(uri, cv, null, null);
+
+
+        assertNotNull(rows);
+        assertTrue("No rows to delete or deleted", rows != -1);
+
+    }
 
 }

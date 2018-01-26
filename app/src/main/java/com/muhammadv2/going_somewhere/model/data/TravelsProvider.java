@@ -260,8 +260,11 @@ public class TravelsProvider extends ContentProvider {
     }
     //endregion
 
+    /**
+     * Its okay for our application to not implement this method
+     */
     @Override
     public String getType(@NonNull Uri uri) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 }
