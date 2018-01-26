@@ -26,6 +26,7 @@ public final class TravelsDbContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
 
+        // Trips table columns
         public static final String COLUMN_TRIP_NAME = "name";
         public static final String COLUMN_TIME_START = "start";
         public static final String COLUMN_TIME_END = "end";
@@ -40,8 +41,9 @@ public final class TravelsDbContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
 
-        static final String COLUMN_CITY_NAME = "name";
-        static final String TRIP_ID = "trip";
+        // Cities table columns
+        public static final String COLUMN_CITY_NAME = "name";
+        public static final String COLUMN_TRIP_ID = "trip";
     }
 
 
@@ -53,10 +55,11 @@ public final class TravelsDbContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
 
-        static final String COLUMN_PLACE_NAME = "name";
-        static final String COLUMN_TIME_START = "start";
-        static final String COLUMN_TIME_END = "end";
-        static final String COLUMN_CITY_ID = "city";
+        //places table columns
+        public static final String COLUMN_PLACE_NAME = "name";
+        public static final String COLUMN_TIME_START = "start";
+        public static final String COLUMN_TIME_END = "end";
+        public static final String COLUMN_CITY_ID = "city";
     }
 
 
@@ -68,9 +71,10 @@ public final class TravelsDbContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
 
-        static final String COLUMN_NOTE_TITLE = "title";
-        static final String COLUMN_NOTE_BODY = "body";
-        static final String COLUMN_IS_TOGGLE_NOTE = "toggle";
+        // Note table columns
+        public static final String COLUMN_NOTE_TITLE = "title";
+        public static final String COLUMN_NOTE_BODY = "body";
+        public static final String COLUMN_IS_TOGGLE_NOTE = "toggle";
     }
 
 }

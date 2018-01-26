@@ -15,11 +15,15 @@ import com.muhammadv2.going_somewhere.utils.UriMatcherUtils;
 
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.*;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.CITIES;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.CITY_WITH_ID;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTES;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTE_WITH_ID;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.PLACES;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.PLACE_WITH_ID;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.TRIPS;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.TRIPS_WITH_ID;
 
-public class TravelsContentProvider extends ContentProvider {
+public class TravelsProvider extends ContentProvider {
 
     // Help determine what kind of URI the provider receives and match it to an integer constant
     private static final UriMatcher sUriMatcher = UriMatcherUtils.buildUriMatcher();
@@ -89,13 +93,74 @@ public class TravelsContentProvider extends ContentProvider {
 
     //endregion
 
-
+    //region Query
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        // TODO: Implement this to handle query requests from clients.
-        throw new UnsupportedOperationException("Not yet implemented");
+
+        // Get access to the readable database creating SQLiteDatabase object
+        final SQLiteDatabase db = mTravelsDbHelper.getReadableDatabase();
+
+        // Find a matching uri using the helper method of UriMatcher
+        int match = sUriMatcher.match(uri);
+
+        Cursor returnCursor;
+
+        // Switch between the different tables and query the one that matches received uri
+        switch (match) {
+            case TRIPS:
+                returnCursor = tryToQuery(db, TripEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            case TRIPS_WITH_ID:
+                returnCursor = tryToQuery(db, TripEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            case CITIES:
+                returnCursor = tryToQuery(db, CityEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            case CITY_WITH_ID:
+                returnCursor = tryToQuery(db, CityEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            case PLACES:
+                returnCursor = tryToQuery(db, PlaceEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            case PLACE_WITH_ID:
+                returnCursor = tryToQuery(db, PlaceEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            case NOTES:
+                returnCursor = tryToQuery(db, NoteEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            case NOTE_WITH_ID:
+                returnCursor = tryToQuery(db, NoteEntry.TABLE_NAME, projection,
+                        selection, selectionArgs, sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown Uri " + uri);
+        }
+        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return returnCursor;
     }
+
+    private Cursor tryToQuery(SQLiteDatabase db, String tableName, String[] projection,
+                              String selection, String[] selectionArgs, String sortOrder) {
+
+        Cursor returnCursor = db.query(tableName,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null, sortOrder);
+
+        return returnCursor;
+    }
+
+    //endregion
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,

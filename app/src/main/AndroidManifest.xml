@@ -21,7 +21,7 @@
         </activity>
 
         <provider
-            android:name=".model.data.TravelsContentProvider"
+            android:name=".model.data.TravelsProvider"
             android:authorities="com.muhammadv2.going_somewhere"
             android:enabled="true"
             android:exported="false"></provider>

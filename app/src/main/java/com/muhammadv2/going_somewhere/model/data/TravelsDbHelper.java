@@ -31,7 +31,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + CityEntry.TABLE_NAME + " (" +
                     CityEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CityEntry.COLUMN_CITY_NAME + " TEXT NOT NULL," +
-                    CityEntry.TRIP_ID + " INTEGER NOT NULL)";
+                    CityEntry.COLUMN_TRIP_ID + " INTEGER NOT NULL)";
 
 
     // String that creates Place table with the needed columns
