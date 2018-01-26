@@ -11,22 +11,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.muhammadv2.going_somewhere.utils.UriMatcherUtils;
-
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.*;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.CITIES;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.CITY_WITH_ID;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTES;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTE_WITH_ID;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.PLACES;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.PLACE_WITH_ID;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.TRIPS;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.TRIPS_WITH_ID;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.*;
 
 public class TravelsProvider extends ContentProvider {
 
     // Help determine what kind of URI the provider receives and match it to an integer constant
-    private static final UriMatcher sUriMatcher = UriMatcherUtils.buildUriMatcher();
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     private TravelsDbHelper mTravelsDbHelper;
 
@@ -64,6 +55,8 @@ public class TravelsProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
+
+        getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
     }
 
@@ -93,6 +86,8 @@ public class TravelsProvider extends ContentProvider {
 
     //endregion
 
+    //Todo confirm if you need to query and display a single item of table i commented the lines
+    //that do that until be sure
     //region Query
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
@@ -109,37 +104,33 @@ public class TravelsProvider extends ContentProvider {
         // Switch between the different tables and query the one that matches received uri
         switch (match) {
             case TRIPS:
-                returnCursor = tryToQuery(db, TripEntry.TABLE_NAME, projection,
+                returnCursor = tryToQueryWholeTable(db, TripEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-            case TRIPS_WITH_ID:
-                returnCursor = tryToQuery(db, TripEntry.TABLE_NAME, projection,
-                        selection, selectionArgs, sortOrder);
-                break;
+//            case TRIPS_WITH_ID:
+//                returnCursor = tryToQuerySingleItem(db, TripEntry.TABLE_NAME, uri, projection, sortOrder);
+//                break;
             case CITIES:
-                returnCursor = tryToQuery(db, CityEntry.TABLE_NAME, projection,
+                returnCursor = tryToQueryWholeTable(db, CityEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-            case CITY_WITH_ID:
-                returnCursor = tryToQuery(db, CityEntry.TABLE_NAME, projection,
-                        selection, selectionArgs, sortOrder);
-                break;
+//            case CITY_WITH_ID:
+//                returnCursor = tryToQuerySingleItem(db, TripEntry.TABLE_NAME, uri, projection, sortOrder);
+//                break;
             case PLACES:
-                returnCursor = tryToQuery(db, PlaceEntry.TABLE_NAME, projection,
+                returnCursor = tryToQueryWholeTable(db, PlaceEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-            case PLACE_WITH_ID:
-                returnCursor = tryToQuery(db, PlaceEntry.TABLE_NAME, projection,
-                        selection, selectionArgs, sortOrder);
-                break;
+//            case PLACE_WITH_ID:
+//                returnCursor = tryToQuerySingleItem(db, TripEntry.TABLE_NAME, uri, projection, sortOrder);
+//                break;
             case NOTES:
-                returnCursor = tryToQuery(db, NoteEntry.TABLE_NAME, projection,
+                returnCursor = tryToQueryWholeTable(db, NoteEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-            case NOTE_WITH_ID:
-                returnCursor = tryToQuery(db, NoteEntry.TABLE_NAME, projection,
-                        selection, selectionArgs, sortOrder);
-                break;
+//            case NOTE_WITH_ID:
+//                returnCursor = tryToQuerySingleItem(db, TripEntry.TABLE_NAME, uri, projection, sortOrder);
+//                break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
@@ -147,18 +138,33 @@ public class TravelsProvider extends ContentProvider {
         return returnCursor;
     }
 
-    private Cursor tryToQuery(SQLiteDatabase db, String tableName, String[] projection,
-                              String selection, String[] selectionArgs, String sortOrder) {
+    private Cursor tryToQueryWholeTable(SQLiteDatabase db, String tableName, String[] projection,
+                                        String selection, String[] selectionArgs, String sortOrder) {
 
-        Cursor returnCursor = db.query(tableName,
+        return db.query(tableName,
                 projection,
                 selection,
                 selectionArgs,
                 null,
                 null, sortOrder);
-
-        return returnCursor;
     }
+
+//    private Cursor tryToQuerySingleItem(SQLiteDatabase db, String tableName, Uri uri,
+//                                        String[] projection, String sortOrder) {
+//
+//        // Using selection and selectionArgs to specify which row to query
+//        String id = uri.getPathSegments().get(1);
+//
+//        String mSelection = "_id=?";
+//        String[] mSelectionArgs = {id};
+//
+//        return db.query(tableName,
+//                projection,
+//                mSelection,
+//                mSelectionArgs,
+//                null,
+//                null, sortOrder);
+//    }
 
     //endregion
 

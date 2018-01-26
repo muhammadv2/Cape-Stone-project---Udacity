@@ -63,9 +63,20 @@ public class ProviderTest extends ProviderTestCase2<TravelsProvider> {
         Cursor cursor = getMockContentResolver()
                 .query(uri, null, null, null, null);
 
+
         assertNotNull("returned cursor is empty", cursor);
 
         assertTrue("cursor has no data", cursor.moveToNext());
+
+//        uri = Uri.withAppendedPath(PlaceEntry.CONTENT_URI, "3");
+//
+//        cursor = getMockContentResolver()
+//                .query(uri, null, null, null, null);
+//
+//        assertNotNull("returned cursor is empty", cursor);
+//
+//        assertTrue("cursor has no data", cursor.moveToNext());
+
     }
 
     //endregion
