@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.muhammadv2.going_somewhere.model.data.TravelsDbContract;
 
@@ -26,15 +27,17 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri uri = TravelsDbContract.TripEntry.CONTENT_URI;
-
-                ContentValues testValues = new ContentValues();
-                testValues.put(TravelsDbContract.TripEntry.COLUMN_TRIP_NAME, "test name");
-                testValues.put(TravelsDbContract.TripEntry.COLUMN_TIME_START, "12/12/2012");
-                testValues.put(TravelsDbContract.TripEntry.COLUMN_TIME_END, "12/12/2012");
-
-                getContentResolver().insert(uri, testValues);
-
+//                Uri uri = TravelsDbContract.PlaceEntry.CONTENT_URI;
+//
+//                ContentValues testValues = new ContentValues();
+//                testValues.put(TravelsDbContract.PlaceEntry.COLUMN_PLACE_NAME, "test name");
+//
+//                testValues.put(TravelsDbContract.PlaceEntry.COLUMN_TIME_END, "12/12/2012");
+//                testValues.put(TravelsDbContract.PlaceEntry.COLUMN_CITY_ID, "12/12/2012");
+//
+//                Uri rows = getContentResolver().insert(uri, testValues);
+//                String ss = rows.getPathSegments().get(1);
+//                Toast.makeText(getApplication(), "add " + ss + "row", Toast.LENGTH_LONG).show();
             }
         });
     }

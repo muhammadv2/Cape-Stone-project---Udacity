@@ -31,7 +31,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + CityEntry.TABLE_NAME + " (" +
                     CityEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CityEntry.COLUMN_CITY_NAME + " TEXT NOT NULL," +
-                    CityEntry.COLUMN_TRIP_ID + " INTEGER NOT NULL)";
+                    CityEntry.COLUMN_TRIP_ID + " INTEGER NOT NULL);";
 
 
     // String that creates Place table with the needed columns
@@ -40,8 +40,8 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
                     PlaceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     PlaceEntry.COLUMN_PLACE_NAME + " TEXT NOT NULL," +
                     PlaceEntry.COLUMN_CITY_ID + " INTEGER NOT NULL," +
-                    PlaceEntry.COLUMN_TIME_START + " INTEGER NOT NULL," +
-                    PlaceEntry.COLUMN_TIME_END + " INTEGER NOT NULL)";
+                    PlaceEntry.COLUMN_TIME_START + " INTEGER DEFAULT CURRENT_TIMESTAMP," +
+                    PlaceEntry.COLUMN_TIME_END + " INTEGER NOT NULL);";
 
 
     // String that creates Note table with the needed columns
@@ -50,7 +50,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
                     NoteEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     NoteEntry.COLUMN_IS_TOGGLE_NOTE + " INTEGER NOT NULL," +
                     NoteEntry.COLUMN_NOTE_TITLE + " TEXT," +
-                    NoteEntry.COLUMN_NOTE_BODY + " TEXT NOT NULL)";
+                    NoteEntry.COLUMN_NOTE_BODY + " TEXT NOT NULL);";
 
 
     @Override
