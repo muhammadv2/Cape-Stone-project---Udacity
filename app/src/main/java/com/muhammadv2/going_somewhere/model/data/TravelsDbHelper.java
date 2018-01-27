@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import javax.inject.Inject;
+
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.*;
 
 
@@ -13,7 +15,8 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "travels.db";
 
-    public TravelsDbHelper(Context context) {
+    @Inject
+    public TravelsDbHelper(@Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
