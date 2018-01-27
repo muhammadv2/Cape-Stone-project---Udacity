@@ -4,11 +4,17 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.muhammadv2.going_somewhere.di.ApplicationContext;
+
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.*;
+import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.CityEntry;
+import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.NoteEntry;
+import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
+import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEntry;
 
-
+@Singleton
 public class TravelsDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
@@ -16,7 +22,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "travels.db";
 
     @Inject
-    public TravelsDbHelper(@Context context) {
+    public TravelsDbHelper(@ApplicationContext Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

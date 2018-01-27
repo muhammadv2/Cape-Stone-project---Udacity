@@ -3,7 +3,6 @@ package com.muhammadv2.going_somewhere.model.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -11,21 +10,37 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.*;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.*;
+import com.muhammadv2.going_somewhere.App;
+
+import javax.inject.Inject;
+
+import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.CityEntry;
+import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.NoteEntry;
+import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
+import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEntry;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.CITIES;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.CITY_WITH_ID;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTES;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTE_WITH_ID;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.PLACES;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.PLACE_WITH_ID;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.TRIPS;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.TRIP_WITH_ID;
+import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.buildUriMatcher;
 
 public class TravelsProvider extends ContentProvider {
 
     // Help determine what kind of URI the provider receives and match it to an integer constant
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-    private TravelsDbHelper mTravelsDbHelper;
+    @Inject
+    TravelsDbHelper mTravelsDbHelper;
 
     @Override
     public boolean onCreate() {
         //instantiate TravelsDbHelper to be able to use the database
-        Context context = getContext();
-        mTravelsDbHelper = new TravelsDbHelper(context);
+        App.getInstance().getAppComponent().inject(this);
+
         return true;
     }
 

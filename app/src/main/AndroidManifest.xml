@@ -3,12 +3,14 @@
     package="com.muhammadv2.going_somewhere">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+     >
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -24,7 +26,7 @@
             android:name=".model.data.TravelsProvider"
             android:authorities="com.muhammadv2.going_somewhere"
             android:enabled="true"
-            android:exported="false"></provider>
+            android:exported="false" />
     </application>
 
 </manifest>
