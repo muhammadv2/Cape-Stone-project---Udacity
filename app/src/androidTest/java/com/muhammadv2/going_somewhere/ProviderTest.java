@@ -72,12 +72,12 @@ public class ProviderTest extends ProviderTestCase2<TravelsProvider> {
     //region deleteTest
     public void testDelete() {
 
-        Uri uri = Uri.withAppendedPath(TripEntry.CONTENT_URI, "0");
+        Uri uri = Uri.withAppendedPath(PlaceEntry.CONTENT_URI, "0");
 
         long rows = getMockContentResolver().delete(uri, null, null);
 
         assertNotNull(rows);
-        assertTrue("insert failed", rows != -1);
+        assertTrue("delete failed", rows != -1);
 
     }
     //endregion
@@ -91,9 +91,7 @@ public class ProviderTest extends ProviderTestCase2<TravelsProvider> {
         cv.put(TripEntry.COLUMN_TIME_START, 2222);
         cv.put(TripEntry.COLUMN_TIME_END, 2222);
 
-
         long rows = getMockContentResolver().update(uri, cv, null, null);
-
 
         assertNotNull(rows);
         assertTrue("No rows to delete or deleted", rows != -1);
