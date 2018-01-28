@@ -33,12 +33,14 @@ public class TravelsProvider extends ContentProvider {
     // Help determine what kind of URI the provider receives and match it to an integer constant
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
+    //This class gets TravelsDpHelper through DI.
     @Inject
     TravelsDbHelper mTravelsDbHelper;
 
     @Override
     public boolean onCreate() {
-        //instantiate TravelsDbHelper to be able to use the database
+        // Instantiate TravelsDbHelper using the inject method on AppComponent interface using
+        // the instance of Application
         App.getInstance().getAppComponent().inject(this);
 
         return true;

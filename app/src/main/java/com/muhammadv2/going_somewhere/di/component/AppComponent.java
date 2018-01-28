@@ -14,7 +14,7 @@ import dagger.Component;
 @Singleton
 public interface AppComponent {
 
-    //inject the ContentProvider sub class to the application component
+    // Tell the Dagger to scan this class through the implementation of this interface.
     void inject(TravelsProvider provider);
 
 }

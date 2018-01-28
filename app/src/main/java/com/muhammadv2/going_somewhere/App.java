@@ -8,7 +8,6 @@ import com.muhammadv2.going_somewhere.di.component.DaggerAppComponent;
 import com.muhammadv2.going_somewhere.di.module.ApplicationModule;
 
 /**
- * The main purpose of this class is to provide
  */
 public class App extends Application {
 
@@ -34,6 +33,8 @@ public class App extends Application {
                 .build();
     }
 
+    //overriding this method rather than onCreate because ContentProvider initialize before
+    //onCreate gets called
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
