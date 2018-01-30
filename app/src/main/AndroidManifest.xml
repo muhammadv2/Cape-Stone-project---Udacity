@@ -12,7 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB_ZLQO3YBMItwIiTfG1xeex4S1O7LMhkI" />
@@ -33,6 +32,10 @@
             android:authorities="com.muhammadv2.going_somewhere"
             android:enabled="true"
             android:exported="false" />
+
+        <activity
+            android:name=".trips.AddTripDialog"
+            android:theme="@style/ThemeOverlay.AppCompat.Dialog" />
     </application>
 
 </manifest>

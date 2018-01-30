@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:layout_margin="@dimen/dp_8"
     card_view:cardCornerRadius="@dimen/dp_4"
     card_view:cardElevation="@dimen/dp_4">
 
@@ -26,10 +27,9 @@
 
         <TextView
             android:id="@+id/text_trip_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/main_card_text"
             android:layout_marginStart="@dimen/dp_24"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="24dp"
             android:drawableStart="@drawable/ic_title_black_24dp"
             android:text="Trip Title"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
@@ -38,9 +38,7 @@
 
         <TextView
             android:id="@+id/text_trip_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            style="@style/main_card_text"
             android:drawableStart="@drawable/ic_date_range_black_24dp"
             android:text="trip duration"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
@@ -51,8 +49,12 @@
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_8"
             android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toTopOf="@+id/btn_trip_plans"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_trip_duration" />
@@ -62,15 +64,16 @@
             style="@style/main_card_buttons"
             android:layout_marginStart="@dimen/dp_24"
             android:text="@string/button_text_plan"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <Button
             android:id="@+id/btn_trip_notes"
             style="@style/main_card_buttons"
-            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginStart="@dimen/dp_8"
             android:text="@string/button_text_notes"
             app:layout_constraintStart_toEndOf="@+id/btn_trip_plans"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+            app:layout_constraintTop_toTopOf="@+id/btn_trip_plans" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
