@@ -3,12 +3,10 @@ package com.muhammadv2.going_somewhere.trips;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.di.component.ActivityComponent;
@@ -33,15 +31,6 @@ public class TripsActivity extends AppCompatActivity {
         activity = this;
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-
-            }
-        });
     }
 
     @Override
