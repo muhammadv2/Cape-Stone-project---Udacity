@@ -48,6 +48,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + PlaceEntry.TABLE_NAME + " (" +
                     PlaceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     PlaceEntry.COLUMN_PLACE_NAME + " TEXT NOT NULL," +
+                    PlaceEntry.COLUMN_PLACE_ID + " TEXT NOT NULL," +
                     PlaceEntry.COLUMN_CITY_ID + " INTEGER NOT NULL," +
                     PlaceEntry.COLUMN_TIME_START + " INTEGER DEFAULT CURRENT_TIMESTAMP," +
                     PlaceEntry.COLUMN_TIME_END + " INTEGER NOT NULL);";

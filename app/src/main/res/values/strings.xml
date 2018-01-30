@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Going-Somewhere</string>
     <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="desc_main_img">main trip images</string>
+    <string name="button_text_plan">Plans</string>
+    <string name="button_text_notes">Notes</string>
 </resources>

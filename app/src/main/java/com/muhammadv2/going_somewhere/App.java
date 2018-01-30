@@ -11,11 +11,11 @@ import com.muhammadv2.going_somewhere.di.module.ApplicationModule;
  */
 public class App extends Application {
 
-    public static App app;
+    public static App sApp;
     private AppComponent mAppComponent;
 
     public static App getInstance() {
-        return app;
+        return sApp;
     }
 
     //return application module which takes application as parameter
@@ -38,7 +38,7 @@ public class App extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        app = this;
+        sApp = this;
         initComponent();
 
     }

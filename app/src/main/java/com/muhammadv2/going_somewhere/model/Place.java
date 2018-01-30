@@ -7,16 +7,22 @@ import org.parceler.ParcelConstructor;
 public final class Place {
 
     String placeName;
+    String placeId;
     int cityId;
     int timeStart;
     int timeEnd;
 
     @ParcelConstructor
-    public Place(String placeName, int cityId, int timeStart, int timeEnd) {
+    public Place(String placeName, String placeId, int cityId, int timeStart, int timeEnd) {
         this.placeName = placeName;
+        this.placeId = placeId;
         this.cityId = cityId;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
+    }
+
+    public String getPlaceId() {
+        return placeId;
     }
 
     public String getPlaceName() {
