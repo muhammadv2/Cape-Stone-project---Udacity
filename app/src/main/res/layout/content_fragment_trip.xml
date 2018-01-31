@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.muhammadv2.going_somewhere.trips.TripsFragment"
+    android:id="@+id/root_view"
+    tools:context=".ui.trips.TripsFragment"
     tools:showIn="@layout/activity_trips">
 
     <android.support.v7.widget.RecyclerView

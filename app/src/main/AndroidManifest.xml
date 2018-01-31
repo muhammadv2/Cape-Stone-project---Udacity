@@ -17,7 +17,7 @@
             android:value="AIzaSyB_ZLQO3YBMItwIiTfG1xeex4S1O7LMhkI" />
 
         <activity
-            android:name=".trips.TripsActivity"
+            android:name=".ui.trips.TripsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -33,6 +33,7 @@
             android:enabled="true"
             android:exported="false" />
 
+        <activity android:name=".ui.addTrip.AddTripActivity"></activity>
     </application>
 
 </manifest>

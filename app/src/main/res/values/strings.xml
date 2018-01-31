@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Going-Somewhere</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_save">SAVE</string>
 
     <string name="desc_main_img">main trip images</string>
     <string name="button_text_plan">Plans</string>
@@ -9,4 +9,5 @@
     <string name="cities">City name</string>
     <string name="from_tv">From</string>
     <string name="to_tv">To</string>
+    <string name="desc_delete_this_city">delete this city</string>
 </resources>
