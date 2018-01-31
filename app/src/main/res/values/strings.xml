@@ -7,4 +7,6 @@
     <string name="desc_main_img">main trip images</string>
     <string name="button_text_plan">Plans</string>
     <string name="button_text_notes">Notes</string>
+    <string name="trip_title">Trip Title</string>
+    <string name="cities">Cities</string>
 </resources>
