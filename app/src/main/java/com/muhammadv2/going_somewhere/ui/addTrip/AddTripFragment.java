@@ -15,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -31,6 +33,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
+/**
+ * This fragment responsible of get the trip details from the user as Trip name and how many cities
+ * in each trip and these cities names and also the date of the trip when will start and end
+ */
 public class AddTripFragment extends Fragment implements View.OnClickListener {
 
     // Associated views with this fragment
@@ -47,10 +53,27 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.btn_add_city)
     Button btnAddCity;
 
-    private ArrayList<View> allAddedViews;
+    // Field of ArrayList to keep eye on all generated views
+    private ArrayList<FrameLayout> allAddedViews;
 
+    // Counter for how many cities has been added
     private int cityCount;
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Save how many city fields have been added
+        outState.putInt("cityCount", cityCount);
+
+        ArrayList<String> cityNames = new ArrayList<>();
+        for (int i = 0; i < allAddedViews.size(); i++) {
+            FrameLayout generatedFL = allAddedViews.get(i);
+            EditText generatedET = (EditText) generatedFL.getChildAt(0);
+            cityNames.add(generatedET.getText().toString());
+        }
+
+        outState.putStringArrayList("cityNames", cityNames);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -64,6 +87,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         //planting a tag for Timber
         Timber.plant(new Timber.DebugTree());
 
+        allAddedViews = new ArrayList<>();
+
         //return the inflated view
         return view;
     }
@@ -72,9 +97,14 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        // If the bundle not null re instantiate the view with the populated data
+        if (savedInstanceState != null) {
+            for (int i = 0; i < savedInstanceState.getInt("cityCount"); i++) {
+                addNewRowForCities(true, savedInstanceState.getStringArrayList("cityNames").get(i));
+            }
+        }
 
-        allAddedViews = new ArrayList<>();
+        FloatingActionButton fab = view.findViewById(R.id.fab);
 
         // Set listener on all the needed views
         fab.setOnClickListener(this);
@@ -93,7 +123,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         switch (viewId) {
             // Handle Add city button by inflating the needed rowView and add it before the addButton
             case R.id.btn_add_city:
-                addNewRowForCities();
+                addNewRowForCities(false, null);
                 break;
             // Onclick the dates EditText open new dialog as a date picker
             case R.id.et_date_from:
@@ -107,7 +137,10 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void addNewRowForCities() {
+    private void addNewRowForCities(boolean orientation, String cityName) {
+
+        Animation rotateAnim = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_btn);
+        btnAddCity.setAnimation(rotateAnim);
 
         // Every time the add button clicked add one to the city count
         cityCount += 1;
@@ -121,15 +154,24 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         rowView.setId(cityCount);
 
         // Handle Deleting a row view from cities rows when click on delete button
-        FrameLayout frameLayout = (FrameLayout) rowView;
+        FrameLayout fieldContainer = (FrameLayout) rowView;
+        if (orientation) {
+            EditText generatedET = (EditText) fieldContainer.getChildAt(0);
+            generatedET.setText(cityName);
+        }
+
+
         // Get ImageButton to be able to listen on it
-        ImageButton deleteCity = (ImageButton) frameLayout.getChildAt(1);
+        ImageButton deleteCity = (ImageButton) fieldContainer.getChildAt(1);
         // Set onClickListener on the button and then get the parent for the clicked view and remove
-        deleteCity.setOnClickListener(new View.OnClickListener() {
+        deleteCity.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), String.valueOf(view.getId()), Toast.LENGTH_SHORT).show();
                 addCityContainer.removeView((View) view.getParent());
+                cityCount -= 1;
             }
         });
 
@@ -137,24 +179,26 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         addCityContainer.addView(rowView, addCityContainer.getChildCount() - 1);
 
         // Add the generated row as a View to
-        allAddedViews.add(rowView);
+        allAddedViews.add(fieldContainer);
     }
 
+    // Method working for both FROM & TO buttons to help open date picker fragment.
     private void openDatePickerForDateViews() {
         android.support.v4.app.DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
     }
 
+    // When FAB button clicked save all added fields and save it in the db
     void saveAllFieldsOnFabClick() {
         Timber.d(etAddCity.getText().toString());
         for (int i = 0; i < allAddedViews.size(); i++) {
-            FrameLayout generatedFL = (FrameLayout) allAddedViews.get(i);
+            FrameLayout generatedFL = allAddedViews.get(i);
             EditText generatedET = (EditText) generatedFL.getChildAt(0);
             Timber.d("Added cities %s", generatedET.getText());
         }
         getActivity().finish();
     }
-    //endregion
+//endregion
 
     //region datePicker
     public static class DatePickerFragment extends android.support.v4.app.DialogFragment
@@ -199,6 +243,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
             return super.onOptionsItemSelected(item);
         }
     }
-    //endregion
+//endregion
 }
 
