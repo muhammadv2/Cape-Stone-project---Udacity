@@ -20,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.muhammadv2.going_somewhere.R;
 
@@ -45,10 +46,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     EditText etAddDateTo;
     @BindView(R.id.btn_add_city)
     Button btnAddCity;
-    @BindView(R.id.btn_delete_city)
-    ImageButton btnDeleteCity;
 
-    private  ArrayList<EditText> allAddedET;
+    private ArrayList<View> allAddedViews;
 
     private int cityCount;
 
@@ -64,7 +63,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
         //planting a tag for Timber
         Timber.plant(new Timber.DebugTree());
-        Timber.tag(AddTripActivity.class.toString());
 
         //return the inflated view
         return view;
@@ -76,15 +74,13 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
 
-        allAddedET = new ArrayList<>();
+        allAddedViews = new ArrayList<>();
 
         // Set listener on all the needed views
         fab.setOnClickListener(this);
         btnAddCity.setOnClickListener(this);
-        btnDeleteCity.setOnClickListener(this);
         etAddDateFrom.setOnClickListener(this);
         etAddDateTo.setOnClickListener(this);
-
 
     }
 
@@ -98,10 +94,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
             // Handle Add city button by inflating the needed rowView and add it before the addButton
             case R.id.btn_add_city:
                 addNewRowForCities();
-                break;
-            // Handle Deleting a row view from cities rows when click on delete button
-            case R.id.btn_delete_city:
-                deleteRowFromCities();
                 break;
             // Onclick the dates EditText open new dialog as a date picker
             case R.id.et_date_from:
@@ -117,6 +109,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
     private void addNewRowForCities() {
 
+        // Every time the add button clicked add one to the city count
         cityCount += 1;
 
         LayoutInflater inflater = (LayoutInflater)
@@ -124,17 +117,27 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         @SuppressLint("InflateParams") final View rowView =
                 inflater.inflate(R.layout.dynamic_add_city_field, null);
 
-        // Add the new row before the add field button.
+        // Set id for every view to distinguish each generated view
+        rowView.setId(cityCount);
+
+        // Handle Deleting a row view from cities rows when click on delete button
+        FrameLayout frameLayout = (FrameLayout) rowView;
+        // Get ImageButton to be able to listen on it
+        ImageButton deleteCity = (ImageButton) frameLayout.getChildAt(1);
+        // Set onClickListener on the button and then get the parent for the clicked view and remove
+        deleteCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), String.valueOf(view.getId()), Toast.LENGTH_SHORT).show();
+                addCityContainer.removeView((View) view.getParent());
+            }
+        });
+
+        // Add the new row before the add field button on the city field container.
         addCityContainer.addView(rowView, addCityContainer.getChildCount() - 1);
-        FrameLayout generatedFL = addCityContainer.findViewById(R.id.frameLayout);
-        EditText generatedET = generatedFL.findViewById(R.id.et_city_name);
-        Timber.d(String.valueOf(generatedET.getId()));
 
-        allAddedET.add(generatedET);
-    }
-
-    private void deleteRowFromCities() {
-//        addCityContainer.removeView((View) view.getParent());
+        // Add the generated row as a View to
+        allAddedViews.add(rowView);
     }
 
     private void openDatePickerForDateViews() {
@@ -143,9 +146,11 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     }
 
     void saveAllFieldsOnFabClick() {
-        for (int i = 0; i < allAddedET.size(); i++) {
-            EditText retrievedET = allAddedET.get(i);
-            Timber.d("Added cities %s", retrievedET.getText());
+        Timber.d(etAddCity.getText().toString());
+        for (int i = 0; i < allAddedViews.size(); i++) {
+            FrameLayout generatedFL = (FrameLayout) allAddedViews.get(i);
+            EditText generatedET = (EditText) generatedFL.getChildAt(0);
+            Timber.d("Added cities %s", generatedET.getText());
         }
         getActivity().finish();
     }

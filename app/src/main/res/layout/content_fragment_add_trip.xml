@@ -50,7 +50,6 @@
                     android:id="@+id/btn_delete_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
                     android:background="@drawable/delete_forever_icon"
                     android:contentDescription="@string/desc_delete_this_city"
                     android:visibility="gone" />
@@ -61,7 +60,9 @@
                 android:layout_width="@dimen/dp_48"
                 android:layout_height="@dimen/dp_48"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_action_name" />
+                android:background="@drawable/ic_action_name"
+                android:elevation="@dimen/dp_2"
+                tools:targetApi="lollipop" />
         </LinearLayout>
 
 

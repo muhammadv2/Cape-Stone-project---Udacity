@@ -15,10 +15,14 @@
         tools:ignore="LabelFor" />
 
     <ImageButton
+        android:id="@+id/btn_delete_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="@drawable/delete_forever_icon"
+        android:contentDescription="@string/desc_delete_this_city"
+        android:elevation="@dimen/dp_2"
+        android:paddingBottom="@dimen/dp_2"
         android:visibility="visible"
-        android:contentDescription="@string/desc_delete_this_city" />
+        tools:targetApi="lollipop" />
 </FrameLayout>
