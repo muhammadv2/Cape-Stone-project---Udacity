@@ -1,12 +1,13 @@
 package com.muhammadv2.going_somewhere.ui.addTrip;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,34 +15,44 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import com.muhammadv2.going_somewhere.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
-public class AddTripFragment extends Fragment {
+public class AddTripFragment extends Fragment implements View.OnClickListener {
 
-    // Associated views to this fragment
-    @BindView(R.id.add_trip_container)
-    ConstraintLayout container;
+    // Associated views with this fragment
+    @BindView(R.id.add_city_container)
+    ViewGroup addCityContainer;
     @BindView(R.id.et_city_name)
-    EditText cityEntry;
+    EditText etAddCity;
     @BindView(R.id.et_trip_title)
-    EditText tripTitle;
+    EditText etAddTripTitle;
     @BindView(R.id.et_date_from)
-    EditText dateFrom;
+    EditText etAddDateFrom;
     @BindView(R.id.et_date_to)
-    EditText dateTo;
+    EditText etAddDateTo;
+    @BindView(R.id.btn_add_city)
+    Button btnAddCity;
+    @BindView(R.id.btn_delete_city)
+    ImageButton btnDeleteCity;
 
-    /**
-     * The system calls this to get the DialogFragment's layout, regardless
-     * of whether it's being displayed as a dialog or an embedded fragment.
-     */
+    private  ArrayList<EditText> allAddedET;
+
+    private int cityCount;
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,6 +62,11 @@ public class AddTripFragment extends Fragment {
         // Bind ButterKnife library to this fragment
         ButterKnife.bind(this, view);
 
+        //planting a tag for Timber
+        Timber.plant(new Timber.DebugTree());
+        Timber.tag(AddTripActivity.class.toString());
+
+        //return the inflated view
         return view;
     }
 
@@ -58,37 +74,84 @@ public class AddTripFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        cityEntry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LayoutInflater inflater = (LayoutInflater)
-                        getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.dynamic_add_city_field,
-                        container, false);
-                // Add the new row before the add field button.
-                container.addView(rowView, container.getChildCount() - 1);
-            }
-        });
+        FloatingActionButton fab = view.findViewById(R.id.fab);
 
-        dateFrom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                android.support.v4.app.DialogFragment newFragment = new DatePickerFragment();
-                newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
-            }
-        });
+        allAddedET = new ArrayList<>();
 
-        dateTo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                android.support.v4.app.DialogFragment newFragment = new DatePickerFragment();
-                newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
-            }
-        });
+        // Set listener on all the needed views
+        fab.setOnClickListener(this);
+        btnAddCity.setOnClickListener(this);
+        btnDeleteCity.setOnClickListener(this);
+        etAddDateFrom.setOnClickListener(this);
+        etAddDateTo.setOnClickListener(this);
 
 
     }
 
+    //region HandleOnClickMethods
+    @Override
+    public void onClick(View view) {
+
+        int viewId = view.getId();
+
+        switch (viewId) {
+            // Handle Add city button by inflating the needed rowView and add it before the addButton
+            case R.id.btn_add_city:
+                addNewRowForCities();
+                break;
+            // Handle Deleting a row view from cities rows when click on delete button
+            case R.id.btn_delete_city:
+                deleteRowFromCities();
+                break;
+            // Onclick the dates EditText open new dialog as a date picker
+            case R.id.et_date_from:
+            case R.id.et_date_to:
+                openDatePickerForDateViews();
+                break;
+            // Upon fab clicked save all fields
+            case R.id.fab:
+                saveAllFieldsOnFabClick();
+                break;
+        }
+    }
+
+    private void addNewRowForCities() {
+
+        cityCount += 1;
+
+        LayoutInflater inflater = (LayoutInflater)
+                getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        @SuppressLint("InflateParams") final View rowView =
+                inflater.inflate(R.layout.dynamic_add_city_field, null);
+
+        // Add the new row before the add field button.
+        addCityContainer.addView(rowView, addCityContainer.getChildCount() - 1);
+        FrameLayout generatedFL = addCityContainer.findViewById(R.id.frameLayout);
+        EditText generatedET = generatedFL.findViewById(R.id.et_city_name);
+        Timber.d(String.valueOf(generatedET.getId()));
+
+        allAddedET.add(generatedET);
+    }
+
+    private void deleteRowFromCities() {
+//        addCityContainer.removeView((View) view.getParent());
+    }
+
+    private void openDatePickerForDateViews() {
+        android.support.v4.app.DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    }
+
+    void saveAllFieldsOnFabClick() {
+        for (int i = 0; i < allAddedET.size(); i++) {
+            EditText retrievedET = allAddedET.get(i);
+            Timber.d("Added cities %s", retrievedET.getText());
+        }
+        getActivity().finish();
+    }
+    //endregion
+
+    //region datePicker
     public static class DatePickerFragment extends android.support.v4.app.DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
@@ -131,5 +194,6 @@ public class AddTripFragment extends Fragment {
             return super.onOptionsItemSelected(item);
         }
     }
+    //endregion
 }
 

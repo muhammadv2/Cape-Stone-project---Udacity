@@ -1,106 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/add_trip_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/dp_16">
+    android:background="@color/mainBackground"
+    tools:context=".ui.addTrip.AddTripActivity">
 
-    <EditText
-        android:id="@+id/et_trip_title"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
-        android:ems="25"
-        android:hint="@string/trip_title"
-        android:inputType="textCapSentences"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginStart="@dimen/dp_8"
-        tools:ignore="LabelFor" />
+    <include layout="@layout/content_fragment_add_trip" />
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_32"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="@+id/et_trip_title"
-        app:layout_constraintStart_toStartOf="@+id/et_trip_title"
-        app:layout_constraintTop_toBottomOf="@+id/et_trip_title">
-
-        <EditText
-            android:id="@+id/et_city_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:ems="25"
-            android:hint="@string/cities"
-            android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="@+id/frameLayout"
-            app:layout_constraintStart_toStartOf="@+id/frameLayout"
-            app:layout_constraintTop_toTopOf="@+id/frameLayout"
-            tools:ignore="LabelFor" />
-
-        <ImageButton
-            android:id="@+id/btn_delete_city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:background="@drawable/delete_forever_icon"
-            android:contentDescription="@string/desc_delete_this_city"
-            android:visibility="gone" />
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/text1"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_32"
-        android:text="@string/from_tv"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-        app:layout_constraintStart_toStartOf="@+id/frameLayout"
-        app:layout_constraintTop_toBottomOf="@id/frameLayout" />
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
 
-
-    <EditText
-        android:id="@+id/et_date_from"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:ems="10"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:inputType="date"
-        app:layout_constraintStart_toStartOf="@+id/text1"
-        app:layout_constraintTop_toBottomOf="@+id/text1"
-        tools:ignore="KeyboardInaccessibleWidget,LabelFor" />
-
-    <TextView
-        android:id="@+id/text2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
-        android:text="@string/to_tv"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-        app:layout_constraintStart_toStartOf="@+id/et_date_from"
-        app:layout_constraintTop_toBottomOf="@+id/et_date_from" />
-
-    <EditText
-        android:id="@+id/et_date_to"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:ems="10"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:inputType="date"
-        app:layout_constraintStart_toStartOf="@+id/et_trip_title"
-        app:layout_constraintTop_toBottomOf="@+id/text2"
-        tools:ignore="KeyboardInaccessibleWidget,LabelFor" />
-
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>
