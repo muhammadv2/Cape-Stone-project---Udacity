@@ -1,4 +1,4 @@
-package com.muhammadv2.going_somewhere.ui.tripdetails;
+package com.muhammadv2.going_somewhere.ui.tripDetails;
 
 
 import android.content.Intent;

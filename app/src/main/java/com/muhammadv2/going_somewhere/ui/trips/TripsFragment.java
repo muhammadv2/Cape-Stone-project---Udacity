@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
-import com.muhammadv2.going_somewhere.ui.addTrip.AddTripActivity;
+import com.muhammadv2.going_somewhere.ui.trips.addTrip.AddTripActivity;
 
 /**
  * A placeholder fragment containing a simple view.

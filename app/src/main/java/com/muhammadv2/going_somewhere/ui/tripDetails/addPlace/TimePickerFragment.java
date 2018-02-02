@@ -1,4 +1,4 @@
-package com.muhammadv2.going_somewhere.ui.tripdetails;
+package com.muhammadv2.going_somewhere.ui.tripDetails.addPlace;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;

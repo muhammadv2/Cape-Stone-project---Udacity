@@ -1,4 +1,4 @@
-package com.muhammadv2.going_somewhere.ui.addTrip;
+package com.muhammadv2.going_somewhere.ui.trips.addTrip;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
