@@ -22,6 +22,9 @@ import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 
+//Todo(4) This Fragment needs Activity as a holder
+//Todo(5) Make the view for this fragment and also the add new place fragment
+//Todo(6) implement MVP for this fragment
 public class TripDetailsFragment extends Fragment {
 
 
@@ -41,7 +44,7 @@ public class TripDetailsFragment extends Fragment {
             }
         }
     }
-        
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

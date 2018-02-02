@@ -17,6 +17,8 @@ import com.muhammadv2.going_somewhere.ui.addTrip.AddTripActivity;
 /**
  * A placeholder fragment containing a simple view.
  */
+
+//Todo(3) Implement MVP for this view and then connect it with add Trip fragment and implement its RecyclerView
 public class TripsFragment extends Fragment {
 
     public TripsFragment() {

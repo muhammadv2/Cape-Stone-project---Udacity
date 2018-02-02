@@ -1,33 +1,30 @@
 package com.muhammadv2.going_somewhere.ui.addTrip;
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +34,8 @@ import timber.log.Timber;
  * This fragment responsible of get the trip details from the user as Trip name and how many cities
  * in each trip and these cities names and also the date of the trip when will start and end
  */
+
+//Todo(2) Try to implement MVP for this View and decouple it
 public class AddTripFragment extends Fragment implements View.OnClickListener {
 
     // Associated views with this fragment
@@ -62,19 +61,65 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        // Save how many city fields have been added
+        // Save how many city fields have been added and save they names if found
         outState.putInt("cityCount", cityCount);
+        outState.putStringArrayList("cityNames", extractNamesFromViews());
+    }
 
+    /**
+     * Method that help iterate through Array of generated views and extract all text putted into
+     * EditTexts and
+     *
+     * @return Array of those strings
+     */
+    private ArrayList<String> extractNamesFromViews() {
+        if (allAddedViews == null) {
+            return null;
+        }
         ArrayList<String> cityNames = new ArrayList<>();
+
         for (int i = 0; i < allAddedViews.size(); i++) {
             FrameLayout generatedFL = allAddedViews.get(i);
             EditText generatedET = (EditText) generatedFL.getChildAt(0);
             cityNames.add(generatedET.getText().toString());
         }
-
-        outState.putStringArrayList("cityNames", cityNames);
+        return cityNames;
     }
 
+    /**
+     * The result that come back from Date picker will make this method to be invoked and then
+     * check if its valid request if yes call the @insertTheSelectedDate method to insert the
+     * selected date into the corresponding field
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case Constants.DATE_PICKER_FRAGMENT:
+                if (resultCode == Activity.RESULT_OK) {
+                    insertTheSelectedDate(data);
+                }
+                break;
+        }
+    }
+
+    private void insertTheSelectedDate(Intent data) {
+        Bundle bundle = data.getExtras();
+        int day = bundle.getInt(Constants.DAY_PICKER);
+        int month = bundle.getInt(Constants.MONTH_PICKER);
+        int year = bundle.getInt(Constants.YEAR_PICKER);
+        boolean bool = bundle.getBoolean(Constants.BOOL_PICKER);
+
+        String date = day + " / " + month + " / " + year;
+        if (bool) {
+            etAddDateFrom.setText(date);
+        } else {
+            etAddDateTo.setText(date);
+        }
+    }
+
+    //region CreateTheView
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,7 +145,9 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         // If the bundle not null re instantiate the view with the populated data
         if (savedInstanceState != null) {
             for (int i = 0; i < savedInstanceState.getInt("cityCount"); i++) {
-                addNewRowForCities(true, savedInstanceState.getStringArrayList("cityNames").get(i));
+                addNewRowForCities
+                        (true
+                                , savedInstanceState.getStringArrayList("cityNames").get(i));
             }
         }
 
@@ -111,8 +158,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         btnAddCity.setOnClickListener(this);
         etAddDateFrom.setOnClickListener(this);
         etAddDateTo.setOnClickListener(this);
-
     }
+    //endregion
 
     //region HandleOnClickMethods
     @Override
@@ -127,8 +174,10 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
                 break;
             // Onclick the dates EditText open new dialog as a date picker
             case R.id.et_date_from:
+                openDatePickerForDateViews(true);
+                break;
             case R.id.et_date_to:
-                openDatePickerForDateViews();
+                openDatePickerForDateViews(false);
                 break;
             // Upon fab clicked save all fields
             case R.id.fab:
@@ -139,6 +188,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
     private void addNewRowForCities(boolean orientation, String cityName) {
 
+        // Animate(Rotate) The button for adding when clicked
         Animation rotateAnim = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_btn);
         btnAddCity.setAnimation(rotateAnim);
 
@@ -159,7 +209,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
             EditText generatedET = (EditText) fieldContainer.getChildAt(0);
             generatedET.setText(cityName);
         }
-
 
         // Get ImageButton to be able to listen on it
         ImageButton deleteCity = (ImageButton) fieldContainer.getChildAt(1);
@@ -182,67 +231,24 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         allAddedViews.add(fieldContainer);
     }
 
-    // Method working for both FROM & TO buttons to help open date picker fragment.
-    private void openDatePickerForDateViews() {
-        android.support.v4.app.DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    // Method working for both FROM & TO EditText fields to help open date picker fragment.
+    private void openDatePickerForDateViews(boolean from) {
+        DialogFragment dialogFragment = new DatePickerFragment();
+        dialogFragment.setTargetFragment(this, Constants.DATE_PICKER_FRAGMENT);
+        Bundle args = new Bundle();
+        args.putBoolean(Constants.FROM_BOOL_REQ, from);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getActivity().getSupportFragmentManager(), Constants.DATE_PICKER_REQUEST);
     }
+
 
     // When FAB button clicked save all added fields and save it in the db
     void saveAllFieldsOnFabClick() {
         Timber.d(etAddCity.getText().toString());
-        for (int i = 0; i < allAddedViews.size(); i++) {
-            FrameLayout generatedFL = allAddedViews.get(i);
-            EditText generatedET = (EditText) generatedFL.getChildAt(0);
-            Timber.d("Added cities %s", generatedET.getText());
-        }
+        Timber.d("Added cities %s", extractNamesFromViews().toString());
         getActivity().finish();
     }
 //endregion
 
-    //region datePicker
-    public static class DatePickerFragment extends android.support.v4.app.DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            // Do something with the date chosen by the user
-        }
-
-        @Override
-        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-            super.onCreateOptionsMenu(menu, inflater);
-            getActivity().getMenuInflater().inflate(R.menu.menu_dialog, menu);
-
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
-            int id = item.getItemId();
-
-            //noinspection SimplifiableIfStatement
-            if (id == R.id.action_settings) {
-                return true;
-            }
-
-            return super.onOptionsItemSelected(item);
-        }
-    }
-//endregion
 }
 
