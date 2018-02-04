@@ -9,7 +9,6 @@ import com.muhammadv2.going_somewhere.di.ApplicationContext;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.CityEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.NoteEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEntry;
@@ -31,16 +30,17 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TripEntry.TABLE_NAME + " ( " +
                     TripEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     TripEntry.COLUMN_TRIP_NAME + " TEXT NOT NULL," +
+                    TripEntry.COLUMN_CITIES_NAMES + " TEXT NOT NULL," +
                     TripEntry.COLUMN_TIME_START + " INTEGER NOT NULL," +
                     TripEntry.COLUMN_TIME_END + " INTEGER NOT NULL);";
 
 
-    // String that creates City table with the needed columns
-    private static final String CREATE_CITY_TABLE =
-            "CREATE TABLE " + CityEntry.TABLE_NAME + " (" +
-                    CityEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CityEntry.COLUMN_CITY_NAME + " TEXT NOT NULL," +
-                    CityEntry.COLUMN_TRIP_ID + " INTEGER NOT NULL);";
+//    // String that creates City table with the needed columns
+//    private static final String CREATE_CITY_TABLE =
+//            "CREATE TABLE " + CityEntry.TABLE_NAME + " (" +
+//                    CityEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+//                    CityEntry.COLUMN_CITY_NAME + " TEXT NOT NULL," +
+//                    CityEntry.COLUMN_TRIP_ID + " INTEGER NOT NULL);";
 
 
     // String that creates Place table with the needed columns
@@ -50,6 +50,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
                     PlaceEntry.COLUMN_PLACE_NAME + " TEXT NOT NULL," +
                     PlaceEntry.COLUMN_PLACE_ID + " TEXT NOT NULL," +
                     PlaceEntry.COLUMN_CITY_ID + " INTEGER NOT NULL," +
+                    PlaceEntry.COLUMN_TRIP_ID + " INTEGER NOT NULL," +
                     PlaceEntry.COLUMN_TIME_START + " INTEGER DEFAULT CURRENT_TIMESTAMP," +
                     PlaceEntry.COLUMN_TIME_END + " INTEGER NOT NULL);";
 
@@ -59,6 +60,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + NoteEntry.TABLE_NAME + " (" +
                     NoteEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     NoteEntry.COLUMN_IS_TOGGLE_NOTE + " INTEGER NOT NULL," +
+                    PlaceEntry.COLUMN_TRIP_ID + " INTEGER NOT NULL," +
                     NoteEntry.COLUMN_NOTE_TITLE + " TEXT," +
                     NoteEntry.COLUMN_NOTE_BODY + " TEXT NOT NULL);";
 
@@ -68,7 +70,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
 
         //calling execSQL method on the SQLiteDatabase object to create our four tables
         sqLiteDatabase.execSQL(CREATE_TRIP_TABLE);
-        sqLiteDatabase.execSQL(CREATE_CITY_TABLE);
+//        sqLiteDatabase.execSQL(CREATE_CITY_TABLE);
         sqLiteDatabase.execSQL(CREATE_PLACE_TABLE);
         sqLiteDatabase.execSQL(CREATE_NOTE_TABLE);
 

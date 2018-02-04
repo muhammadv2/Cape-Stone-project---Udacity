@@ -9,16 +9,22 @@ public final class Place {
     String placeName;
     String placeId;
     int cityId;
+    int tripId;
     int timeStart;
     int timeEnd;
 
     @ParcelConstructor
-    public Place(String placeName, String placeId, int cityId, int timeStart, int timeEnd) {
+    public Place(String placeName, String placeId, int cityId, int tripId, int timeStart, int timeEnd) {
         this.placeName = placeName;
         this.placeId = placeId;
         this.cityId = cityId;
+        this.tripId = tripId;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
+    }
+
+    public int getTripId() {
+        return tripId;
     }
 
     public String getPlaceId() {
