@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/et_place_title"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_48"
+        android:ems="25"
+        android:hint="@string/place_name_txt"
+        android:inputType="textCapSentences"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_search_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_24"
+        android:background="@drawable/search_place_icon"
+        android:labelFor="@id/et_place_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_32"
+        android:labelFor="@id/et_time_from"
+        android:text="@string/from_tv"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_search_location" />
+
+    <EditText
+        android:id="@+id/et_date_from_place"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_0"
+        android:layout_marginTop="@dimen/dp_8"
+        android:clickable="true"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center"
+        android:inputType="date"
+        app:layout_constraintStart_toStartOf="@+id/text1"
+        app:layout_constraintTop_toBottomOf="@+id/text1"
+        tools:ignore="KeyboardInaccessibleWidget,LabelFor" />
+
+    <EditText
+        android:id="@+id/et_time_from"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/et_date_from_place"
+        app:layout_constraintTop_toTopOf="@+id/et_date_from_place" />
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_32"
+        android:labelFor="@id/et_time_to"
+        android:text="@string/to_tv"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toStartOf="@+id/text1"
+        app:layout_constraintTop_toBottomOf="@+id/et_date_from_place" />
+
+
+    <EditText
+        android:id="@+id/et_date_to_place"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:ems="10"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="@+id/et_date_from_place"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text2"
+        tools:ignore="KeyboardInaccessibleWidget,LabelFor" />
+
+    <EditText
+        android:id="@+id/et_time_to"
+        android:layout_width="172dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/et_date_to_place"
+        app:layout_constraintTop_toTopOf="@+id/et_date_to_place" />
+
+</android.support.constraint.ConstraintLayout>

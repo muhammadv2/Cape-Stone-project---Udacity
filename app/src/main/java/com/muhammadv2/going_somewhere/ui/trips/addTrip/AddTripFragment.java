@@ -34,8 +34,6 @@ import timber.log.Timber;
  * This fragment responsible of get the trip details from the user as Trip name and how many cities
  * in each trip and these cities names and also the date of the trip when will start and end
  */
-
-//Todo(2) Try to implement MVP for this View and decouple it
 public class AddTripFragment extends Fragment implements View.OnClickListener {
 
     // Associated views with this fragment
@@ -43,11 +41,11 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     ViewGroup addCityContainer;
     @BindView(R.id.et_city_name)
     EditText etAddCity;
-    @BindView(R.id.et_trip_title)
+    @BindView(R.id.et_place_title)
     EditText etAddTripTitle;
-    @BindView(R.id.et_date_from)
+    @BindView(R.id.et_date_from_place)
     EditText etAddDateFrom;
-    @BindView(R.id.et_date_to)
+    @BindView(R.id.et_date_to_place)
     EditText etAddDateTo;
     @BindView(R.id.btn_add_city)
     Button btnAddCity;
@@ -173,10 +171,10 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
                 addNewRowForCities(false, null);
                 break;
             // Onclick the dates EditText open new dialog as a date picker
-            case R.id.et_date_from:
+            case R.id.et_date_from_place:
                 openDatePickerForDateViews(true);
                 break;
-            case R.id.et_date_to:
+            case R.id.et_date_to_place:
                 openDatePickerForDateViews(false);
                 break;
             // Upon fab clicked save all fields
