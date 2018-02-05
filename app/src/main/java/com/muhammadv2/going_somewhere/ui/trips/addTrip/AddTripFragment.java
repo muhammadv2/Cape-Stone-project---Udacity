@@ -61,7 +61,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.btn_add_city)
     Button btnAddCity;
 
-    //Todo(2) Learn more about injection and inject DataInteractor in here
+    //Inject the dataInteractor object into this fragment
     @Inject
     DataInteractor interactor;
 
@@ -71,8 +71,10 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     // Counter for how many cities has been added
     private int cityCount;
 
+    // Field holding the current inflated view of the fragment
     private View layoutView;
 
+    // String to hold the date from and to
     private String dateFrom;
     private String dateTo;
 
@@ -85,8 +87,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * Method that help iterate through Array of generated views and extract all text putted into
-     * EditTexts and
+     * Method that help iterate through Array of generated views and extract all cities added and
+     * make an ArrayList out of them
      *
      * @return Array of those strings
      */
@@ -95,9 +97,11 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
             return null;
         }
         ArrayList<City> cityNames = new ArrayList<>();
-        cityNames.add(new City(etAddCity.getText().toString(), 0));
+        cityNames.add(new City(
+                etAddCity.getText().toString(),
+                0));//use 0 cuz this the first field already there
 
-        int cityId = 1;
+        int cityId = 1; //start counting from 1 for the generated fields
         for (int i = 0; i < allAddedViews.size(); i++) {
             FrameLayout generatedFL = allAddedViews.get(i);
             EditText generatedET = (EditText) generatedFL.getChildAt(0);
@@ -108,9 +112,11 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         return cityNames;
     }
 
+    //region Date
+
     /**
-     * The result that come back from Date picker will make this method to be invoked and then
-     * check if its valid request if yes call the @insertTheSelectedDate method to insert the
+     * The result that come back from Date picker will invoke this method and then
+     * check if its valid request if yes call the @formatTheSelectedDate method to insert the
      * selected date into the corresponding field
      */
     @Override
@@ -120,13 +126,13 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         switch (requestCode) {
             case Constants.DATE_PICKER_FRAGMENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    insertTheSelectedDate(data);
+                    formatTheSelectedDate(data);
                 }
                 break;
         }
     }
 
-    private void insertTheSelectedDate(Intent data) {
+    private void formatTheSelectedDate(Intent data) {
         Bundle bundle = data.getExtras();
         int day = bundle.getInt(Constants.DAY_PICKER);
         int month = bundle.getInt(Constants.MONTH_PICKER);
@@ -153,6 +159,25 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
             dateTo = dateNeeded;
         }
     }
+
+    private long parseDateToMiSeconds(String stringDate) {
+
+        if (stringDate == null) {
+            return 0;
+        }
+
+        @SuppressLint("SimpleDateFormat") java.text.DateFormat formatter =
+                new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date date = formatter.parse(stringDate);
+            return date.getTime();
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+    //endregion
 
     //region CreateTheView
     @Override
@@ -283,38 +308,24 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     // When FAB button clicked save all added fields and save it in the db
     void saveAllFieldsOnFabClick() {
 
+        // Extract the data from fields
         String title = etAddTripTitle.getText().toString();
         long timeStart = parseDateToMiSeconds(dateFrom.trim());
         long timeEnd = parseDateToMiSeconds(dateTo.trim());
         ArrayList<City> cities = extractCityNames();
 
+        // Check if there's any field not populated
         if (title != null && cities != null && timeStart != 0 && timeEnd != 0) {
+            // Everything is fine use the interactor and insert the data using its helper method
             interactor.insertIntoTripTable(new Trip(title, timeStart, timeEnd, cities));
             Toast.makeText(getActivity(), "Add Trip Successfully", Toast.LENGTH_LONG).show();
             getActivity().finish();
         } else {
+            // There still fields not populated show SnackBar
             Snackbar.make(layoutView, R.string.error_add_fields, Snackbar.LENGTH_LONG).show();
         }
     }
 
-
-    private long parseDateToMiSeconds(String stringDate) {
-
-        if (stringDate == null) {
-            return 0;
-        }
-
-        @SuppressLint("SimpleDateFormat") java.text.DateFormat formatter =
-                new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            Date date = formatter.parse(stringDate);
-            return date.getTime();
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
 //endregion
 
 }

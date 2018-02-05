@@ -13,13 +13,13 @@ import com.squareup.picasso.Picasso;
  */
 public class ImageUtils {
 
-    public static void bindImage(Context context, String imgPath, ImageView intoImage) {
+    public static void bindImage(Context context, ImageView intoImage) {
 
         Picasso
                 .with(context)
-                .load(imgPath)
-                .centerCrop()
+                .load(R.drawable.ic_location_city_black_24dp)
                 .placeholder(R.drawable.ic_location_city_black_24dp)
+                .centerCrop()
                 .into(intoImage);
     }
 }

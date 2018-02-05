@@ -2,41 +2,42 @@ package com.muhammadv2.going_somewhere.ui.trips;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.Trip;
+import com.muhammadv2.going_somewhere.ui.tripDetails.TripDetailsActivity;
+import com.muhammadv2.going_somewhere.utils.ImageUtils;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHolder> {
 
-    //Todo (5) Complete the trips adapter
 
-    private final Context mContext;
-    private int mItemsInTheList;
+    @Inject
+    private Context mContext;
     private final OnItemClickListener mItemClickListener;
     private final List<Trip> trips;
 
     /**
      * Adapter constructor helping setup the Adapter and ViewHolder with
      *
-     * @param context             needed to be passed to picasso library
      * @param data                needed to update the imageView with Movie objects
      * @param onItemClickListener This allow us to use the Adapter as a component with MainActivity
      */
-    public TripsAdapter(Context context, List<Trip> data, OnItemClickListener onItemClickListener) {
-
-        mContext = context;
-
-        //member variable will be updated with the list size to be returned in getITemCount method
-        if (data != null && data.size() > 0) mItemsInTheList = data.size();
-
+    public TripsAdapter(List<Trip> data, OnItemClickListener onItemClickListener) {
         trips = data;
 
         mItemClickListener = onItemClickListener;
@@ -72,6 +73,17 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
 
         Trip trip = trips.get(position);
 
+        ImageUtils.bindImage(mContext, holder.tripImage);
+        holder.tripTitle.setText(trip.getTripName());
+        holder.tripDuration.setText(String.valueOf(trip.getStartTime()));
+        holder.btnPlans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, TripDetailsActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
+
         holder.itemView.setTag(position);
 
     }
@@ -79,7 +91,8 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
 
     @Override
     public int getItemCount() {
-        return mItemsInTheList; // Simply return the number of the list size
+        if (trips.size() < 0) return 0;
+        return trips.size(); // Simply return the number of the list size
     }
 
 
@@ -88,6 +101,16 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
      */
     class TripsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        @BindView(R.id.image_trip)
+        ImageView tripImage;
+        @BindView(R.id.text_trip_title)
+        TextView tripTitle;
+        @BindView(R.id.text_trip_duration)
+        TextView tripDuration;
+        @BindView(R.id.btn_trip_plans)
+        Button btnPlans;
+        @BindView(R.id.btn_trip_notes)
+        Button btnNotes;
 
         //Constructor help finding our view and set up the view with onClickListener
         TripsViewHolder(View itemView) {

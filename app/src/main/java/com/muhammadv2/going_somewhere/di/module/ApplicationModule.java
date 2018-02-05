@@ -37,4 +37,5 @@ public class ApplicationModule {
     DataInteractor provideDataInteractor() {
         return new DataInteractor(mApp.getApplicationContext());
     }
+
 }
