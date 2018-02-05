@@ -35,8 +35,8 @@ public final class UriMatcherUtils {
         uriMatcher.addURI(AUTHORITY, TravelsDbContract.TripEntry.TABLE_NAME, TRIPS); //trip directory
         uriMatcher.addURI(AUTHORITY, TravelsDbContract.TripEntry.TABLE_NAME + "/#", TRIP_WITH_ID); //single item
 
-        uriMatcher.addURI(AUTHORITY, TravelsDbContract.CityEntry.TABLE_NAME, CITIES); //city directory
-        uriMatcher.addURI(AUTHORITY, TravelsDbContract.CityEntry.TABLE_NAME + "/#", CITY_WITH_ID); //single item
+//        uriMatcher.addURI(AUTHORITY, TravelsDbContract.CityEntry.TABLE_NAME, CITIES); //city directory
+//        uriMatcher.addURI(AUTHORITY, TravelsDbContract.CityEntry.TABLE_NAME + "/#", CITY_WITH_ID); //single item
 
         uriMatcher.addURI(AUTHORITY, TravelsDbContract.PlaceEntry.TABLE_NAME, PLACES); //place directory
         uriMatcher.addURI(AUTHORITY, TravelsDbContract.PlaceEntry.TABLE_NAME + "/#", PLACE_WITH_ID); //single item

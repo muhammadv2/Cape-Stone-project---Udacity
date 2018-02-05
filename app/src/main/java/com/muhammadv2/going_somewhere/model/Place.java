@@ -1,9 +1,5 @@
 package com.muhammadv2.going_somewhere.model;
 
-import org.parceler.Parcel;
-import org.parceler.ParcelConstructor;
-
-@Parcel
 public final class Place {
 
     String placeName;
@@ -13,7 +9,6 @@ public final class Place {
     int timeStart;
     int timeEnd;
 
-    @ParcelConstructor
     public Place(String placeName, String placeId, int cityId, int tripId, int timeStart, int timeEnd) {
         this.placeName = placeName;
         this.placeId = placeId;

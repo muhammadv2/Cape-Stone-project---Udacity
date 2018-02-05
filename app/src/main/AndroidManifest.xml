@@ -35,7 +35,7 @@
 
         <activity android:name=".ui.trips.addTrip.AddTripActivity" />
         <activity android:name=".ui.tripDetails.addPlace.AddPlaceActivity" />
-        <activity android:name=".ui.tripDetails.TripDetailsActivity"></activity>
+        <activity android:name=".ui.tripDetails.TripDetailsActivity" />
     </application>
 
 </manifest>

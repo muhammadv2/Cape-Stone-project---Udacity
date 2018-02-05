@@ -2,6 +2,7 @@ package com.muhammadv2.going_somewhere.di.component;
 
 import com.muhammadv2.going_somewhere.di.module.ApplicationModule;
 import com.muhammadv2.going_somewhere.model.data.TravelsProvider;
+import com.muhammadv2.going_somewhere.ui.trips.addTrip.AddTripFragment;
 
 import javax.inject.Singleton;
 
@@ -16,5 +17,7 @@ public interface AppComponent {
 
     // Tell the Dagger to scan this class through the implementation of this interface.
     void inject(TravelsProvider provider);
+
+    void inject(AddTripFragment addTrip);
 
 }

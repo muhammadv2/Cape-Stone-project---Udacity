@@ -16,6 +16,8 @@ import butterknife.ButterKnife;
 
 public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHolder> {
 
+    //Todo (5) Complete the trips adapter
+
     private final Context mContext;
     private int mItemsInTheList;
     private final OnItemClickListener mItemClickListener;

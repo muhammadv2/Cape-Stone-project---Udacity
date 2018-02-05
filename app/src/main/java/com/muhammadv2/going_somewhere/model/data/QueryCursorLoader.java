@@ -10,13 +10,12 @@ import javax.inject.Inject;
 
 
 public class QueryCursorLoader extends CursorLoader {
+    //Todo (6) Implement the cursor loader to query the data from all the tables
 
     @Inject
     public QueryCursorLoader(@ApplicationContext @NonNull Context context) {
         super(context);
     }
-
-
 
 
 }

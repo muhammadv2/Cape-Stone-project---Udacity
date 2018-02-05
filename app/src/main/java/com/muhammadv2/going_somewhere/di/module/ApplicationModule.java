@@ -3,6 +3,7 @@ package com.muhammadv2.going_somewhere.di.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.muhammadv2.going_somewhere.model.DataInteractor;
 import com.muhammadv2.going_somewhere.model.data.TravelsDbHelper;
 
 import javax.inject.Singleton;
@@ -29,5 +30,11 @@ public class ApplicationModule {
     @Singleton
     TravelsDbHelper provideDatabaseHelper() {
         return new TravelsDbHelper(mApp.getApplicationContext());
+    }
+
+    @Provides
+    @Singleton
+    DataInteractor provideDataInteractor() {
+        return new DataInteractor(mApp.getApplicationContext());
     }
 }

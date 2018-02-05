@@ -1,20 +1,16 @@
 package com.muhammadv2.going_somewhere.model;
 
-import org.parceler.Parcel;
-import org.parceler.ParcelConstructor;
-
+import java.util.ArrayList;
 import java.util.List;
 
-@Parcel
 public final class Trip {
 
     String tripName;
-    int startTime;
-    int endTime;
-    List<City> cities;
+    long startTime;
+    long endTime;
+    ArrayList<City> cities;
 
-    @ParcelConstructor
-    public Trip(String tripName, int startTime, int endTime, List<City> cities) {
+    public Trip(String tripName, long startTime, long endTime, ArrayList<City> cities) {
         this.tripName = tripName;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -25,11 +21,11 @@ public final class Trip {
         return tripName;
     }
 
-    public int getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public int getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 

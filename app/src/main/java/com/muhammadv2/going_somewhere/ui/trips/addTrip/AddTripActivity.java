@@ -3,7 +3,6 @@ package com.muhammadv2.going_somewhere.ui.trips.addTrip;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
 
 /**
@@ -16,6 +15,6 @@ public class AddTripActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_trip);
         //set new title for this activity
-        setTitle(Constants.ADD_TRIP_NAME);
+//        setTitle(Constants.ADD_TRIP_NAME);
     }
 }

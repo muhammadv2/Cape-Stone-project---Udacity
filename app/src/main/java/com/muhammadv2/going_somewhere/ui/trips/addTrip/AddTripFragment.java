@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,10 +22,20 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.muhammadv2.going_somewhere.App;
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
+import com.muhammadv2.going_somewhere.model.City;
+import com.muhammadv2.going_somewhere.model.DataInteractor;
+import com.muhammadv2.going_somewhere.model.Trip;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,18 +61,27 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.btn_add_city)
     Button btnAddCity;
 
+    //Todo(2) Learn more about injection and inject DataInteractor in here
+    @Inject
+    DataInteractor interactor;
+
     // Field of ArrayList to keep eye on all generated views
     private ArrayList<FrameLayout> allAddedViews;
 
     // Counter for how many cities has been added
     private int cityCount;
 
+    private View layoutView;
+
+    private String dateFrom;
+    private String dateTo;
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         // Save how many city fields have been added and save they names if found
         outState.putInt("cityCount", cityCount);
-        outState.putStringArrayList("cityNames", extractNamesFromViews());
+        outState.putParcelableArrayList("cityNames", extractCityNames());
     }
 
     /**
@@ -70,16 +90,20 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
      *
      * @return Array of those strings
      */
-    private ArrayList<String> extractNamesFromViews() {
+    private ArrayList<City> extractCityNames() {
         if (allAddedViews == null) {
             return null;
         }
-        ArrayList<String> cityNames = new ArrayList<>();
+        ArrayList<City> cityNames = new ArrayList<>();
+        cityNames.add(new City(etAddCity.getText().toString(), 0));
 
+        int cityId = 1;
         for (int i = 0; i < allAddedViews.size(); i++) {
             FrameLayout generatedFL = allAddedViews.get(i);
             EditText generatedET = (EditText) generatedFL.getChildAt(0);
-            cityNames.add(generatedET.getText().toString());
+            City city = new City(generatedET.getText().toString(), cityId);
+            cityNames.add(city);
+            cityId++;
         }
         return cityNames;
     }
@@ -109,11 +133,24 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         int year = bundle.getInt(Constants.YEAR_PICKER);
         boolean bool = bundle.getBoolean(Constants.BOOL_PICKER);
 
-        String date = day + " / " + month + " / " + year;
+        String strDate = String.valueOf(day + "/" + month + "/" + year);
+
+        @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Date date;
+        String dateNeeded = null;
+        try {
+            date = df.parse(strDate);
+            dateNeeded = df.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         if (bool) {
-            etAddDateFrom.setText(date);
+            etAddDateFrom.setText(dateNeeded);
+            dateFrom = dateNeeded;
         } else {
-            etAddDateTo.setText(date);
+            etAddDateTo.setText(dateNeeded);
+            dateTo = dateNeeded;
         }
     }
 
@@ -122,18 +159,21 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout to use as dialog or embedded fragment
-        View view = inflater.inflate(R.layout.fragment_add_trip, container, false);
+        layoutView = inflater.inflate(R.layout.fragment_add_trip, container, false);
 
         // Bind ButterKnife library to this fragment
-        ButterKnife.bind(this, view);
+        ButterKnife.bind(this, layoutView);
 
         //planting a tag for Timber
         Timber.plant(new Timber.DebugTree());
 
         allAddedViews = new ArrayList<>();
 
+        //inject this fragment into the app component
+        App.getInstance().getAppComponent().inject(this);
+
         //return the inflated view
-        return view;
+        return layoutView;
     }
 
     @Override
@@ -142,7 +182,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
         // If the bundle not null re instantiate the view with the populated data
         if (savedInstanceState != null) {
-            for (int i = 0; i < savedInstanceState.getInt("cityCount"); i++) {
+            for (int i = 1; i < savedInstanceState.getInt("cityCount"); i++) {
                 addNewRowForCities
                         (true
                                 , savedInstanceState.getStringArrayList("cityNames").get(i));
@@ -242,9 +282,38 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
     // When FAB button clicked save all added fields and save it in the db
     void saveAllFieldsOnFabClick() {
-        Timber.d(etAddCity.getText().toString());
-        Timber.d("Added cities %s", extractNamesFromViews().toString());
-        getActivity().finish();
+
+        String title = etAddTripTitle.getText().toString();
+        long timeStart = parseDateToMiSeconds(dateFrom.trim());
+        long timeEnd = parseDateToMiSeconds(dateTo.trim());
+        ArrayList<City> cities = extractCityNames();
+
+        if (title != null && cities != null && timeStart != 0 && timeEnd != 0) {
+            interactor.insertIntoTripTable(new Trip(title, timeStart, timeEnd, cities));
+            Toast.makeText(getActivity(), "Add Trip Successfully", Toast.LENGTH_LONG).show();
+            getActivity().finish();
+        } else {
+            Snackbar.make(layoutView, R.string.error_add_fields, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+
+    private long parseDateToMiSeconds(String stringDate) {
+
+        if (stringDate == null) {
+            return 0;
+        }
+
+        @SuppressLint("SimpleDateFormat") java.text.DateFormat formatter =
+                new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date date = formatter.parse(stringDate);
+            return date.getTime();
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 //endregion
 

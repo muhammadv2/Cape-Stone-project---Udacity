@@ -40,7 +40,7 @@ public class DatePickerFragment extends DialogFragment
 
         Intent i = new Intent()
                 .putExtra(Constants.DAY_PICKER, day)
-                .putExtra(Constants.MONTH_PICKER, month)
+                .putExtra(Constants.MONTH_PICKER, month + 1)
                 .putExtra(Constants.YEAR_PICKER, year)
                 .putExtra(Constants.BOOL_PICKER, from);
         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, i);

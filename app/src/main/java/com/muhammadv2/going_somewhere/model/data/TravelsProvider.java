@@ -14,12 +14,9 @@ import com.muhammadv2.going_somewhere.App;
 
 import javax.inject.Inject;
 
-import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.CityEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.NoteEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEntry;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.CITIES;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.CITY_WITH_ID;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTES;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTE_WITH_ID;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.PLACES;
@@ -63,9 +60,9 @@ public class TravelsProvider extends ContentProvider {
             case TRIPS:
                 returnUri = tryToInsert(db, TripEntry.TABLE_NAME, values, TripEntry.CONTENT_URI);
                 break;
-            case CITIES:
-                returnUri = tryToInsert(db, CityEntry.TABLE_NAME, values, CityEntry.CONTENT_URI);
-                break;
+//            case CITIES:
+//                returnUri = tryToInsert(db, CityEntry.TABLE_NAME, values, CityEntry.CONTENT_URI);
+//                break;
             case PLACES:
                 returnUri = tryToInsert(db, PlaceEntry.TABLE_NAME, values, PlaceEntry.CONTENT_URI);
                 break;
@@ -123,10 +120,10 @@ public class TravelsProvider extends ContentProvider {
                 returnCursor = tryToQueryWholeTable(db, TripEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-            case CITIES:
-                returnCursor = tryToQueryWholeTable(db, CityEntry.TABLE_NAME, projection,
-                        selection, selectionArgs, sortOrder);
-                break;
+//            case CITIES:
+//                returnCursor = tryToQueryWholeTable(db, CityEntry.TABLE_NAME, projection,
+//                        selection, selectionArgs, sortOrder);
+//                break;
             case PLACES:
                 returnCursor = tryToQueryWholeTable(db, PlaceEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
@@ -177,9 +174,9 @@ public class TravelsProvider extends ContentProvider {
             case TRIP_WITH_ID:
                 rowsDeleted = tryToDeleteOneRow(db, uri, TripEntry.TABLE_NAME);
                 break;
-            case CITY_WITH_ID:
-                rowsDeleted = tryToDeleteOneRow(db, uri, CityEntry.TABLE_NAME);
-                break;
+//            case CITY_WITH_ID:
+//                rowsDeleted = tryToDeleteOneRow(db, uri, CityEntry.TABLE_NAME);
+//                break;
             case PLACE_WITH_ID:
                 rowsDeleted = tryToDeleteOneRow(db, uri, PlaceEntry.TABLE_NAME);
                 break;
@@ -235,9 +232,9 @@ public class TravelsProvider extends ContentProvider {
             case TRIP_WITH_ID:
                 rowsUpdated = tryToUpdateRow(db, uri, values, TripEntry.TABLE_NAME);
                 break;
-            case CITY_WITH_ID:
-                rowsUpdated = tryToUpdateRow(db, uri, values, CityEntry.TABLE_NAME);
-                break;
+//            case CITY_WITH_ID:
+//                rowsUpdated = tryToUpdateRow(db, uri, values, CityEntry.TABLE_NAME);
+//                break;
             case PLACE_WITH_ID:
                 rowsUpdated = tryToUpdateRow(db, uri, values, PlaceEntry.TABLE_NAME);
                 break;

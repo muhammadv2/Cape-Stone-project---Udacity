@@ -1,26 +1,55 @@
 package com.muhammadv2.going_somewhere.model;
 
-import org.parceler.Parcel;
-import org.parceler.ParcelConstructor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-@Parcel
-public final class City {
+public final class City implements Parcelable {
 
     String cityName;
-    int tripId;
+    int cityId;
 
 
-    @ParcelConstructor
-    public City(String cityName, int tripId) {
+    public City(String cityName, int cityId) {
         this.cityName = cityName;
-        this.tripId = tripId;
+        this.cityId = cityId;
+    }
+
+    public int getCityId() {
+        return cityId;
     }
 
     public String getCityName() {
         return cityName;
     }
 
-    public int getTripId() {
-        return tripId;
+    //region Parcel
+    @Override
+    public int describeContents() {
+        return 0;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.cityName);
+        dest.writeInt(this.cityId);
+    }
+
+    protected City(Parcel in) {
+        this.cityName = in.readString();
+        this.cityId = in.readInt();
+    }
+
+    public static final Parcelable.Creator<City> CREATOR = new Parcelable.Creator<City>() {
+        @Override
+        public City createFromParcel(Parcel source) {
+            return new City(source);
+        }
+
+        @Override
+        public City[] newArray(int size) {
+            return new City[size];
+        }
+    };
+
+    //endregion
 }

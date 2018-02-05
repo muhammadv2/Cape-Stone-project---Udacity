@@ -19,6 +19,7 @@ import com.muhammadv2.going_somewhere.ui.trips.addTrip.AddTripActivity;
  */
 
 //Todo(3) Implement MVP for this view and then connect it with add Trip fragment and implement its RecyclerView
+    //Todo(4) Hook the UI with the adapter and return the needed data from the presenter
 public class TripsFragment extends Fragment {
 
     public TripsFragment() {
