@@ -116,6 +116,7 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         recyclerView.setAdapter(adapter);
     }
 
+
     private ArrayList<Trip> extractTripsFromCursor(Cursor cursor) {
 
         int nameColumnInd = cursor.getColumnIndex(TravelsDbContract.TripEntry.COLUMN_TRIP_NAME);

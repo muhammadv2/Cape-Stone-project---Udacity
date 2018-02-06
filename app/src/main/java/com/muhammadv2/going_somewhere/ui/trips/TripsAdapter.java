@@ -73,7 +73,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
         if (mData.size() != 0 && mData != null) {
             Trip trip = mData.get(position);
 
-            ImageUtils.bindImage(mContext, holder.tripImage);
+            ImageUtils.bindImage("", mContext, holder.tripImage, null);
             holder.tripTitle.setText(trip.getTripName());
             holder.tripDuration.setText
                     (FormattingUtils.countHowManyDays(trip.getStartTime(), trip.getEndTime()));

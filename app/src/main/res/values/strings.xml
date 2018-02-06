@@ -19,4 +19,5 @@
     <string name="empty_view_image">empty_view_image</string>
     <string name="you_have_no_plans_yet">You have no plans yet</string>
     <string name="get_started_by_adding_some">Get started by adding some</string>
+    <string name="trip_added">Trip Added Successfully</string>
 </resources>

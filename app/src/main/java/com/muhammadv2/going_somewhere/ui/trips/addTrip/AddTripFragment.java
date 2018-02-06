@@ -25,9 +25,13 @@ import android.widget.Toast;
 import com.muhammadv2.going_somewhere.App;
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
+import com.muhammadv2.going_somewhere.di.component.DaggerNetworkComponent;
+import com.muhammadv2.going_somewhere.di.component.NetworkComponent;
+import com.muhammadv2.going_somewhere.di.module.NetworkModule;
 import com.muhammadv2.going_somewhere.model.City;
 import com.muhammadv2.going_somewhere.model.DataInteractor;
 import com.muhammadv2.going_somewhere.model.Trip;
+import com.muhammadv2.going_somewhere.model.network.UnsplashApi;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -314,16 +318,28 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         long timeEnd = parseDateToMiSeconds(dateTo.trim());
         ArrayList<City> cities = extractCityNames();
 
+        initNetworkComponent(title);
+
         // Check if there's any field not populated
         if (title != null && cities != null && timeStart != 0 && timeEnd != 0) {
             // Everything is fine use the interactor and insert the data using its helper method
             interactor.insertIntoTripTable(new Trip(title, timeStart, timeEnd, cities));
-            Toast.makeText(getActivity(), "Add Trip Successfully", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.trip_added, Toast.LENGTH_LONG).show();
             getActivity().finish();
         } else {
             // There still fields not populated show SnackBar
             Snackbar.make(layoutView, R.string.error_add_fields, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    private void initNetworkComponent(String tripTitle) {
+        NetworkComponent component = DaggerNetworkComponent.builder()
+                .networkModule(new NetworkModule(tripTitle))
+                .build();
+
+        UnsplashApi unsplash = component.unsplashApi();
+        unsplash.run();
+
     }
 
 //endregion
