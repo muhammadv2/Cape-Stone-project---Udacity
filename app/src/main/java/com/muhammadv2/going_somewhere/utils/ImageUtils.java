@@ -19,7 +19,6 @@ public class ImageUtils {
                 .with(context)
                 .load(R.drawable.ic_location_city_black_24dp)
                 .placeholder(R.drawable.ic_location_city_black_24dp)
-                .centerCrop()
                 .into(intoImage);
     }
 }

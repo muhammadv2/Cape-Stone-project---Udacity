@@ -20,10 +20,10 @@
     <style name="main_card_buttons">
         <item name="android:layout_width">64dp</item>
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:layout_height">@dimen/dp_32</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingEnd">@dimen/dp_8</item>
         <item name="android:paddingTop">@dimen/dp_8</item>
-        <item name="android:paddingBottom">@dimen/dp_8</item>
+        <item name="android:paddingBottom">@dimen/dp_16</item>
         <item name="android:paddingStart">@dimen/dp_8</item>
         <item name="android:background">#0000</item>
         <item name="android:textSize">14sp</item>

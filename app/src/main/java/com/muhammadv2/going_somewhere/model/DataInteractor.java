@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
 
 import com.muhammadv2.going_somewhere.di.ApplicationContext;
 
@@ -21,13 +22,24 @@ import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEn
 public class DataInteractor {
 
     private ContentResolver resolver;
+    private Context context;
 
     @Inject
     public DataInteractor(@ApplicationContext Context context) {
         resolver = context.getContentResolver();
+        this.context = context;
     }
 
     //Todo (7) Implement the query helper methods too :)
+
+    public CursorLoader createTripsCursorLoader() {
+        return new CursorLoader(context,
+                TripEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
 
     //region Insert
     public Uri insertIntoTripTable(Trip trip) {

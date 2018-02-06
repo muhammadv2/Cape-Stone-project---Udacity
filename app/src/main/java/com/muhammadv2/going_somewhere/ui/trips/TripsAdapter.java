@@ -16,20 +16,17 @@ import com.muhammadv2.going_somewhere.model.Trip;
 import com.muhammadv2.going_somewhere.ui.tripDetails.TripDetailsActivity;
 import com.muhammadv2.going_somewhere.utils.ImageUtils;
 
-import java.util.List;
-
-import javax.inject.Inject;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHolder> {
 
-
-    @Inject
     private Context mContext;
     private final OnItemClickListener mItemClickListener;
-    private final List<Trip> trips;
+    private final ArrayList<Trip> mData;
+
 
     /**
      * Adapter constructor helping setup the Adapter and ViewHolder with
@@ -37,9 +34,9 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
      * @param data                needed to update the imageView with Movie objects
      * @param onItemClickListener This allow us to use the Adapter as a component with MainActivity
      */
-    public TripsAdapter(List<Trip> data, OnItemClickListener onItemClickListener) {
-        trips = data;
-
+    public TripsAdapter(Context context, ArrayList<Trip> data, OnItemClickListener onItemClickListener) {
+        mData = data;
+        mContext = context;
         mItemClickListener = onItemClickListener;
     }
 
@@ -57,11 +54,12 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
     @Override
     public TripsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
+
         int id = R.layout.card_trip;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(id, parent, false);
 
-        return new TripsViewHolder(view);
+        return new TripsAdapter.TripsViewHolder(view);
     }
 
     /**
@@ -71,28 +69,28 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
     @Override
     public void onBindViewHolder(TripsViewHolder holder, int position) {
 
-        Trip trip = trips.get(position);
+        if (mData.size() != 0 && mData != null) {
+            Trip trip = mData.get(position);
 
-        ImageUtils.bindImage(mContext, holder.tripImage);
-        holder.tripTitle.setText(trip.getTripName());
-        holder.tripDuration.setText(String.valueOf(trip.getStartTime()));
-        holder.btnPlans.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, TripDetailsActivity.class);
-                mContext.startActivity(intent);
-            }
-        });
+            ImageUtils.bindImage(mContext, holder.tripImage);
+            holder.tripTitle.setText(trip.getTripName());
+            holder.tripDuration.setText(String.valueOf(trip.getStartTime()));
+            holder.btnPlans.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, TripDetailsActivity.class);
+                    mContext.startActivity(intent);
+                }
+            });
 
-        holder.itemView.setTag(position);
-
+            holder.itemView.setTag(position);
+        }
     }
 
 
     @Override
     public int getItemCount() {
-        if (trips.size() < 0) return 0;
-        return trips.size(); // Simply return the number of the list size
+        return mData.size(); // Simply return the number of the list size
     }
 
 

@@ -7,8 +7,6 @@ import com.muhammadv2.going_somewhere.di.component.AppComponent;
 import com.muhammadv2.going_somewhere.di.component.DaggerAppComponent;
 import com.muhammadv2.going_somewhere.di.module.ApplicationModule;
 
-/**
- */
 public class App extends Application {
 
     public static App sApp;
