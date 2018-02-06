@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.Trip;
 import com.muhammadv2.going_somewhere.ui.tripDetails.TripDetailsActivity;
+import com.muhammadv2.going_somewhere.utils.FormattingUtils;
 import com.muhammadv2.going_somewhere.utils.ImageUtils;
 
 import java.util.ArrayList;
@@ -74,7 +75,12 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
 
             ImageUtils.bindImage(mContext, holder.tripImage);
             holder.tripTitle.setText(trip.getTripName());
-            holder.tripDuration.setText(String.valueOf(trip.getStartTime()));
+            holder.tripDuration.setText
+                    (FormattingUtils.countHowManyDays(trip.getStartTime(), trip.getEndTime()));
+
+            String cities = trip.getCities().size() + " Cities";
+            holder.cityCount.setText(cities);
+
             holder.btnPlans.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -109,6 +115,8 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
         Button btnPlans;
         @BindView(R.id.btn_trip_notes)
         Button btnNotes;
+        @BindView(R.id.text_city_count)
+        TextView cityCount;
 
         //Constructor help finding our view and set up the view with onClickListener
         TripsViewHolder(View itemView) {

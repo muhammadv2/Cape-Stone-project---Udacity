@@ -16,4 +16,7 @@
     <string name="place_name_txt">Place Name</string>
     <string name="add_new_place">Add new Place</string>
     <string name="error_add_fields">Please add the not completed fields</string>
+    <string name="empty_view_image">empty_view_image</string>
+    <string name="you_have_no_plans_yet">You have no plans yet</string>
+    <string name="get_started_by_adding_some">Get started by adding some</string>
 </resources>

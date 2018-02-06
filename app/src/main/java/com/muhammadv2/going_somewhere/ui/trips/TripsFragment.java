@@ -18,11 +18,11 @@ import android.view.ViewGroup;
 import com.muhammadv2.going_somewhere.App;
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
-import com.muhammadv2.going_somewhere.model.City;
 import com.muhammadv2.going_somewhere.model.DataInteractor;
 import com.muhammadv2.going_somewhere.model.Trip;
 import com.muhammadv2.going_somewhere.model.data.TravelsDbContract;
 import com.muhammadv2.going_somewhere.ui.trips.addTrip.AddTripActivity;
+import com.muhammadv2.going_somewhere.utils.FormattingUtils;
 
 import java.util.ArrayList;
 
@@ -87,32 +87,46 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         Timber.d("onLoadFinished called");
         if (data == null) return;
         createRecyclerView(data);
-//        mTripsAdapter.swapCursor(data);
-//        if (mPosition != ListView.INVALID_POSITION) {
-//            // If we don't need to restart the loader, and there's a desired position to restore
-//            // to, do so now.
-//            mListView.smoothScrollToPosition(mPosition);
 
     }
 
     private void createRecyclerView(Cursor data) {
+
+        View emptyView = getActivity().findViewById(R.id.empty_view_trips);
         recyclerView = getActivity().findViewById(R.id.rv_trip);
+
+        if (data.getCount() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.INVISIBLE);
+            return;
+        }
+        emptyView.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
         layoutManager = new LinearLayoutManager(getActivity());
         adapter = new TripsAdapter(getActivity(), extractTripsFromCursor(data), this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-
     }
 
     private ArrayList<Trip> extractTripsFromCursor(Cursor cursor) {
 
+        int nameColumnInd = cursor.getColumnIndex(TravelsDbContract.TripEntry.COLUMN_TRIP_NAME);
+        int startColumnInd = cursor.getColumnIndex(TravelsDbContract.TripEntry.COLUMN_TIME_START);
+        int endColumnInd = cursor.getColumnIndex(TravelsDbContract.TripEntry.COLUMN_TIME_END);
+        int citiesColumnInd = cursor.getColumnIndex(TravelsDbContract.TripEntry.COLUMN_CITIES_NAMES);
+
         ArrayList<Trip> trips = new ArrayList<>();
         cursor.moveToFirst();
         while (cursor.moveToNext()) {
-            String tripTitle
-                    = cursor.getString(cursor.getColumnIndex(TravelsDbContract.TripEntry.COLUMN_TRIP_NAME));
-            trips.add(new Trip(tripTitle, 0, 0, new ArrayList<City>()));
+            String tripTitle = cursor.getString(nameColumnInd);
+            long startTime = cursor.getLong(startColumnInd);
+            long endTime = cursor.getLong(endColumnInd);
+            String cities = cursor.getString(citiesColumnInd);
+            trips.add(new Trip(tripTitle,
+                    startTime,
+                    endTime,
+                    FormattingUtils.stringCitiesToArrayList(cities)));
             Timber.plant(new Timber.DebugTree());
             Timber.d(tripTitle);
         }
