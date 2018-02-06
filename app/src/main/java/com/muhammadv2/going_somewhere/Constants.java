@@ -15,4 +15,5 @@ public final class Constants {
     public static final String MONTH_PICKER = "month";
     public static final String YEAR_PICKER = "year";
     public static final String BOOL_PICKER = "bool_from";
+    public static final int TRIPS_LOADER_INIT = 234002;
 }

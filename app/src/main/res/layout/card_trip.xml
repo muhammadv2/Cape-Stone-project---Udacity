@@ -19,8 +19,10 @@
         <ImageView
             android:id="@+id/image_trip"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_180"
+            android:layout_height="@dimen/dp_240"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/desc_main_img"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

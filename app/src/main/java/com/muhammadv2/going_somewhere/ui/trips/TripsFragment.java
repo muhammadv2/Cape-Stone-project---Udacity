@@ -48,12 +48,17 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        initLoader();
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         App.getInstance().getAppComponent().inject(this);
 
-        initLoader();
         return inflater.inflate(R.layout.fragment_trips, container, false);
     }
 
@@ -73,7 +78,8 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void initLoader() {
-        getActivity().getSupportLoaderManager().initLoader(20222, null, this);
+        getActivity().getSupportLoaderManager()
+                .initLoader(Constants.TRIPS_LOADER_INIT, null, this);
     }
 
     @Override
@@ -102,6 +108,7 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         }
         emptyView.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
+
         layoutManager = new LinearLayoutManager(getActivity());
         adapter = new TripsAdapter(getActivity(), extractTripsFromCursor(data), this);
         recyclerView.setLayoutManager(layoutManager);
@@ -117,7 +124,7 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         int citiesColumnInd = cursor.getColumnIndex(TravelsDbContract.TripEntry.COLUMN_CITIES_NAMES);
 
         ArrayList<Trip> trips = new ArrayList<>();
-        cursor.moveToFirst();
+
         while (cursor.moveToNext()) {
             String tripTitle = cursor.getString(nameColumnInd);
             long startTime = cursor.getLong(startColumnInd);
@@ -138,6 +145,7 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+        adapter = new TripsAdapter(null, null, null);
     }
 
     @Override

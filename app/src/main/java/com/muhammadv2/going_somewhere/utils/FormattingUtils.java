@@ -8,16 +8,19 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class FormattingUtils {
 
-    public static String milliSecToString(long milliSec) {
+    // Take milliseconds and format it as a date and return the formatted date as a string
+    private static String milliSecToString(long milliSec) {
         Date date = new Date(milliSec);
         @SuppressLint("SimpleDateFormat") DateFormat formatter =
                 new SimpleDateFormat("dd/MM/yyyy");
         return formatter.format(date);
     }
 
+    // Takes the stored cities String and convert it into ArrayList of cities
     public static ArrayList<City> stringCitiesToArrayList(String cities) {
 
         String[] strValues = cities.split(",,");
@@ -26,15 +29,15 @@ public class FormattingUtils {
             String cityName = strValues[i];
             cityList.add(new City(cityName, i));
         }
-
         //Use asList method of Arrays class to convert Java String array to ArrayList
         return cityList;
     }
 
+    // Calculate the duration between the two inserted date and return the complete needed date
     public static String countHowManyDays(long from, long to) {
 
         long milliseconds = to - from;
-        int days = (int) ((milliseconds / (1000 * 60 * 60 * 24)) % 7);
+        long days = TimeUnit.MILLISECONDS.toDays(milliseconds);
 
         return "From " + milliSecToString(from) + " Duration " + days + " Days";
     }

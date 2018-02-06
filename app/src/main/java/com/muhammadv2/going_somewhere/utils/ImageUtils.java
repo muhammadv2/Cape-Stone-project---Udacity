@@ -2,9 +2,11 @@ package com.muhammadv2.going_somewhere.utils;
 
 
 import android.content.Context;
+import android.net.Uri;
+import android.view.View;
 import android.widget.ImageView;
 
-import com.muhammadv2.going_somewhere.R;
+import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
 
 
@@ -13,12 +15,13 @@ import com.squareup.picasso.Picasso;
  */
 public class ImageUtils {
 
-    public static void bindImage(Context context, ImageView intoImage) {
+    public static void bindImage(Uri url, Context context, ImageView intoImage, View backGround) {
 
-        Picasso
-                .with(context)
-                .load(R.drawable.ic_location_city_black_24dp)
-                .placeholder(R.drawable.ic_location_city_black_24dp)
-                .into(intoImage);
+        Picasso.with(context).load(url.toString()).into(intoImage,
+                PicassoPalette.with(url.toString(), intoImage)
+                        .use(PicassoPalette.Profile.VIBRANT_LIGHT)
+                        .intoBackground(backGround)
+
+        );
     }
 }
