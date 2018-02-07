@@ -20,4 +20,9 @@
     <string name="you_have_no_plans_yet">You have no plans yet</string>
     <string name="get_started_by_adding_some">Get started by adding some</string>
     <string name="trip_added">Trip Added Successfully</string>
+    <string name="sure_delete">Delete current trip?</string>
+    <string name="yes_delete">Delete</string>
+    <string name="dont_delete">No, Stay</string>
+    <string name="trip_deleted">Trip deleted successfully</string>
+    <string name="error_deleting">Error deleting this trip</string>
 </resources>

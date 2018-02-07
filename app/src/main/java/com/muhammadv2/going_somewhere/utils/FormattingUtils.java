@@ -4,6 +4,10 @@ import android.annotation.SuppressLint;
 
 import com.muhammadv2.going_somewhere.model.City;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,4 +45,17 @@ public class FormattingUtils {
 
         return "From " + milliSecToString(from) + " Duration " + days + " Days";
     }
+
+    // Extract the json response and return the needed url
+    public static String extractUrlFromJson(String response) throws JSONException {
+
+        JSONObject resultObject = new JSONObject(response);
+        JSONArray resultsArray = resultObject.getJSONArray("results");
+        JSONObject secondObj = resultsArray.getJSONObject(0);
+        JSONObject urlsObject = secondObj.getJSONObject("urls");
+
+        return urlsObject.optString("small");
+
+    }
+
 }

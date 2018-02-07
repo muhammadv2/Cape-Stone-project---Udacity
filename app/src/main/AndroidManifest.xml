@@ -33,9 +33,15 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".ui.trips.addTrip.AddTripActivity" />
-        <activity android:name=".ui.tripDetails.addPlace.AddPlaceActivity" />
-        <activity android:name=".ui.tripDetails.TripDetailsActivity" />
+        <activity
+            android:name=".ui.trips.addTrip.AddTripActivity"
+            android:parentActivityName=".ui.trips.TripsActivity" />
+        <activity
+            android:name=".ui.tripDetails.addPlace.AddPlaceActivity"
+            android:parentActivityName=".ui.tripDetails.TripDetailsActivity" />
+        <activity
+            android:name=".ui.tripDetails.TripDetailsActivity"
+            android:parentActivityName=".ui.trips.TripsActivity" />
     </application>
 
 </manifest>

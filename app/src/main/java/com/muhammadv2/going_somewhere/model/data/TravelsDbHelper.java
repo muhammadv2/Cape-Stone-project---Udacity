@@ -31,6 +31,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
                     TripEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     TripEntry.COLUMN_TRIP_NAME + " TEXT NOT NULL," +
                     TripEntry.COLUMN_CITIES_NAMES + " TEXT NOT NULL," +
+                    TripEntry.COLUMN_IMAGE_URL + " TEXT," +
                     TripEntry.COLUMN_TIME_START + " INTEGER NOT NULL," +
                     TripEntry.COLUMN_TIME_END + " INTEGER NOT NULL);";
 

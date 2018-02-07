@@ -2,12 +2,16 @@ package com.muhammadv2.going_somewhere.model.network;
 
 
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import com.muhammadv2.going_somewhere.Constants;
+import com.muhammadv2.going_somewhere.utils.FormattingUtils;
 
+import org.json.JSONException;
+
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.inject.Inject;
 
@@ -18,59 +22,57 @@ import timber.log.Timber;
 
 public class UnsplashApi {
 
+    // String for the trip name to be added as a query
     private String tripName;
     private OkHttpClient client;
 
+    // Both client and tripName are injected to this class by the constructor
     @Inject
     public UnsplashApi(OkHttpClient client, String tripName) {
         this.tripName = tripName;
         this.client = client;
     }
 
-    public String run() {
+    // Run method that make the network connection and parse the response and return json string
+    String run() throws JSONException, IOException {
+        Request request = new Request.Builder()
+                .url(buildUrl())
+                .build();
 
-        String output = null;
-        try {
-            output = new ImageryAsyncTask().execute(buildUrl()).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        Response response = client.newCall(request).execute();
+        InputStream inputStream = response.body().byteStream();
 
-//        if (output != null) {
-//            extractUrlFromJson(output);
-//        }
-        return null;
+        // I'm familiar with retrofit but its only one call with one result that i'm interested in
+        // so kept everything simple
+        return FormattingUtils.extractUrlFromJson(convertStreamToString(inputStream));
+
     }
 
-//    private String extractUrlFromJson(String response) {
+    // Helper method to convert InputStream to string
+    private String convertStreamToString(InputStream is) throws IOException {
+        BufferedReader reader;
 
-//        JSONObject baseJson = null;
-//        try {
-//            baseJson = new JSONObject(response);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        JSONArray resultArray = baseJson.getJSONArray(Constants.RESULT_TAG);
-//
-//        for (int i = 0; i < resultArray.length(); i++) {
-//
-//            JSONObject singleMovieObject = resultArray.getJSONObject(i);
-//
-//            String originalTitle = singleMovieObject.optString(Constants.ORIGINAL_TITLE_TAG);
-//        }
+        reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
+        StringBuilder sb = new StringBuilder();
+
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append('\n');
+        }
+        is.close();
+        return sb.toString();
+    }
+
+    // Build the query uri using the passed trip name and the requested parameters
     private String buildUrl() {
-
-        // https://api.unsplash.com/photos/?client_id=
-        // 90f5cfaef3ee3ea8ac6016ceca58da56d949238ab173fbe858aea6fe6d46848e&
 
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
                 .authority(Constants.UNSPLASH_API_LOCATION)
-                .path(Constants.UNSPLASH_ABSOLUTE_1)
-                .path(Constants.UNSPLASH_ABSOLUTE_2)
+                .appendPath(Constants.UNSPLASH_ABSOLUTE_1)
+                .appendPath(Constants.UNSPLASH_ABSOLUTE_2)
                 .appendQueryParameter("client_id", Constants.UNSPLASH_APP_ID)
                 .appendQueryParameter("query", tripName)
                 .appendQueryParameter("per_page", "1")
@@ -79,24 +81,5 @@ public class UnsplashApi {
         Timber.plant(new Timber.DebugTree());
         Timber.d(builder.toString());
         return builder.build().toString();
-    }
-
-    private class ImageryAsyncTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... uris) {
-            Request request = new Request.Builder()
-                    .url(uris[0])
-                    .build();
-
-            try {
-                Response response = client.newCall(request).execute();
-                return response.body().string();
-            } catch (IOException ex) {
-                ex.getCause();
-                return null;
-            }
-
-        }
     }
 }

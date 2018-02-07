@@ -4,15 +4,12 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
-import android.support.v4.content.CursorLoader;
 
 import com.muhammadv2.going_somewhere.di.ApplicationContext;
 
 import java.util.List;
 
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.NoteEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
@@ -27,19 +24,8 @@ public class DataInteractor {
     @Inject
     public DataInteractor(@ApplicationContext Context context) {
         resolver = context.getContentResolver();
-        this.context = context;
     }
 
-    //Todo (7) Implement the query helper methods too :)
-
-    public CursorLoader createTripsCursorLoader() {
-        return new CursorLoader(context,
-                TripEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                null);
-    }
 
     //region Insert
     public Uri insertIntoTripTable(Trip trip) {
@@ -49,9 +35,7 @@ public class DataInteractor {
         cv.put(TripEntry.COLUMN_TIME_START, trip.getStartTime());
         cv.put(TripEntry.COLUMN_TIME_END, trip.getEndTime());
         cv.put(TripEntry.COLUMN_CITIES_NAMES, extractCitiesNames(trip.getCities()));
-
-        Timber.plant(new Timber.DebugTree());
-        Timber.d("our Trip values " + trip.getTripName() + " " + trip.startTime + " " + extractCitiesNames(trip.cities));
+        cv.put(TripEntry.COLUMN_IMAGE_URL, trip.getImageUrl());
 
         return resolver.insert(TripEntry.CONTENT_URI, cv);
     }

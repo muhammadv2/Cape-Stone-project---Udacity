@@ -3,6 +3,7 @@ package com.muhammadv2.going_somewhere.ui.trips;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,6 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
     @Override
     public TripsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-
         int id = R.layout.card_trip;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(id, parent, false);
@@ -73,7 +73,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
         if (mData.size() != 0 && mData != null) {
             Trip trip = mData.get(position);
 
-            ImageUtils.bindImage("", mContext, holder.tripImage, null);
+            ImageUtils.bindImage(trip.getImageUrl(), mContext, holder.tripImage, holder.cardView);
             holder.tripTitle.setText(trip.getTripName());
             holder.tripDuration.setText
                     (FormattingUtils.countHowManyDays(trip.getStartTime(), trip.getEndTime()));
@@ -93,9 +93,9 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
         }
     }
 
-
     @Override
     public int getItemCount() {
+        if (mData == null) return 0;
         return mData.size(); // Simply return the number of the list size
     }
 
@@ -117,11 +117,12 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
         Button btnNotes;
         @BindView(R.id.text_city_count)
         TextView cityCount;
+        @BindView(R.id.trips_card_view)
+        CardView cardView;
 
         //Constructor help finding our view and set up the view with onClickListener
         TripsViewHolder(View itemView) {
             super(itemView);
-
             itemView.setOnClickListener(this);
 
             //inject butterKnife library to use the constructor to set it self

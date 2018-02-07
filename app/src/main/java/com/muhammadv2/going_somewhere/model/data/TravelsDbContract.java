@@ -31,6 +31,7 @@ public final class TravelsDbContract {
         public static final String COLUMN_TIME_START = "start";
         public static final String COLUMN_TIME_END = "end";
         public static final String COLUMN_CITIES_NAMES = "cities";
+        public static final String COLUMN_IMAGE_URL = "url";
     }
 
 

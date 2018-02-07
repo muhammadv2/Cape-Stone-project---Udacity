@@ -11,14 +11,15 @@ import com.squareup.picasso.Picasso;
 
 
 /**
- * Using the help of picasso library to fetch our images
+ * Using the help of picasso library to fetch our images and also Picasso palette to set associated
+ * color on the passed background
  */
 public class ImageUtils {
 
     public static void bindImage(String url, Context context, ImageView intoImage, View backGround) {
 
         Picasso.with(context)
-                .load("www.unsplash.com")
+                .load(url)
                 .placeholder(R.drawable.trip_place_holder)
                 .into(intoImage,
                         PicassoPalette.with(url, intoImage)

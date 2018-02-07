@@ -3,7 +3,9 @@ package com.muhammadv2.going_somewhere.ui.trips.addTrip;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,25 +28,22 @@ import android.widget.Toast;
 import com.muhammadv2.going_somewhere.App;
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
-import com.muhammadv2.going_somewhere.di.component.DaggerNetworkComponent;
-import com.muhammadv2.going_somewhere.di.component.NetworkComponent;
-import com.muhammadv2.going_somewhere.di.module.NetworkModule;
 import com.muhammadv2.going_somewhere.model.City;
 import com.muhammadv2.going_somewhere.model.DataInteractor;
 import com.muhammadv2.going_somewhere.model.Trip;
-import com.muhammadv2.going_somewhere.model.network.UnsplashApi;
+import com.muhammadv2.going_somewhere.model.network.ImageryAsyncTask;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 /**
  * This fragment responsible of get the trip details from the user as Trip name and how many cities
@@ -81,6 +81,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     // String to hold the date from and to
     private String dateFrom;
     private String dateTo;
+
+    private int trip_id;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -193,9 +195,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         // Bind ButterKnife library to this fragment
         ButterKnife.bind(this, layoutView);
 
-        //planting a tag for Timber
-        Timber.plant(new Timber.DebugTree());
-
         allAddedViews = new ArrayList<>();
 
         //inject this fragment into the app component
@@ -204,6 +203,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         //return the inflated view
         return layoutView;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -312,19 +312,29 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     // When FAB button clicked save all added fields and save it in the db
     void saveAllFieldsOnFabClick() {
 
+        long timeStart = 0;
+        long timeEnd = 0;
+
+        if (dateFrom != null && dateTo != null) {
+
+            timeStart = parseDateToMiSeconds(dateFrom.trim());
+
+            timeEnd = parseDateToMiSeconds(dateTo.trim());
+        }
         // Extract the data from fields
         String title = etAddTripTitle.getText().toString();
-        long timeStart = parseDateToMiSeconds(dateFrom.trim());
-        long timeEnd = parseDateToMiSeconds(dateTo.trim());
-        ArrayList<City> cities = extractCityNames();
 
-        initNetworkComponent(title);
+        ArrayList<City> cities = extractCityNames();
+        String imageUrl = requestImage(title);
+
 
         // Check if there's any field not populated
-        if (title != null && cities != null && timeStart != 0 && timeEnd != 0) {
+        if (!title.isEmpty() && !cities.isEmpty()) {
+            Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
             // Everything is fine use the interactor and insert the data using its helper method
-            interactor.insertIntoTripTable(new Trip(title, timeStart, timeEnd, cities));
-            Toast.makeText(getActivity(), R.string.trip_added, Toast.LENGTH_LONG).show();
+            Uri uri = interactor.insertIntoTripTable(trip);
+            if (uri != null)
+                Toast.makeText(getActivity(), R.string.trip_added, Toast.LENGTH_LONG).show();
             getActivity().finish();
         } else {
             // There still fields not populated show SnackBar
@@ -332,17 +342,50 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void initNetworkComponent(String tripTitle) {
-        NetworkComponent component = DaggerNetworkComponent.builder()
-                .networkModule(new NetworkModule(tripTitle))
-                .build();
+    private String requestImage(String tripName) {
+        try {
+            return new ImageryAsyncTask().execute(tripName).get();
 
-        UnsplashApi unsplash = component.unsplashApi();
-        unsplash.run();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+//endregion
+
+    private void showDialogForDeleting() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(R.string.sure_delete);
+        builder.setPositiveButton(getString(R.string.yes_delete), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteAllData();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.dont_delete), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void deleteAllData() {
+        int id = interactor.deleteFromTripTable(trip_id);
+        if (id > 0) {
+            Toast.makeText(getContext(), getString(R.string.trip_deleted), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), getString(R.string.error_deleting), Toast.LENGTH_SHORT).show();
+
+        }
 
     }
 
-//endregion
 
 }
 
