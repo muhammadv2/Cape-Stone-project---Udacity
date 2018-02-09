@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import timber.log.Timber;
 
 public class UnsplashApi {
 
@@ -78,8 +77,6 @@ public class UnsplashApi {
                 .appendQueryParameter("per_page", "1")
                 .appendQueryParameter(Constants.UNSPLASH_PHOTO_ORIENTATION, "landscape");
 
-        Timber.plant(new Timber.DebugTree());
-        Timber.d(builder.toString());
         return builder.build().toString();
     }
 }

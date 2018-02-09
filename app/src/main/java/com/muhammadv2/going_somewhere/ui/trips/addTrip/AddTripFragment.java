@@ -15,6 +15,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -23,6 +24,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.muhammadv2.going_somewhere.App;
@@ -32,18 +35,16 @@ import com.muhammadv2.going_somewhere.model.City;
 import com.muhammadv2.going_somewhere.model.DataInteractor;
 import com.muhammadv2.going_somewhere.model.Trip;
 import com.muhammadv2.going_somewhere.model.network.ImageryAsyncTask;
+import com.muhammadv2.going_somewhere.utils.FormattingUtils;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * This fragment responsible of get the trip details from the user as Trip name and how many cities
@@ -65,6 +66,12 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.btn_add_city)
     Button btnAddCity;
 
+    @BindView(R.id.pb_add_trip)
+    ProgressBar progressBar;
+    @BindView(R.id.add_trip_container)
+    ScrollView container;
+
+
     //Inject the dataInteractor object into this fragment
     @Inject
     DataInteractor interactor;
@@ -78,9 +85,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     // Field holding the current inflated view of the fragment
     private View layoutView;
 
-    // String to hold the date from and to
-    private String dateFrom;
-    private String dateTo;
+    private Trip trip;
+    private int tripPosition;
 
     private int trip_id;
 
@@ -88,8 +94,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         // Save how many city fields have been added and save they names if found
-        outState.putInt("cityCount", cityCount);
-        outState.putParcelableArrayList("cityNames", extractCityNames());
+        outState.putInt(Constants.CITY_COUNT_ID, cityCount);
+        outState.putParcelableArrayList(Constants.CITY_NAMES_ID, extractCityNames());
     }
 
     /**
@@ -118,73 +124,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         return cityNames;
     }
 
-    //region Date
-
-    /**
-     * The result that come back from Date picker will invoke this method and then
-     * check if its valid request if yes call the @formatTheSelectedDate method to insert the
-     * selected date into the corresponding field
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case Constants.DATE_PICKER_FRAGMENT:
-                if (resultCode == Activity.RESULT_OK) {
-                    formatTheSelectedDate(data);
-                }
-                break;
-        }
-    }
-
-    private void formatTheSelectedDate(Intent data) {
-        Bundle bundle = data.getExtras();
-        int day = bundle.getInt(Constants.DAY_PICKER);
-        int month = bundle.getInt(Constants.MONTH_PICKER);
-        int year = bundle.getInt(Constants.YEAR_PICKER);
-        boolean bool = bundle.getBoolean(Constants.BOOL_PICKER);
-
-        String strDate = String.valueOf(day + "/" + month + "/" + year);
-
-        @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        Date date;
-        String dateNeeded = null;
-        try {
-            date = df.parse(strDate);
-            dateNeeded = df.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (bool) {
-            etAddDateFrom.setText(dateNeeded);
-            dateFrom = dateNeeded;
-        } else {
-            etAddDateTo.setText(dateNeeded);
-            dateTo = dateNeeded;
-        }
-    }
-
-    private long parseDateToMiSeconds(String stringDate) {
-
-        if (stringDate == null) {
-            return 0;
-        }
-
-        @SuppressLint("SimpleDateFormat") java.text.DateFormat formatter =
-                new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            Date date = formatter.parse(stringDate);
-            return date.getTime();
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-    //endregion
-
     //region CreateTheView
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -204,6 +143,11 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         return layoutView;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -211,11 +155,13 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
         // If the bundle not null re instantiate the view with the populated data
         if (savedInstanceState != null) {
-            for (int i = 1; i < savedInstanceState.getInt("cityCount"); i++) {
-                addNewRowForCities
-                        (true
-                                , savedInstanceState.getStringArrayList("cityNames").get(i));
+            ArrayList<City> cities = savedInstanceState.getParcelableArrayList(Constants.CITY_NAMES_ID);
+            for (int i = 0; i < savedInstanceState.getInt(Constants.CITY_COUNT_ID); i++) {
+                String cityName = cities.get(i).getCityName();
+                addNewRowForCities(true, cityName);
             }
+        } else {
+            newTrip_EditTrip_Checker();
         }
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
@@ -226,6 +172,26 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         etAddDateFrom.setOnClickListener(this);
         etAddDateTo.setOnClickListener(this);
     }
+
+    private void newTrip_EditTrip_Checker() {
+        Intent intent = getActivity().getIntent();
+        trip = intent.getParcelableExtra(Constants.TRIPS_ARRAY_ID);
+        tripPosition = intent.getIntExtra(Constants.TRIP_POSITION, -1);
+        Timber.plant(new Timber.DebugTree());
+        if (trip != null) {
+            City city = trip.getCities().get(0);
+            etAddCity.setText(city.getCityName());
+
+            for (int i = 1; i < trip.getCities().size(); i++) {
+                city = trip.getCities().get(i);
+                addNewRowForCities(true, city.getCityName());
+            }
+            etAddTripTitle.setText(trip.getTripName());
+            etAddDateFrom.setText(FormattingUtils.milliSecToString(trip.getStartTime()));
+            etAddDateTo.setText(FormattingUtils.milliSecToString(trip.getEndTime()));
+        }
+    }
+
     //endregion
 
     //region HandleOnClickMethods
@@ -312,38 +278,72 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     // When FAB button clicked save all added fields and save it in the db
     void saveAllFieldsOnFabClick() {
 
-        long timeStart = 0;
-        long timeEnd = 0;
+        if (checkIfAllFieldsPopulated(etAddDateFrom, etAddDateTo, etAddTripTitle, etAddCity))
+            return;
 
-        if (dateFrom != null && dateTo != null) {
+        long timeStart = FormattingUtils.parseDateToMiSeconds(etAddDateFrom.getText().toString());
+        long timeEnd = FormattingUtils.parseDateToMiSeconds(etAddDateTo.getText().toString());
 
-            timeStart = parseDateToMiSeconds(dateFrom.trim());
-
-            timeEnd = parseDateToMiSeconds(dateTo.trim());
-        }
         // Extract the data from fields
         String title = etAddTripTitle.getText().toString();
 
         ArrayList<City> cities = extractCityNames();
         String imageUrl = requestImage(title);
 
+        if (trip == null) {
+            // Check if there's any field not populated
+            if (!title.isEmpty() && !cities.isEmpty()) {
+                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
+                // Everything is fine use the interactor and insert the data using its helper method
+                Uri uri = interactor.insertIntoTripTable(trip);
+                if (uri != null)
+                    Toast.makeText(getActivity(), R.string.trip_added, Toast.LENGTH_LONG).show();
+                getActivity().finish();
+            } else {
+                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
+                // Otherwise this is an EXISTING Trip, so update the trip
+                int rowsAffected = interactor.updateTripTable(trip, tripPosition + 1);
 
-        // Check if there's any field not populated
-        if (!title.isEmpty() && !cities.isEmpty()) {
-            Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
-            // Everything is fine use the interactor and insert the data using its helper method
-            Uri uri = interactor.insertIntoTripTable(trip);
-            if (uri != null)
-                Toast.makeText(getActivity(), R.string.trip_added, Toast.LENGTH_LONG).show();
-            getActivity().finish();
-        } else {
-            // There still fields not populated show SnackBar
-            Snackbar.make(layoutView, R.string.error_add_fields, Snackbar.LENGTH_LONG).show();
+                // Show a toast message depending on whether or not the update was successful.
+                if (rowsAffected == 0) {
+                    // If no rows were affected, then there was an error with the update.
+                    Toast.makeText(getContext(), getString(R.string.error_updating_trip),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the update was successful and we can display a toast.
+                    Toast.makeText(getContext(), getString(R.string.editor_update_trip_successful),
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                getActivity().finish();
+            }
+
         }
     }
 
+    private boolean checkIfAllFieldsPopulated(EditText dateFrom,
+                                              EditText dateTo,
+                                              EditText etAddTripTitle,
+                                              EditText etAddCity) {
+        if (dateFrom.getText().toString().length() == 0 ||
+                dateTo.getText().toString().length() == 0 ||
+                etAddCity.getText().toString().trim().length() == 0 ||
+                etAddTripTitle.getText().toString().trim().length() == 0) {
+            // There still fields not populated show SnackBar
+            Snackbar.make(layoutView, R.string.error_add_fields, Snackbar.LENGTH_LONG).show();
+            return false;
+
+        }
+        return true;
+    }
+
+
     private String requestImage(String tripName) {
         try {
+            // When call AT show the progress bar and hide everything else.
+            progressBar.setVisibility(View.VISIBLE);
+            container.setVisibility(View.INVISIBLE);
+
             return new ImageryAsyncTask().execute(tripName).get();
 
         } catch (InterruptedException | ExecutionException e) {
@@ -352,6 +352,14 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         }
     }
 //endregion
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_settings)
+            showDialogForDeleting();
+        return super.onOptionsItemSelected(item);
+    }
 
     private void showDialogForDeleting() {
 
@@ -384,6 +392,25 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
         }
 
+    }
+
+
+    /**
+     * The result that come back from Date picker will invoke this method and then
+     * check if its valid request if yes call the @formatTheSelectedDate method to insert the
+     * selected date into the corresponding field
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case Constants.DATE_PICKER_FRAGMENT:
+                if (resultCode == Activity.RESULT_OK) {
+                    FormattingUtils.formatTheSelectedDate(data, etAddDateFrom, etAddDateTo);
+                }
+                break;
+        }
     }
 
 

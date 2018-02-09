@@ -12,7 +12,11 @@ import android.support.annotation.NonNull;
 
 import com.muhammadv2.going_somewhere.App;
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.NoteEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
@@ -34,12 +38,18 @@ public class TravelsProvider extends ContentProvider {
     @Inject
     TravelsDbHelper mTravelsDbHelper;
 
+    SQLiteDatabase readDb;
+    SQLiteDatabase writeDb;
+
     @Override
     public boolean onCreate() {
         // Instantiate TravelsDbHelper using the inject method on AppComponent interface using
         // the instance of Application
         App.getInstance().getAppComponent().inject(this);
+        Timber.plant(new Timber.DebugTree());
 
+        readDb = mTravelsDbHelper.getReadableDatabase();
+        writeDb = mTravelsDbHelper.getWritableDatabase();
         return true;
     }
 
@@ -47,27 +57,26 @@ public class TravelsProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
 
-        // Get access to the writable database creating SQLiteDatabase object
-        final SQLiteDatabase db = mTravelsDbHelper.getWritableDatabase();
-
         // Find a matching uri using the helper method of UriMatcher
         int match = sUriMatcher.match(uri);
+
+        Timber.d("insert uri " + uri);
 
         Uri returnUri;
         // Switch between the different tables and insert into the one that matches received uri
         // Insert done on the whole table so the use case used will be only the directory
         switch (match) {
             case TRIPS:
-                returnUri = tryToInsert(db, TripEntry.TABLE_NAME, values, TripEntry.CONTENT_URI);
+                returnUri = tryToInsert(TripEntry.TABLE_NAME, values, TripEntry.CONTENT_URI);
                 break;
 //            case CITIES:
 //                returnUri = tryToInsert(db, CityEntry.TABLE_NAME, values, CityEntry.CONTENT_URI);
 //                break;
             case PLACES:
-                returnUri = tryToInsert(db, PlaceEntry.TABLE_NAME, values, PlaceEntry.CONTENT_URI);
+                returnUri = tryToInsert(PlaceEntry.TABLE_NAME, values, PlaceEntry.CONTENT_URI);
                 break;
             case NOTES:
-                returnUri = tryToInsert(db, NoteEntry.TABLE_NAME, values, NoteEntry.CONTENT_URI);
+                returnUri = tryToInsert(NoteEntry.TABLE_NAME, values, NoteEntry.CONTENT_URI);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
@@ -82,14 +91,13 @@ public class TravelsProvider extends ContentProvider {
      * To help not duplicate code a method working for all insert cases into different tables
      * that accepts
      *
-     * @param db        reference to the opened database
      * @param tableName to determine which table to insert too
      * @param values    which values to insert into that table
      */
-    private Uri tryToInsert(SQLiteDatabase db, String tableName, ContentValues values, Uri contentUri) {
+    private Uri tryToInsert(String tableName, ContentValues values, Uri contentUri) {
 
         // Inserting values into the associated table
-        long id = db.insert(tableName, null, values);
+        long id = writeDb.insert(tableName, null, values);
 
         if (id > 0) {
             //success insertion
@@ -105,9 +113,6 @@ public class TravelsProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
 
-        // Get access to the readable database creating SQLiteDatabase object
-        final SQLiteDatabase db = mTravelsDbHelper.getReadableDatabase();
-
         // Find a matching uri using the helper method of UriMatcher
         int match = sUriMatcher.match(uri);
 
@@ -117,7 +122,7 @@ public class TravelsProvider extends ContentProvider {
         // This application will display the whole table when needed so no need to query single ID
         switch (match) {
             case TRIPS:
-                returnCursor = tryToQueryWholeTable(db, TripEntry.TABLE_NAME, projection,
+                returnCursor = tryToQueryWholeTable(TripEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
 //            case CITIES:
@@ -125,11 +130,11 @@ public class TravelsProvider extends ContentProvider {
 //                        selection, selectionArgs, sortOrder);
 //                break;
             case PLACES:
-                returnCursor = tryToQueryWholeTable(db, PlaceEntry.TABLE_NAME, projection,
+                returnCursor = tryToQueryWholeTable(PlaceEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
             case NOTES:
-                returnCursor = tryToQueryWholeTable(db, NoteEntry.TABLE_NAME, projection,
+                returnCursor = tryToQueryWholeTable(NoteEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
             default:
@@ -143,12 +148,11 @@ public class TravelsProvider extends ContentProvider {
     /**
      * Helper method that try to query the passed table and return a cursor with data found
      *
-     * @param db        reference to the opened database
      * @param tableName to determine which table to query
      */
-    private Cursor tryToQueryWholeTable(SQLiteDatabase db, String tableName, String[] projection,
+    private Cursor tryToQueryWholeTable(String tableName, String[] projection,
                                         String selection, String[] selectionArgs, String sortOrder) {
-        return db.query(tableName,
+        return readDb.query(tableName,
                 projection,
                 selection,
                 selectionArgs,
@@ -161,9 +165,6 @@ public class TravelsProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
-        // Get access to the writable database creating SQLiteDatabase object
-        final SQLiteDatabase db = mTravelsDbHelper.getWritableDatabase();
-
         // Find a matching uri using the helper method of UriMatcher
         int match = sUriMatcher.match(uri);
 
@@ -172,16 +173,16 @@ public class TravelsProvider extends ContentProvider {
         // This application will only delete one row at a time so the use case of row with ID is the only used
         switch (match) {
             case TRIP_WITH_ID:
-                rowsDeleted = tryToDeleteOneRow(db, uri, TripEntry.TABLE_NAME);
+                rowsDeleted = tryToDeleteOneRow(uri, TripEntry.TABLE_NAME);
                 break;
 //            case CITY_WITH_ID:
 //                rowsDeleted = tryToDeleteOneRow(db, uri, CityEntry.TABLE_NAME);
 //                break;
             case PLACE_WITH_ID:
-                rowsDeleted = tryToDeleteOneRow(db, uri, PlaceEntry.TABLE_NAME);
+                rowsDeleted = tryToDeleteOneRow(uri, PlaceEntry.TABLE_NAME);
                 break;
             case NOTE_WITH_ID:
-                rowsDeleted = tryToDeleteOneRow(db, uri, NoteEntry.TABLE_NAME);
+                rowsDeleted = tryToDeleteOneRow(uri, NoteEntry.TABLE_NAME);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
@@ -199,18 +200,17 @@ public class TravelsProvider extends ContentProvider {
      * Helper method that try to delete a row form  the passed table and return an int representing
      * the deleted rows
      *
-     * @param db        reference to the opened database
      * @param uri       passed uri to extract the selection and selectionArgs
      * @param tableName to determine which table to query
      */
-    private int tryToDeleteOneRow(SQLiteDatabase db, @NonNull Uri uri, String tableName) {
+    private int tryToDeleteOneRow(@NonNull Uri uri, String tableName) {
 
         //Using selection and selectionArgs to specify which row to delete
         String id = uri.getPathSegments().get(1);
         String mSelection = "_id=?";
         String[] mSelectionArgs = {id};
 
-        return db.delete(tableName, mSelection, mSelectionArgs);
+        return writeDb.delete(tableName, mSelection, mSelectionArgs);
     }
     //endregion
 
@@ -219,8 +219,7 @@ public class TravelsProvider extends ContentProvider {
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
 
-        // Get access to the writable database creating SQLiteDatabase object
-        final SQLiteDatabase db = mTravelsDbHelper.getWritableDatabase();
+        Timber.d("updated uri " + uri);
 
         // Find a matching uri using the helper method of UriMatcher
         int match = sUriMatcher.match(uri);
@@ -230,16 +229,13 @@ public class TravelsProvider extends ContentProvider {
         // Update done on a single row so the use case used will be only the row with ID
         switch (match) {
             case TRIP_WITH_ID:
-                rowsUpdated = tryToUpdateRow(db, uri, values, TripEntry.TABLE_NAME);
+                rowsUpdated = tryToUpdateRow(uri, values, TripEntry.TABLE_NAME);
                 break;
-//            case CITY_WITH_ID:
-//                rowsUpdated = tryToUpdateRow(db, uri, values, CityEntry.TABLE_NAME);
-//                break;
             case PLACE_WITH_ID:
-                rowsUpdated = tryToUpdateRow(db, uri, values, PlaceEntry.TABLE_NAME);
+                rowsUpdated = tryToUpdateRow(uri, values, PlaceEntry.TABLE_NAME);
                 break;
             case NOTE_WITH_ID:
-                rowsUpdated = tryToUpdateRow(db, uri, values, NoteEntry.TABLE_NAME);
+                rowsUpdated = tryToUpdateRow(uri, values, NoteEntry.TABLE_NAME);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
@@ -257,20 +253,20 @@ public class TravelsProvider extends ContentProvider {
      * Helper method that try to delete a row form  the passed table and return an int representing
      * the deleted rows
      *
-     * @param db        reference to the opened database
      * @param uri       passed uri to extract the selection and selectionArgs
-     * @param values
+     * @param values    ContentValues holding the new data
      * @param tableName to determine which table to query
      */
-    private int tryToUpdateRow(SQLiteDatabase db, @NonNull Uri uri,
-                               ContentValues values, String tableName) {
+    private int tryToUpdateRow(@NonNull Uri uri, ContentValues values, String tableName) {
 
         //Using selection and selectionArgs to specify which row to update
-        String id = uri.getPathSegments().get(1);
-        String mSelection = "_id=?";
-        String[] mSelectionArgs = {id};
 
-        return db.update(tableName, values, mSelection, mSelectionArgs);
+        String mSelection = TripEntry._ID + "=?";
+        String[] mSelectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+
+        Timber.d("mselection " + mSelection + "selectionArgs " + Arrays.toString(mSelectionArgs));
+
+        return writeDb.update(tableName, values, mSelection, mSelectionArgs);
     }
     //endregion
 

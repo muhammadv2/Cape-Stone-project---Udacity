@@ -25,4 +25,13 @@
     <string name="dont_delete">No, Stay</string>
     <string name="trip_deleted">Trip deleted successfully</string>
     <string name="error_deleting">Error deleting this trip</string>
+    <string name="add_title">Please add trip title</string>
+    <string name="add_city">Please add one city at least</string>
+    <string name="add_date_from">Specify a starting date</string>
+    <string name="add_date_to">Specify an ending date</string>
+    <string name="add_to_after">Must be after start date</string>
+    <string name="error_updating_trip">Error updating this trip</string>
+    <string name="editor_update_trip_successful">Trip updated successfully</string>
+    <string name="action_delete">Delete</string>
+    <string name="empty" />
 </resources>

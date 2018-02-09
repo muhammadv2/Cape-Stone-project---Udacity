@@ -19,7 +19,6 @@ import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEn
 public class DataInteractor {
 
     private ContentResolver resolver;
-    private Context context;
 
     @Inject
     public DataInteractor(@ApplicationContext Context context) {
@@ -43,8 +42,9 @@ public class DataInteractor {
     private String extractCitiesNames(List<City> cities) {
 
         StringBuilder sb = new StringBuilder();
-        for (City city : cities) {
-            sb.append(city.getCityName());
+        for (int i = 0; i < cities.size(); i++) {
+            String cityName = cities.get(i).getCityName();
+            sb.append(cityName);
             sb.append(",,");
         }
 
@@ -84,6 +84,7 @@ public class DataInteractor {
         cv.put(TripEntry.COLUMN_TIME_START, trip.getStartTime());
         cv.put(TripEntry.COLUMN_TIME_END, trip.getEndTime());
         cv.put(TripEntry.COLUMN_CITIES_NAMES, extractCitiesNames(trip.getCities()));
+        cv.put(TripEntry.COLUMN_IMAGE_URL, trip.getImageUrl());
 
         Uri updateUri = buildAssociatedUri(TripEntry.CONTENT_URI, id);
 

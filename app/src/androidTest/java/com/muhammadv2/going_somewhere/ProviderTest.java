@@ -46,6 +46,7 @@ public class ProviderTest extends ProviderTestCase2<TravelsProvider> {
         cv.put(TripEntry.COLUMN_TRIP_NAME, testName);
         cv.put(TripEntry.COLUMN_TIME_START, testInt);
         cv.put(TripEntry.COLUMN_TIME_END, testInt);
+        cv.put(TripEntry.COLUMN_CITIES_NAMES, testName);
 
         return getMockContentResolver().insert(uri, cv);
     }
@@ -94,7 +95,7 @@ public class ProviderTest extends ProviderTestCase2<TravelsProvider> {
         long rows = getMockContentResolver().update(uri, cv, null, null);
 
         assertNotNull(rows);
-        assertTrue("No rows to delete or deleted", rows != -1);
+        assertTrue("No rows to delete or deleted", rows != 0);
 
     }
 

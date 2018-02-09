@@ -1,109 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/add_trip_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/dp_16">
-
-        <EditText
-            android:id="@+id/et_place_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
-            android:ems="25"
-            android:hint="@string/trip_title"
-            android:inputType="textCapSentences"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            tools:ignore="LabelFor" />
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/add_city_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/dp_16">
 
-            <FrameLayout
-                android:id="@+id/frameLayout"
+            <EditText
+                android:id="@+id/et_place_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_32"
-                android:gravity="center"
-                tools:ignore="UselessParent">
+                android:layout_marginTop="@dimen/dp_24"
+                android:ems="25"
+                android:hint="@string/trip_title"
+                android:inputType="textCapSentences"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                tools:ignore="LabelFor" />
 
-                <EditText
-                    android:id="@+id/et_city_name"
+            <LinearLayout
+                android:id="@+id/add_city_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/frameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:ems="25"
-                    android:hint="@string/cities"
-                    android:inputType="textPersonName"
-                    tools:ignore="LabelFor" />
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:gravity="center"
+                    tools:ignore="UselessParent">
 
-                <ImageButton
-                    android:id="@+id/btn_delete_city"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/delete_forever_icon"
-                    android:contentDescription="@string/desc_delete_this_city"
-                    android:visibility="gone" />
-            </FrameLayout>
+                    <EditText
+                        android:id="@+id/et_city_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:ems="25"
+                        android:hint="@string/cities"
+                        android:inputType="textPersonName"
+                        tools:ignore="LabelFor" />
 
-            <Button
-                android:id="@+id/btn_add_city"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_action_name"
-                android:elevation="@dimen/dp_2"
-                tools:targetApi="lollipop" />
+                    <ImageButton
+                        android:id="@+id/btn_delete_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/delete_forever_icon"
+                        android:contentDescription="@string/desc_delete_this_city"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/btn_add_city"
+                    android:layout_width="@dimen/dp_48"
+                    android:layout_height="@dimen/dp_48"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_action_name"
+                    android:elevation="@dimen/dp_2"
+                    tools:targetApi="lollipop" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                android:text="@string/from_tv"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+
+            <EditText
+                android:id="@+id/et_date_from_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:ems="10"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="date"
+                tools:ignore="KeyboardInaccessibleWidget,LabelFor" />
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_24"
+                android:text="@string/to_tv"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+            <EditText
+                android:id="@+id/et_date_to_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:ems="10"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="date"
+                tools:ignore="KeyboardInaccessibleWidget,LabelFor" />
+
         </LinearLayout>
+    </ScrollView>
 
-
-        <TextView
-            android:id="@+id/text1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_32"
-            android:text="@string/from_tv"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
-
-
-        <EditText
-            android:id="@+id/et_date_from_place"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:ems="10"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:inputType="date"
-            tools:ignore="KeyboardInaccessibleWidget,LabelFor" />
-
-        <TextView
-            android:id="@+id/text2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
-            android:text="@string/to_tv"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
-
-        <EditText
-            android:id="@+id/et_date_to_place"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:ems="10"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:inputType="date"
-            tools:ignore="KeyboardInaccessibleWidget,LabelFor" />
-
-    </LinearLayout>
-</ScrollView>
+    <ProgressBar
+        android:id="@+id/pb_add_trip"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</FrameLayout>

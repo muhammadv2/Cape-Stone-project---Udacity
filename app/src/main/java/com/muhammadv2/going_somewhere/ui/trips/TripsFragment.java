@@ -124,6 +124,7 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
     //endregion
 
     //region Loader
+
     /**
      * Init the loader to start query the database and retrieve a cursor object
      */
@@ -131,6 +132,7 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         getActivity().getSupportLoaderManager()
                 .initLoader(Constants.TRIPS_LOADER_INIT, null, this);
     }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -209,8 +211,15 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onClick(int position) {
         //When click on the card holding
 
-        Intent intent = new Intent(getContext(), AddTripActivity.class);
+        Trip trip = trips.get(position);
+
+        Intent intent = new Intent(getActivity(), AddTripActivity.class);
+
+        // Set the URI on the data field of the intent
+        intent.putExtra(Constants.TRIPS_ARRAY_ID, trip);
         intent.putExtra(Constants.TRIP_POSITION, position);
+
+        // Launch the {@link AddTripActivity} to display the data for the current Trip.
         startActivity(intent);
 
     }
