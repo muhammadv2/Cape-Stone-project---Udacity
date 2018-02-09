@@ -30,4 +30,8 @@ public final class Constants {
 
     public static final int TRIPS_LOADER_INIT = 234002;
     public static final String CITY_NAMES_ID = "cityNames";
+    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE =955225 ;
+    public static String Place_OBJ_EXTRA = "place";
+
+    public static final String CITIES_ARRAY_ID = "cities";
 }

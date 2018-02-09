@@ -152,10 +152,10 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         //if the count of the data equals 0 set the empty view to be visible else set rv visible
         if (data.getCount() == 0) {
             emptyView.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.GONE);
             return;
         } else {
-            emptyView.setVisibility(View.INVISIBLE);
+            emptyView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }
 
@@ -180,14 +180,14 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
                 int endColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_TIME_END);
                 int citiesColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_CITIES_NAMES);
                 int imageColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_IMAGE_URL);
-
                 String tripTitle = cursor.getString(nameColumnInd);
                 long startTime = cursor.getLong(startColumnInd);
                 long endTime = cursor.getLong(endColumnInd);
                 String cities = cursor.getString(citiesColumnInd);
                 String imageUrl = cursor.getString(imageColumnInd);
 
-                Trip trip = new Trip(tripTitle,
+                Trip trip = new Trip(
+                        tripTitle,
                         startTime,
                         endTime,
                         FormattingUtils.stringCitiesToArrayList(cities),

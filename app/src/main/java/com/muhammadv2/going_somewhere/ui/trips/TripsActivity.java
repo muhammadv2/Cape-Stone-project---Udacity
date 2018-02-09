@@ -1,6 +1,5 @@
 package com.muhammadv2.going_somewhere.ui.trips;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +14,6 @@ public class TripsActivity extends AppCompatActivity {
 
     private ActivityComponent activityComponent;
 
-    private Activity activity;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,9 +22,6 @@ public class TripsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getActivityComponent().inject(this);
-
-        activity = this;
-
 
     }
 

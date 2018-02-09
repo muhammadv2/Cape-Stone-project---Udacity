@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
  * Using the help of picasso library to fetch our images and also Picasso palette to set associated
  * color on the passed background
  */
-public class ImageUtils {
+public final class ImageUtils {
 
     public static void bindImage(String url, Context context, ImageView intoImage, View backGround) {
 

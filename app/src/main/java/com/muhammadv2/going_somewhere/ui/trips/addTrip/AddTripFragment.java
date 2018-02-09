@@ -35,6 +35,7 @@ import com.muhammadv2.going_somewhere.model.City;
 import com.muhammadv2.going_somewhere.model.DataInteractor;
 import com.muhammadv2.going_somewhere.model.Trip;
 import com.muhammadv2.going_somewhere.model.network.ImageryAsyncTask;
+import com.muhammadv2.going_somewhere.utils.DatePickerFragment;
 import com.muhammadv2.going_somewhere.utils.FormattingUtils;
 
 import java.util.ArrayList;
@@ -86,10 +87,9 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     private View layoutView;
 
     private Trip trip;
-    private int tripPosition;
+    private int tripId;
 
-    private int trip_id;
-
+    //Todo on rotation the cities names been a miss see why and fix
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -176,7 +176,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     private void newTrip_EditTrip_Checker() {
         Intent intent = getActivity().getIntent();
         trip = intent.getParcelableExtra(Constants.TRIPS_ARRAY_ID);
-        tripPosition = intent.getIntExtra(Constants.TRIP_POSITION, -1);
+        tripId = intent.getIntExtra(Constants.TRIP_POSITION, 0);
         Timber.plant(new Timber.DebugTree());
         if (trip != null) {
             City city = trip.getCities().get(0);
@@ -274,12 +274,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         dialogFragment.show(getActivity().getSupportFragmentManager(), Constants.DATE_PICKER_REQUEST);
     }
 
-
     // When FAB button clicked save all added fields and save it in the db
     void saveAllFieldsOnFabClick() {
-
-        if (checkIfAllFieldsPopulated(etAddDateFrom, etAddDateTo, etAddTripTitle, etAddCity))
-            return;
 
         long timeStart = FormattingUtils.parseDateToMiSeconds(etAddDateFrom.getText().toString());
         long timeEnd = FormattingUtils.parseDateToMiSeconds(etAddDateTo.getText().toString());
@@ -288,21 +284,23 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         String title = etAddTripTitle.getText().toString();
 
         ArrayList<City> cities = extractCityNames();
-        String imageUrl = requestImage(title);
 
-        if (trip == null) {
-            // Check if there's any field not populated
-            if (!title.isEmpty() && !cities.isEmpty()) {
+
+        if (timeStart != 0 && timeEnd != 0 && !title.isEmpty() &&
+                !etAddCity.getText().toString().isEmpty()) {
+
+            String imageUrl = requestImage(title);
+            if (trip == null) {
+                // Check if there's any field not populated
                 Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
                 // Everything is fine use the interactor and insert the data using its helper method
                 Uri uri = interactor.insertIntoTripTable(trip);
                 if (uri != null)
                     Toast.makeText(getActivity(), R.string.trip_added, Toast.LENGTH_LONG).show();
-                getActivity().finish();
             } else {
                 Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
                 // Otherwise this is an EXISTING Trip, so update the trip
-                int rowsAffected = interactor.updateTripTable(trip, tripPosition + 1);
+                int rowsAffected = interactor.updateTripTable(trip, tripId + 1);
 
                 // Show a toast message depending on whether or not the update was successful.
                 if (rowsAffected == 0) {
@@ -317,26 +315,12 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
                 getActivity().finish();
             }
-
-        }
-    }
-
-    private boolean checkIfAllFieldsPopulated(EditText dateFrom,
-                                              EditText dateTo,
-                                              EditText etAddTripTitle,
-                                              EditText etAddCity) {
-        if (dateFrom.getText().toString().length() == 0 ||
-                dateTo.getText().toString().length() == 0 ||
-                etAddCity.getText().toString().trim().length() == 0 ||
-                etAddTripTitle.getText().toString().trim().length() == 0) {
+        } else {
             // There still fields not populated show SnackBar
             Snackbar.make(layoutView, R.string.error_add_fields, Snackbar.LENGTH_LONG).show();
-            return false;
-
         }
-        return true;
-    }
 
+    }
 
     private String requestImage(String tripName) {
         try {
@@ -383,17 +367,16 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         alertDialog.show();
     }
 
+    //Todo error deleting the first trip see why
     private void deleteAllData() {
-        int id = interactor.deleteFromTripTable(trip_id);
+        int id = interactor.deleteFromTripTable(tripId);
         if (id > 0) {
             Toast.makeText(getContext(), getString(R.string.trip_deleted), Toast.LENGTH_SHORT).show();
+            getActivity().finish();
         } else {
             Toast.makeText(getContext(), getString(R.string.error_deleting), Toast.LENGTH_SHORT).show();
-
         }
-
     }
-
 
     /**
      * The result that come back from Date picker will invoke this method and then
@@ -412,7 +395,5 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-
-
 }
 

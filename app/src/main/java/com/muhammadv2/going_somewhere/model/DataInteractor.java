@@ -52,14 +52,12 @@ public class DataInteractor {
 
     }
 
-    public Uri insertIntoPlaceTable(Place place) {
+    public Uri insertIntoPlaceTable(CityPlace place) {
 
         ContentValues cv = new ContentValues();
         cv.put(PlaceEntry.COLUMN_PLACE_NAME, place.getPlaceName());
-        cv.put(PlaceEntry.COLUMN_TIME_START, place.getTimeStart());
-        cv.put(PlaceEntry.COLUMN_TIME_END, place.getTimeEnd());
-        cv.put(PlaceEntry.COLUMN_TRIP_ID, place.getTripId());
-        cv.put(PlaceEntry.COLUMN_CITY_ID, place.getCityId());
+        cv.put(PlaceEntry.COLUMN_TRIP_NAME, place.getTripName());
+        cv.put(PlaceEntry.COLUMN_CITY_NAME, place.getCityName());
 
         return resolver.insert(PlaceEntry.CONTENT_URI, cv);
     }
@@ -91,14 +89,12 @@ public class DataInteractor {
         return resolver.update(updateUri, cv, null, null);
     }
 
-    public int updatePlaceTable(Place place, int id) {
+    public int updatePlaceTable(CityPlace place, int id) {
 
         ContentValues cv = new ContentValues();
         cv.put(PlaceEntry.COLUMN_PLACE_NAME, place.getPlaceName());
-        cv.put(PlaceEntry.COLUMN_TIME_START, place.getTimeStart());
-        cv.put(PlaceEntry.COLUMN_TIME_END, place.getTimeEnd());
-        cv.put(PlaceEntry.COLUMN_TRIP_ID, place.getTripId());
-        cv.put(PlaceEntry.COLUMN_CITY_ID, place.getCityId());
+        cv.put(PlaceEntry.COLUMN_TRIP_NAME, place.getTripName());
+        cv.put(PlaceEntry.COLUMN_CITY_NAME, place.getCityName());
 
         Uri updateUri = buildAssociatedUri(PlaceEntry.CONTENT_URI, id);
 

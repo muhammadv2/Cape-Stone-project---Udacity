@@ -49,7 +49,7 @@ public final class TravelsDbContract {
 //    }
 
 
-    /* Inner class that defines Place table contents */
+    /* Inner class that defines CityPlace table contents */
     public static final class PlaceEntry implements BaseColumns {
         public static final String TABLE_NAME = "places";
 
@@ -59,11 +59,8 @@ public final class TravelsDbContract {
 
         //places table columns
         public static final String COLUMN_PLACE_NAME = "name";
-        public static final String COLUMN_PLACE_ID = "placeId";
-        public static final String COLUMN_TIME_START = "start";
-        public static final String COLUMN_TIME_END = "end";
-        public static final String COLUMN_CITY_ID = "city";
-        public static final String COLUMN_TRIP_ID = "trip";
+        public static final String COLUMN_CITY_NAME = "city";
+        public static final String COLUMN_TRIP_NAME = "trip";
     }
 
 

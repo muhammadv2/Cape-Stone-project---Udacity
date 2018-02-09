@@ -3,6 +3,7 @@
     package="com.muhammadv2.going_somewhere">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".App"
@@ -38,6 +39,7 @@
             android:parentActivityName=".ui.trips.TripsActivity" />
         <activity
             android:name=".ui.tripDetails.addPlace.AddPlaceActivity"
+            android:theme="@style/ThemeOverlay.AppCompat.Dialog"
             android:parentActivityName=".ui.tripDetails.TripDetailsActivity" />
         <activity
             android:name=".ui.tripDetails.TripDetailsActivity"

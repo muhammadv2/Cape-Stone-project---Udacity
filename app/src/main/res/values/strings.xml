@@ -30,8 +30,11 @@
     <string name="add_date_from">Specify a starting date</string>
     <string name="add_date_to">Specify an ending date</string>
     <string name="add_to_after">Must be after start date</string>
-    <string name="error_updating_trip">Error updating this trip</string>
+    <string name="error_updating_trip">Nothing to update</string>
     <string name="editor_update_trip_successful">Trip updated successfully</string>
     <string name="action_delete">Delete</string>
     <string name="empty" />
+    <string name="place_added">Place added</string>
+    <string name="error_updating_place">Nothing to update</string>
+    <string name="update_place_successful">Place updated successfully</string>
 </resources>

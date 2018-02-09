@@ -1,4 +1,4 @@
-package com.muhammadv2.going_somewhere.ui.trips.addTrip;
+package com.muhammadv2.going_somewhere.utils;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
