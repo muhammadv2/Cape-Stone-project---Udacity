@@ -6,18 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.muhammadv2.going_somewhere.App;
@@ -38,13 +37,15 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddPlaceFragment extends Fragment implements View.OnClickListener {
+public class AddPlaceDialog extends android.support.v4.app.DialogFragment
+        implements View.OnClickListener {
 
     @BindView(R.id.et_place_title)
     EditText etPlaceTitle;
     @BindView(R.id.btn_search_location)
     Button btnSearchLocation;
-    @BindView(R.id.et_date_from_place)
+    @BindView(R.id.btn_add_place)
+    ImageView btnSavePlace;
 
     @Inject
     DataInteractor interactor;
@@ -59,7 +60,7 @@ public class AddPlaceFragment extends Fragment implements View.OnClickListener {
 
 
     //Todo turn it into dialog and it have only place to add name and choose from the button
-    public AddPlaceFragment() {
+    public AddPlaceDialog() {
         // Required empty public constructor
     }
 
@@ -75,27 +76,31 @@ public class AddPlaceFragment extends Fragment implements View.OnClickListener {
         //inject this fragment into the app component
         App.getInstance().getAppComponent().inject(this);
 
-        return view;
+        Timber.plant(new Timber.DebugTree());
 
+        return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FloatingActionButton fab = view.findViewById(R.id.fab);
-
-        fab.setOnClickListener(this);
         btnSearchLocation.setOnClickListener(this);
+        btnSavePlace.setOnClickListener(this);
 
-        receivedIntent = getActivity().getIntent();
-        cPlace = receivedIntent.getParcelableExtra(Constants.Place_OBJ_EXTRA);
-        tripName = receivedIntent.getStringExtra(Constants.TRIPS_ARRAY_ID);
-        cityName = receivedIntent.getStringExtra(Constants.CITIES_ARRAY_ID);
-
-        if (receivedIntent != null) {
-            etPlaceTitle.setText(cPlace.getPlaceName());
-        }
+//        receivedIntent = getActivity().getIntent();
+//        cPlace = receivedIntent.getParcelableExtra(Constants.Place_OBJ_EXTRA);
+//        tripName = receivedIntent.getStringExtra(Constants.TRIPS_ARRAY_ID);
+//        cityName = receivedIntent.getStringExtra(Constants.CITIES_ARRAY_ID);
+//
+//        if (receivedIntent != null) {
+//            etPlaceTitle.setText(cPlace.getPlaceName());
+//        }
     }
 
 
@@ -103,10 +108,11 @@ public class AddPlaceFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
 
         switch (view.getId()) {
-            case R.id.fab:
+            case R.id.btn_add_place:
                 String placeTitle = etPlaceTitle.getText().toString();
 
                 if (!placeTitle.isEmpty()) {
+                    Timber.d("add place clicked");
 
                     cPlace = new CityPlace(placeTitle, cityName, tripName);
 
@@ -128,20 +134,21 @@ public class AddPlaceFragment extends Fragment implements View.OnClickListener {
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
-                    getActivity().finish();
 
+                } else {
+                    Toast.makeText(getContext(), R.string.err_add_title, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.btn_search_location:
                 try {
+                    Timber.d("add search clicked");
 
                     Intent intent =
                             new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                                     .build(getActivity());
-                    startActivityForResult(intent, Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE);
-                } catch (GooglePlayServicesRepairableException e) {
-                    // TODO: Handle the error.
-                } catch (GooglePlayServicesNotAvailableException e) {
+                    getActivity().startActivityForResult(intent, Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                } catch (GooglePlayServicesRepairableException |
+                        GooglePlayServicesNotAvailableException e) {
                     // TODO: Handle the error.
                 }
         }
@@ -154,15 +161,18 @@ public class AddPlaceFragment extends Fragment implements View.OnClickListener {
         if (requestCode == Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getContext(), data);
-                Timber.plant(new Timber.DebugTree());
                 Timber.d("choosen place " + place);
+                Intent intent = new Intent();
+
+
+                getActivity().setResult(RESULT_OK);
+                getTargetFragment().onActivityResult(RESULT_OK,);
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(getContext(), data);
-                // TODO: Handle the error.
+                getActivity().setResult(RESULT_CANCELED);
 
             } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
+                // The user canceled the operation simply do nothing.
             }
         }
     }

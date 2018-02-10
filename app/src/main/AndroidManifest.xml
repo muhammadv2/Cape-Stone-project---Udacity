@@ -38,10 +38,6 @@
             android:name=".ui.trips.addTrip.AddTripActivity"
             android:parentActivityName=".ui.trips.TripsActivity" />
         <activity
-            android:name=".ui.tripDetails.addPlace.AddPlaceActivity"
-            android:theme="@style/ThemeOverlay.AppCompat.Dialog"
-            android:parentActivityName=".ui.tripDetails.TripDetailsActivity" />
-        <activity
             android:name=".ui.tripDetails.TripDetailsActivity"
             android:parentActivityName=".ui.trips.TripsActivity" />
     </application>

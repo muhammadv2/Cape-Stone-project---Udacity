@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.NoteEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEntry;
 
@@ -62,16 +61,7 @@ public class DataInteractor {
         return resolver.insert(PlaceEntry.CONTENT_URI, cv);
     }
 
-    public Uri insertIntoNoteTable(Note note) {
 
-        ContentValues cv = new ContentValues();
-        cv.put(NoteEntry.COLUMN_NOTE_TITLE, note.getNoteTitle());
-        cv.put(NoteEntry.COLUMN_NOTE_BODY, note.getNoteBody());
-        cv.put(NoteEntry.COLUMN_IS_TOGGLE_NOTE, note.isToggleNote());
-
-
-        return resolver.insert(NoteEntry.CONTENT_URI, cv);
-    }
 //endregion
 
     //region Update
@@ -101,19 +91,6 @@ public class DataInteractor {
         return resolver.update(updateUri, cv, null, null);
     }
 
-    public int updateNoteTable(Note note, int id) {
-
-        ContentValues cv = new ContentValues();
-        cv.put(NoteEntry.COLUMN_NOTE_TITLE, note.getNoteTitle());
-        cv.put(NoteEntry.COLUMN_NOTE_BODY, note.getNoteBody());
-        cv.put(NoteEntry.COLUMN_IS_TOGGLE_NOTE, note.isToggleNote());
-
-        Uri updateUri = buildAssociatedUri(NoteEntry.CONTENT_URI, id);
-
-        return resolver.update(updateUri, cv, null, null);
-    }
-
-
     //endregion
 
     //region Delete
@@ -125,12 +102,6 @@ public class DataInteractor {
 
     public int deleteFromPlaceTable(int id) {
         Uri deleteUri = buildAssociatedUri(PlaceEntry.CONTENT_URI, id);
-
-        return resolver.delete(deleteUri, null, null);
-    }
-
-    public int deleteFromNoteTable(int id) {
-        Uri deleteUri = buildAssociatedUri(NoteEntry.CONTENT_URI, id);
 
         return resolver.delete(deleteUri, null, null);
     }

@@ -18,11 +18,8 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.NoteEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEntry;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTES;
-import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.NOTE_WITH_ID;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.PLACES;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.PLACE_WITH_ID;
 import static com.muhammadv2.going_somewhere.utils.UriMatcherUtils.TRIPS;
@@ -69,15 +66,10 @@ public class TravelsProvider extends ContentProvider {
             case TRIPS:
                 returnUri = tryToInsert(TripEntry.TABLE_NAME, values, TripEntry.CONTENT_URI);
                 break;
-//            case CITIES:
-//                returnUri = tryToInsert(db, CityEntry.TABLE_NAME, values, CityEntry.CONTENT_URI);
-//                break;
             case PLACES:
                 returnUri = tryToInsert(PlaceEntry.TABLE_NAME, values, PlaceEntry.CONTENT_URI);
                 break;
-            case NOTES:
-                returnUri = tryToInsert(NoteEntry.TABLE_NAME, values, NoteEntry.CONTENT_URI);
-                break;
+
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
@@ -107,7 +99,6 @@ public class TravelsProvider extends ContentProvider {
         }
     }
     //endregion
-
     //region Query
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
@@ -125,16 +116,9 @@ public class TravelsProvider extends ContentProvider {
                 returnCursor = tryToQueryWholeTable(TripEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
-//            case CITIES:
-//                returnCursor = tryToQueryWholeTable(db, CityEntry.TABLE_NAME, projection,
-//                        selection, selectionArgs, sortOrder);
-//                break;
+
             case PLACES:
                 returnCursor = tryToQueryWholeTable(PlaceEntry.TABLE_NAME, projection,
-                        selection, selectionArgs, sortOrder);
-                break;
-            case NOTES:
-                returnCursor = tryToQueryWholeTable(NoteEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
             default:
@@ -175,14 +159,8 @@ public class TravelsProvider extends ContentProvider {
             case TRIP_WITH_ID:
                 rowsDeleted = tryToDeleteOneRow(uri, TripEntry.TABLE_NAME);
                 break;
-//            case CITY_WITH_ID:
-//                rowsDeleted = tryToDeleteOneRow(db, uri, CityEntry.TABLE_NAME);
-//                break;
             case PLACE_WITH_ID:
                 rowsDeleted = tryToDeleteOneRow(uri, PlaceEntry.TABLE_NAME);
-                break;
-            case NOTE_WITH_ID:
-                rowsDeleted = tryToDeleteOneRow(uri, NoteEntry.TABLE_NAME);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
@@ -233,9 +211,6 @@ public class TravelsProvider extends ContentProvider {
                 break;
             case PLACE_WITH_ID:
                 rowsUpdated = tryToUpdateRow(uri, values, PlaceEntry.TABLE_NAME);
-                break;
-            case NOTE_WITH_ID:
-                rowsUpdated = tryToUpdateRow(uri, values, NoteEntry.TABLE_NAME);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);

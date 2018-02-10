@@ -72,7 +72,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.add_trip_container)
     ScrollView container;
 
-
     //Inject the dataInteractor object into this fragment
     @Inject
     DataInteractor interactor;
@@ -136,7 +135,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
         allAddedViews = new ArrayList<>();
 
-        //inject this fragment into the app component
+        // Inject this fragment into the app component
         App.getInstance().getAppComponent().inject(this);
 
         //return the inflated view
@@ -293,10 +292,14 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
             if (trip == null) {
                 // Check if there's any field not populated
                 Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
+                Timber.plant(new Timber.DebugTree());
+                Timber.d("null? " + (trip == null));
                 // Everything is fine use the interactor and insert the data using its helper method
                 Uri uri = interactor.insertIntoTripTable(trip);
                 if (uri != null)
                     Toast.makeText(getActivity(), R.string.trip_added, Toast.LENGTH_LONG).show();
+                getActivity().finish();
+
             } else {
                 Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
                 // Otherwise this is an EXISTING Trip, so update the trip

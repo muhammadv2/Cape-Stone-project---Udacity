@@ -37,4 +37,6 @@
     <string name="place_added">Place added</string>
     <string name="error_updating_place">Nothing to update</string>
     <string name="update_place_successful">Place updated successfully</string>
+    <string name="save_this_place">Save this place</string>
+    <string name="err_add_title">Please add place title</string>
 </resources>

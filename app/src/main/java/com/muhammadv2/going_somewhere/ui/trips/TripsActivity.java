@@ -6,13 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.muhammadv2.going_somewhere.R;
-import com.muhammadv2.going_somewhere.di.component.ActivityComponent;
-import com.muhammadv2.going_somewhere.di.component.DaggerActivityComponent;
-import com.muhammadv2.going_somewhere.di.module.ActivityModule;
 
 public class TripsActivity extends AppCompatActivity {
-
-    private ActivityComponent activityComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,8 +16,6 @@ public class TripsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getActivityComponent().inject(this);
-
     }
 
     @Override
@@ -30,16 +23,4 @@ public class TripsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
     }
-
-    public ActivityComponent getActivityComponent() {
-        if (activityComponent == null) {
-            activityComponent = DaggerActivityComponent.builder()
-                    .activityModule(new ActivityModule(this))
-                    .build();
-        }
-        return activityComponent;
-    }
-
-
-
 }
