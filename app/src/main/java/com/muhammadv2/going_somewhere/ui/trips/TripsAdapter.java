@@ -33,8 +33,8 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
     /**
      * Adapter constructor helping setup the Adapter and ViewHolder with
      *
-     * @param data                needed to update the imageView with Movie objects
-     * @param onItemClickListener This allow us to use the Adapter as a component with MainActivity
+     * @param data                needed to update the trip content
+     * @param onItemClickListener This allow us to use the Adapter as a component with TripsFragment
      */
     public TripsAdapter(Context context, ArrayList<Trip> data, OnItemClickListener onItemClickListener) {
         mData = data;
@@ -51,7 +51,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
     }
 
     /**
-     * To create our ViewHolder by inflating our XML and returning a new MovieVieHolder
+     * To create our ViewHolder by inflating our XML and returning a new TripsViewHolder
      */
     @Override
     public TripsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,7 +64,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
     }
 
     /**
-     * By getting our Movie object associated with the @param position and then creating a Url from
+     * By getting our Trip object associated with the @param position and then creating a Url from
      * the base url and every object path to complete the url to be passed to the holder bind method
      */
     @Override
@@ -111,7 +111,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
         TextView tripTitle;
         @BindView(R.id.text_trip_duration)
         TextView tripDuration;
-        @BindView(R.id.btn_trip_plans)
+        @BindView(R.id.btn_add_place)
         Button btnPlans;
         @BindView(R.id.btn_trip_notes)
         Button btnNotes;

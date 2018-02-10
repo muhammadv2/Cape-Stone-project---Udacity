@@ -68,13 +68,13 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toTopOf="@+id/btn_trip_plans"
+            app:layout_constraintBottom_toTopOf="@+id/btn_add_place"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_trip_duration" />
 
         <Button
-            android:id="@+id/btn_trip_plans"
+            android:id="@+id/btn_add_place"
             style="@style/main_card_buttons"
             android:layout_marginStart="@dimen/dp_24"
             android:text="@string/button_text_plan"
@@ -87,8 +87,8 @@
             style="@style/main_card_buttons"
             android:layout_marginStart="@dimen/dp_8"
             android:text="@string/button_text_notes"
-            app:layout_constraintStart_toEndOf="@+id/btn_trip_plans"
-            app:layout_constraintTop_toTopOf="@+id/btn_trip_plans" />
+            app:layout_constraintStart_toEndOf="@+id/btn_add_place"
+            app:layout_constraintTop_toTopOf="@+id/btn_add_place" />
 
 
     </android.support.constraint.ConstraintLayout>

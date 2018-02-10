@@ -11,8 +11,6 @@
     <string name="to_tv">To</string>
     <string name="desc_delete_this_city">delete this city</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="place_name_txt">Place Name</string>
     <string name="add_new_place">Add new Place</string>
     <string name="error_add_fields">Please add the not completed fields</string>

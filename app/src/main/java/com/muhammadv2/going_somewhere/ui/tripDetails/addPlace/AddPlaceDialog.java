@@ -50,6 +50,8 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
     @Inject
     DataInteractor interactor;
 
+    private Intent intent;
+
     private CityPlace cPlace;
     private int placePosition;
 
@@ -93,6 +95,8 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
         btnSearchLocation.setOnClickListener(this);
         btnSavePlace.setOnClickListener(this);
 
+        intent = new Intent();
+
 //        receivedIntent = getActivity().getIntent();
 //        cPlace = receivedIntent.getParcelableExtra(Constants.Place_OBJ_EXTRA);
 //        tripName = receivedIntent.getStringExtra(Constants.TRIPS_ARRAY_ID);
@@ -134,6 +138,8 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
+                    getTargetFragment().onActivityResult(RESULT_OK, Constants.DIALOG_FRAGMENT_REQUEST, intent);
+
 
                 } else {
                     Toast.makeText(getContext(), R.string.err_add_title, Toast.LENGTH_SHORT).show();
@@ -142,11 +148,12 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
             case R.id.btn_search_location:
                 try {
                     Timber.d("add search clicked");
+                    Fragment callingFragment = getActivity().getSupportFragmentManager().getFragments().get(0);
 
                     Intent intent =
                             new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                                     .build(getActivity());
-                    getActivity().startActivityForResult(intent, Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                    callingFragment.startActivityForResult(intent, Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE);
                 } catch (GooglePlayServicesRepairableException |
                         GooglePlayServicesNotAvailableException e) {
                     // TODO: Handle the error.
@@ -158,15 +165,22 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Timber.d("onActivity invoked");
         if (requestCode == Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getContext(), data);
-                Timber.d("choosen place " + place);
-                Intent intent = new Intent();
+                String placeID = place.getId();
+                String placeName = place.getName().toString();
+                String placeAddress = place.getAddress().toString();
+                float placeRating = place.getRating();
 
+                Timber.d("choosen place " + placeName);
 
-                getActivity().setResult(RESULT_OK);
-                getTargetFragment().onActivityResult(RESULT_OK,);
+                intent = new Intent();
+                intent.putExtra(Constants.PLACE_NAME, placeName);
+                intent.putExtra(Constants.PLACE_ID, placeID);
+                intent.putExtra(Constants.PLACE_ADRESS, placeAddress);
+                intent.putExtra(Constants.PLACE_RATING, placeRating);
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 getActivity().setResult(RESULT_CANCELED);

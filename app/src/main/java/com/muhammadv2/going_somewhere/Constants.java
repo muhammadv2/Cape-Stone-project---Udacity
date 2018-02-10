@@ -32,7 +32,15 @@ public final class Constants {
     public static final String CITY_NAMES_ID = "cityNames";
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 3668;
     public static final int ADD_PLACE_REQ = 3992;
+    public static final int DIALOG_FRAGMENT_REQUEST = 2003;
     public static String Place_OBJ_EXTRA = "place";
 
     public static final String CITIES_ARRAY_ID = "cities";
+
+    // Places Api intent Constants
+    public static final String PLACE_NAME = "placeName";
+    public static final String PLACE_ID = "placeId";
+    public static final String PLACE_RATING = "placeRating";
+    public static final String PLACE_ADRESS = "placeAddress";
+
 }
