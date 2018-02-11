@@ -40,6 +40,7 @@ public class TravelsDbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + PlaceEntry.TABLE_NAME + " (" +
                     PlaceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     PlaceEntry.COLUMN_PLACE_NAME + " TEXT NOT NULL," +
+                    PlaceEntry.COLUMN_PLACE_ID + " TEXT," +
                     PlaceEntry.COLUMN_TRIP_ID + " INTEGER NOT NULL);";
 
 

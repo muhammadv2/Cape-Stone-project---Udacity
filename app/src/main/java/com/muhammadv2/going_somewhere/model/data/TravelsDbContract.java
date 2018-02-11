@@ -44,6 +44,7 @@ public final class TravelsDbContract {
                 BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
 
         //places table columns
+        public static final String COLUMN_PLACE_ID = "placeId";
         public static final String COLUMN_PLACE_NAME = "name";
         public static final String COLUMN_TRIP_ID = "trip";
     }

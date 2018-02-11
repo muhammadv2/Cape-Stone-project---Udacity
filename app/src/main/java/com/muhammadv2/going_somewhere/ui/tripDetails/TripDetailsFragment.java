@@ -26,6 +26,7 @@ import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.CityPlace;
 import com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails.AddPlaceDialog;
+import com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails.PlaceDetailsDialog;
 
 import java.util.ArrayList;
 
@@ -45,12 +46,20 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     RecyclerView.LayoutManager layoutManager;
     TripDetailsAdapter adapter;
 
-    @BindView(R.id.btn_add_place)
+    @BindView(R.id.btn_edit_trip)
     TextView btnAddPlace;
 
     private Fragment fragment;
 
     private int tripPosition;
+
+    private String placeId;
+
+    private String placeName;
+
+    private String placeAddress;
+    private float placeRating;
+
 
     @Override
     public void onResume() {
@@ -81,9 +90,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         ButterKnife.bind(this, view);
         Timber.plant(new Timber.DebugTree());
 
-
-        // Injecting this fragment to the app component so the interactor class can be injected
-//        App.getInstance().getAppComponent().inject(this);
         createRecyclerView();
         Intent intent = getActivity().getIntent();
         tripPosition = intent.getIntExtra(Constants.TRIP_POSITION, 0);
@@ -196,7 +202,7 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
                 String placeTitle = cursor.getString(nameColId);
                 int tripId = cursor.getInt(tripNameColId);
 
-                places.add(new CityPlace(placeTitle, tripId));
+                places.add(new CityPlace(placeId, placeTitle, tripId));
 
             } while (cursor.moveToNext());
         }
@@ -216,22 +222,44 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         if (requestCode == Constants.DIALOG_FRAGMENT_REQUEST) {
             if (resultCode == RESULT_OK) {
 
-                String placeId = data.getStringExtra(Constants.PLACE_ID);
-                String placeName = data.getStringExtra(Constants.PLACE_NAME);
-                String placeAdress = data.getStringExtra(Constants.PLACE_ADRESS);
-                float placeRating = data.getFloatExtra(Constants.PLACE_RATING, 2.5f);
+                placeId = data.getStringExtra(Constants.PLACE_ID);
+                placeName = data.getStringExtra(Constants.PLACE_NAME);
+                placeAddress = data.getStringExtra(Constants.PLACE_ADRESS);
+                placeRating = data.getFloatExtra(Constants.PLACE_RATING, 2.5f);
 
                 getActivity().getSupportLoaderManager()
                         .restartLoader(Constants.TRIPS_LOADER_INIT, null, this);
-
             }
         }
-
 
     }
 
     @Override
     public void onClick(int position) {
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction.  We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment prev = fm.findFragmentByTag(Constants.ADD_TRIP_DIALOG);
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        PlaceDetailsDialog detailsDialog =
+                PlaceDetailsDialog.newInstance(placeName, placeAddress, placeRating, null);
+        Timber.d("ss" + placeName);
 
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+
+        // Create and show the dialog.
+
+        detailsDialog.show(ft, Constants.ADD_TRIP_DIALOG);
+        getActivity().getSupportFragmentManager().executePendingTransactions();
+
+        Dialog yourDialog = detailsDialog.getDialog();
+        yourDialog.getWindow().setLayout((10 * width) / 10, (4 * height) / 5);
     }
 }

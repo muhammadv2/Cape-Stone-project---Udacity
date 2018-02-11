@@ -56,6 +56,7 @@ public class DataInteractor {
         ContentValues cv = new ContentValues();
         cv.put(PlaceEntry.COLUMN_PLACE_NAME, place.getPlaceName());
         cv.put(PlaceEntry.COLUMN_TRIP_ID, place.getTripId());
+        cv.put(PlaceEntry.COLUMN_PLACE_ID, place.getPlaceId());
         return resolver.insert(PlaceEntry.CONTENT_URI, cv);
     }
 

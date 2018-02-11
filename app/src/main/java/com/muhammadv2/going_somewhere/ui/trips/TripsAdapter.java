@@ -108,17 +108,17 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
      */
     class TripsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.image_trip)
+        @BindView(R.id.image_place)
         ImageView tripImage;
-        @BindView(R.id.text_trip_title)
+        @BindView(R.id.text_place_title)
         TextView tripTitle;
-        @BindView(R.id.text_trip_duration)
+        @BindView(R.id.text_place_adress)
         TextView tripDuration;
-        @BindView(R.id.btn_add_place)
+        @BindView(R.id.btn_edit_trip)
         Button btnPlans;
         @BindView(R.id.btn_trip_notes)
         Button btnNotes;
-        @BindView(R.id.text_city_count)
+        @BindView(R.id.tex_place_rating)
         TextView cityCount;
         @BindView(R.id.trips_card_view)
         CardView cardView;

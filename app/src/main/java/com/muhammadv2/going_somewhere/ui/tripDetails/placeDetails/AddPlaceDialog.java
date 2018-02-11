@@ -44,7 +44,7 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
     EditText etPlaceTitle;
     @BindView(R.id.btn_search_location)
     Button btnSearchLocation;
-    @BindView(R.id.btn_add_place)
+    @BindView(R.id.btn_edit_trip)
     ImageView btnSavePlace;
 
     @Inject
@@ -119,13 +119,13 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
     public void onClick(View view) {
 
         switch (view.getId()) {
-            case R.id.btn_add_place:
+            case R.id.btn_edit_trip:
                 String placeTitle = etPlaceTitle.getText().toString();
 
                 if (!placeTitle.isEmpty()) {
                     Timber.d("add place clicked");
 
-                    cPlace = new CityPlace(placeTitle, tripId);
+                    cPlace = new CityPlace("", placeTitle, tripId);
 
                     if (receivedIntent == null) {
                         Uri uri = interactor.insertIntoPlaceTable(cPlace);

@@ -35,7 +35,7 @@ public final class Constants {
     public static final int DIALOG_FRAGMENT_REQUEST = 2003;
     public static final String BUNDLE_EXTRA = "bundle";
     public static final int PLACES_LOADER_CODE = 7622;
-    public static final String ADD_TRIP_DIALOG = "add_dialog" ;
+    public static final String ADD_TRIP_DIALOG = "add_dialog";
     public static String Place_OBJ_EXTRA = "place";
 
     public static final String CITIES_ARRAY_ID = "cities";
@@ -45,5 +45,6 @@ public final class Constants {
     public static final String PLACE_ID = "placeId";
     public static final String PLACE_RATING = "placeRating";
     public static final String PLACE_ADRESS = "placeAddress";
+    public static final String PLACE_PHOTO = "placePhotos";
 
 }
