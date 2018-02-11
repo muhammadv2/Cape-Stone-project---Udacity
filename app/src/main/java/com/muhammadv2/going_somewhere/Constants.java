@@ -33,6 +33,8 @@ public final class Constants {
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 3668;
     public static final int ADD_PLACE_REQ = 3992;
     public static final int DIALOG_FRAGMENT_REQUEST = 2003;
+    public static final String BUNDLE_EXTRA = "bundle";
+    public static final int PLACES_LOADER_CODE = 7622;
     public static String Place_OBJ_EXTRA = "place";
 
     public static final String CITIES_ARRAY_ID = "cities";

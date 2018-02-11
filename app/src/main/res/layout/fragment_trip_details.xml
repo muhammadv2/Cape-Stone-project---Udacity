@@ -10,8 +10,8 @@
         android:id="@+id/root_view_trip_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         tools:context=".ui.tripDetails.TripDetailsActivity"
         tools:showIn="@layout/activity_trip_details">
 
@@ -29,7 +29,7 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_8"
             card_view:cardCornerRadius="@dimen/dp_4"
-            card_view:cardElevation="@dimen/dp_4"/>
+            card_view:cardElevation="@dimen/dp_4" />
 
         <View
             android:id="@+id/view2"
@@ -45,9 +45,10 @@
             android:id="@+id/btn_add_place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
+            android:drawablePadding="@dimen/dp_8"
             android:drawableStart="@drawable/ic_action_name"
+            android:gravity="center"
             android:paddingBottom="@dimen/dp_8"
             android:paddingTop="@dimen/dp_8"
             android:text="@string/add_new_place"

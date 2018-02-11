@@ -138,7 +138,7 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
-                    getTargetFragment().onActivityResult(RESULT_OK, Constants.DIALOG_FRAGMENT_REQUEST, intent);
+                    getTargetFragment().onActivityResult(Constants.DIALOG_FRAGMENT_REQUEST, RESULT_OK, intent);
 
 
                 } else {
@@ -148,12 +148,10 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
             case R.id.btn_search_location:
                 try {
                     Timber.d("add search clicked");
-                    Fragment callingFragment = getActivity().getSupportFragmentManager().getFragments().get(0);
-
                     Intent intent =
                             new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                                     .build(getActivity());
-                    callingFragment.startActivityForResult(intent, Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                    startActivityForResult(intent, Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE);
                 } catch (GooglePlayServicesRepairableException |
                         GooglePlayServicesNotAvailableException e) {
                     // TODO: Handle the error.

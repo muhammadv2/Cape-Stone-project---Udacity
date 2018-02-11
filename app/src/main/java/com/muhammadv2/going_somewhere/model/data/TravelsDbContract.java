@@ -45,8 +45,7 @@ public final class TravelsDbContract {
 
         //places table columns
         public static final String COLUMN_PLACE_NAME = "name";
-        public static final String COLUMN_CITY_NAME = "city";
-        public static final String COLUMN_TRIP_NAME = "trip";
+        public static final String COLUMN_TRIP_ID = "trip";
     }
 
 }

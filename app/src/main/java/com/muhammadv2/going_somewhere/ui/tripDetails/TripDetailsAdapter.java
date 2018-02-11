@@ -1,6 +1,5 @@
 package com.muhammadv2.going_somewhere.ui.tripDetails;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.muhammadv2.going_somewhere.R;
-import com.muhammadv2.going_somewhere.model.City;
 import com.muhammadv2.going_somewhere.model.CityPlace;
 
 import java.util.ArrayList;
@@ -19,9 +17,7 @@ import butterknife.ButterKnife;
 
 public class TripDetailsAdapter extends RecyclerView.Adapter {
 
-    private Context mContext;
     private final TripDetailsAdapter.OnItemClickListener mItemClickListener;
-    private final ArrayList<City> mCities;
     private final ArrayList<CityPlace> mPlaces;
 
     /**
@@ -34,17 +30,12 @@ public class TripDetailsAdapter extends RecyclerView.Adapter {
     /**
      * Adapter constructor helping setup the Adapter and ViewHolder with
      *
-     * @param cities              needed to update the header of details fragment
      * @param places              needed to update the body of the details fragment
      * @param onItemClickListener This allow us to use the Adapter as a component with MainActivity
      */
-    public TripDetailsAdapter(Context context,
-                              ArrayList<City> cities,
-                              ArrayList<CityPlace> places,
+    public TripDetailsAdapter(ArrayList<CityPlace> places,
                               TripDetailsAdapter.OnItemClickListener onItemClickListener) {
-        mCities = cities;
         mPlaces = places;
-        mContext = context;
         mItemClickListener = onItemClickListener;
     }
 
@@ -69,6 +60,7 @@ public class TripDetailsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
+        if (mPlaces == null) return 0;
         return mPlaces.size();
     }
 
@@ -79,9 +71,6 @@ public class TripDetailsAdapter extends RecyclerView.Adapter {
 
         @BindView(R.id.text_place_name)
         TextView placeName;
-
-        @BindView(R.id.text_city_name)
-        TextView cityName;
 
         //Constructor help finding our view and set up the view with onClickListener
         PlacesViewHolder(View itemView) {

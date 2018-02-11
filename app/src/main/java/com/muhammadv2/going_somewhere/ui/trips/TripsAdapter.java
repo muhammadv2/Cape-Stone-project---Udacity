@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.Trip;
 import com.muhammadv2.going_somewhere.ui.tripDetails.TripDetailsActivity;
@@ -68,10 +69,10 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
      * the base url and every object path to complete the url to be passed to the holder bind method
      */
     @Override
-    public void onBindViewHolder(TripsViewHolder holder, int position) {
+    public void onBindViewHolder(TripsViewHolder holder, final int position) {
 
         if (mData.size() != 0 && mData != null) {
-            Trip trip = mData.get(position);
+            final Trip trip = mData.get(position);
 
             ImageUtils.bindImage(trip.getImageUrl(), mContext, holder.tripImage, holder.cardView);
             holder.tripTitle.setText(trip.getTripName());
@@ -85,6 +86,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, TripDetailsActivity.class);
+                    intent.putExtra(Constants.TRIP_POSITION, position);
                     mContext.startActivity(intent);
                 }
             });

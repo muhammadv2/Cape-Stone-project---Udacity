@@ -11,6 +11,10 @@ public class TripDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_details);
-        setTitle("");  //Trip name
+//        Intent intent = getIntent();
+//        Bundle bundle = intent.getBundleExtra(Constants.BUNDLE_EXTRA);
+//        Trip tripName = bundle.getParcelable(Constants.TRIPS_ARRAY_ID);
+//
+//        setTitle(tripName.getTripName());  //Trip name
     }
 }

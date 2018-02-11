@@ -65,7 +65,7 @@ public final class Trip implements Parcelable {
         this.imgUrl = in.readString();
     }
 
-    public static final Parcelable.Creator<Trip> CREATOR = new Parcelable.Creator<Trip>() {
+    public static final Creator<Trip> CREATOR = new Creator<Trip>() {
         @Override
         public Trip createFromParcel(Parcel source) {
             return new Trip(source);
