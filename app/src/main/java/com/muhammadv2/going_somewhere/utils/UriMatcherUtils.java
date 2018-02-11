@@ -20,7 +20,6 @@ public final class UriMatcherUtils {
 
     public static final int PLACES = 200;
     public static final int PLACE_WITH_ID = 201;
-
     // Static method that associates URI's with their int match
     public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);

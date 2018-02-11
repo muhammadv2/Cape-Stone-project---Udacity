@@ -15,7 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class TripDetailsAdapter extends RecyclerView.Adapter {
+public class TripDetailsAdapter extends RecyclerView.Adapter<TripDetailsAdapter.PlacesViewHolder> {
 
     private final TripDetailsAdapter.OnItemClickListener mItemClickListener;
     private final ArrayList<CityPlace> mPlaces;
@@ -53,8 +53,10 @@ public class TripDetailsAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(PlacesViewHolder holder, int position) {
 
+        CityPlace place = mPlaces.get(position);
+        holder.placeName.setText(place.getPlaceName());
     }
 
 

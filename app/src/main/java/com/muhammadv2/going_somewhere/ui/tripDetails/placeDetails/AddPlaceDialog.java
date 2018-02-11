@@ -1,4 +1,4 @@
-package com.muhammadv2.going_somewhere.ui.tripDetails.addPlace;
+package com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails;
 
 
 import android.content.Intent;
@@ -52,20 +52,27 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
 
     private Intent intent;
 
-    private CityPlace cPlace;
     private int placePosition;
 
-    private String tripName;
-    private String cityName;
+    private CityPlace cPlace;
 
+    private int tripId;
     private Intent receivedIntent;
 
-
-    //Todo turn it into dialog and it have only place to add name and choose from the button
     public AddPlaceDialog() {
         // Required empty public constructor
     }
 
+    public static AddPlaceDialog newInstance(int tripPosition) {
+        AddPlaceDialog f = new AddPlaceDialog();
+
+        // Supply tripPosition input as an argument.
+        Bundle args = new Bundle();
+        args.putInt(Constants.TRIP_POSITION, tripPosition);
+        f.setArguments(args);
+
+        return f;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -74,6 +81,8 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
         View view = inflater.inflate(R.layout.fragment_add_place, container, false);
 
         ButterKnife.bind(this, view);
+
+        tripId = getArguments().getInt(Constants.TRIP_POSITION);
 
         //inject this fragment into the app component
         App.getInstance().getAppComponent().inject(this);
@@ -98,9 +107,7 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
         intent = new Intent();
 
 //        receivedIntent = getActivity().getIntent();
-//        cPlace = receivedIntent.getParcelableExtra(Constants.Place_OBJ_EXTRA);
-//        tripName = receivedIntent.getStringExtra(Constants.TRIPS_ARRAY_ID);
-//        cityName = receivedIntent.getStringExtra(Constants.CITIES_ARRAY_ID);
+//        tripId = receivedIntent.getStringExtra(Constants.TRIPS_ARRAY_ID);
 //
 //        if (receivedIntent != null) {
 //            etPlaceTitle.setText(cPlace.getPlaceName());
@@ -118,7 +125,7 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
                 if (!placeTitle.isEmpty()) {
                     Timber.d("add place clicked");
 
-                    cPlace = new CityPlace(placeTitle, cityName, tripName);
+                    cPlace = new CityPlace(placeTitle, tripId);
 
                     if (receivedIntent == null) {
                         Uri uri = interactor.insertIntoPlaceTable(cPlace);
@@ -139,6 +146,7 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
                         }
                     }
                     getTargetFragment().onActivityResult(Constants.DIALOG_FRAGMENT_REQUEST, RESULT_OK, intent);
+                    this.dismiss();
 
 
                 } else {
@@ -172,8 +180,6 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
                 String placeAddress = place.getAddress().toString();
                 float placeRating = place.getRating();
 
-                Timber.d("choosen place " + placeName);
-
                 intent = new Intent();
                 intent.putExtra(Constants.PLACE_NAME, placeName);
                 intent.putExtra(Constants.PLACE_ID, placeID);
@@ -183,8 +189,6 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 getActivity().setResult(RESULT_CANCELED);
 
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation simply do nothing.
             }
         }
     }

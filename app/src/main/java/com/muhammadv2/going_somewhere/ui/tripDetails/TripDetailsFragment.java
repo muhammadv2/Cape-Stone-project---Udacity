@@ -4,6 +4,7 @@ package com.muhammadv2.going_somewhere.ui.tripDetails;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,21 +25,18 @@ import android.widget.TextView;
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.CityPlace;
-import com.muhammadv2.going_somewhere.ui.tripDetails.addPlace.AddPlaceDialog;
+import com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails.AddPlaceDialog;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
-import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEntry;
 
 
-//Todo Show the places names and make a dialog to show every place details and refactor the dialog fragment
-//Todo to only return the place id and show the place data using that id
-//Make a wdiget for the application and finish design for tablet .... ... . .. فات الكتير ماباقي الي القليل
 public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.OnItemClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -81,6 +79,8 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         View view = inflater.inflate(R.layout.fragment_trip_details, container, false);
 
         ButterKnife.bind(this, view);
+        Timber.plant(new Timber.DebugTree());
+
 
         // Injecting this fragment to the app component so the interactor class can be injected
 //        App.getInstance().getAppComponent().inject(this);
@@ -110,7 +110,7 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
                 // dialog, so make our own transaction and take care of that here.
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
-                Fragment prev = fm.findFragmentByTag("dialog");
+                Fragment prev = fm.findFragmentByTag(Constants.ADD_TRIP_DIALOG);
                 if (prev != null) {
                     ft.remove(prev);
                 }
@@ -121,10 +121,10 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
                 int height = metrics.heightPixels;
 
                 // Create and show the dialog.
-                AddPlaceDialog dialog = new AddPlaceDialog();
+                AddPlaceDialog dialog = AddPlaceDialog.newInstance(tripPosition);
                 dialog.setTargetFragment(fragment, Constants.DIALOG_FRAGMENT_REQUEST);
 
-                dialog.show(ft, "dialog");
+                dialog.show(ft, Constants.ADD_TRIP_DIALOG);
                 getActivity().getSupportFragmentManager().executePendingTransactions();
 
                 Dialog yourDialog = dialog.getDialog();
@@ -158,13 +158,15 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+        Uri queryUri = PlaceEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(tripPosition)).build();
+
         // Create cursor loader with the URI from trip table
-        String[] selectionArgs = {String.valueOf(tripPosition)};
         return new CursorLoader(getContext(),
-                PlaceEntry.CONTENT_URI,
+                queryUri,
                 null,
-                PlaceEntry.COLUMN_TRIP_ID + "=?",
-                selectionArgs,
+                null,
+                null,
                 null);
     }
 
@@ -172,10 +174,10 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data == null) return; // If data is null don't go any further and return
 
+        Timber.d("onLoadFinished " + extractTripsFromCursor(data));
         // When data done loading Use the helper method to extract the data from the cursor and then
         // instantiate new Adapter with that data and set the adapter on the recycler view
         adapter = new TripDetailsAdapter(extractTripsFromCursor(data), this);
-        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
     }
 
@@ -188,15 +190,13 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         ArrayList<CityPlace> places = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
-                int nameColId = cursor.getColumnIndex(TripEntry.COLUMN_TRIP_NAME);
-                int cityNameCoId = cursor.getColumnIndex(TripEntry.COLUMN_TIME_START);
-                int tripNameColId = cursor.getColumnIndex(TripEntry.COLUMN_TIME_START);
+                int nameColId = cursor.getColumnIndex(PlaceEntry.COLUMN_PLACE_NAME);
+                int tripNameColId = cursor.getColumnIndex(PlaceEntry.COLUMN_TRIP_ID);
 
                 String placeTitle = cursor.getString(nameColId);
-                String cityName = cursor.getString(cityNameCoId);
-                String tripName = cursor.getString(tripNameColId);
+                int tripId = cursor.getInt(tripNameColId);
 
-                places.add(new CityPlace(placeTitle, cityName, tripName));
+                places.add(new CityPlace(placeTitle, tripId));
 
             } while (cursor.moveToNext());
         }
@@ -216,9 +216,9 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         if (requestCode == Constants.DIALOG_FRAGMENT_REQUEST) {
             if (resultCode == RESULT_OK) {
 
-                String placeAdress = data.getStringExtra(Constants.PLACE_ADRESS);
-                String placeName = data.getStringExtra(Constants.PLACE_NAME);
                 String placeId = data.getStringExtra(Constants.PLACE_ID);
+                String placeName = data.getStringExtra(Constants.PLACE_NAME);
+                String placeAdress = data.getStringExtra(Constants.PLACE_ADRESS);
                 float placeRating = data.getFloatExtra(Constants.PLACE_RATING, 2.5f);
 
                 getActivity().getSupportLoaderManager()

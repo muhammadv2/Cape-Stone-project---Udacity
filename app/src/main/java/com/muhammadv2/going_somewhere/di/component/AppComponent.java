@@ -2,7 +2,7 @@ package com.muhammadv2.going_somewhere.di.component;
 
 import com.muhammadv2.going_somewhere.di.module.ApplicationModule;
 import com.muhammadv2.going_somewhere.model.data.TravelsProvider;
-import com.muhammadv2.going_somewhere.ui.tripDetails.addPlace.AddPlaceDialog;
+import com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails.AddPlaceDialog;
 import com.muhammadv2.going_somewhere.ui.trips.TripsFragment;
 import com.muhammadv2.going_somewhere.ui.trips.addTrip.AddTripFragment;
 

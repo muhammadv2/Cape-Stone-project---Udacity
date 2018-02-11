@@ -87,6 +87,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, TripDetailsActivity.class);
                     intent.putExtra(Constants.TRIP_POSITION, position);
+                    intent.putExtra(Constants.ADD_TRIP_NAME, trip.getTripName());
                     mContext.startActivity(intent);
                 }
             });

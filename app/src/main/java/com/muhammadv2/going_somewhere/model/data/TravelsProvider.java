@@ -98,6 +98,7 @@ public class TravelsProvider extends ContentProvider {
             throw new SQLException("Failed insert row ");
         }
     }
+
     //endregion
     //region Query
     @Override
@@ -121,12 +122,32 @@ public class TravelsProvider extends ContentProvider {
                 returnCursor = tryToQueryWholeTable(PlaceEntry.TABLE_NAME, projection,
                         selection, selectionArgs, sortOrder);
                 break;
+            case PLACE_WITH_ID:
+                returnCursor = tryToQuerySpecificItems(uri);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
 
         returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return returnCursor;
+    }
+
+    private Cursor tryToQuerySpecificItems(Uri uri) {
+        //Using selection and selectionArgs to specify which row to query
+
+        String id = uri.getPathSegments().get(1);
+        String mSelection = PlaceEntry.COLUMN_TRIP_ID + "=?";
+        String[] mSelectionArgs = {id};
+
+        return readDb.query(PlaceEntry.TABLE_NAME,
+                null,
+                mSelection,
+                mSelectionArgs,
+                null,
+                null,
+                null);
+
     }
 
     /**

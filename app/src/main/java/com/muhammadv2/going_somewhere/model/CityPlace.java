@@ -6,26 +6,20 @@ import android.os.Parcelable;
 public final class CityPlace implements Parcelable {
 
     String placeName;
-    String cityName;
-    String tripName;
+    int tripId;
 
-    public CityPlace(String placeName, String cityName, String tripName) {
+    public CityPlace(String placeName, int tripId) {
         this.placeName = placeName;
-        this.cityName = cityName;
-        this.tripName = tripName;
+        this.tripId = tripId;
     }
 
 
-    public String getTripName() {
-        return tripName;
+    public int getTripId() {
+        return tripId;
     }
 
     public String getPlaceName() {
         return placeName;
-    }
-
-    public String getCityName() {
-        return cityName;
     }
 
 
@@ -37,14 +31,12 @@ public final class CityPlace implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.placeName);
-        dest.writeString(this.cityName);
-        dest.writeString(this.tripName);
+        dest.writeInt(this.tripId);
     }
 
     protected CityPlace(Parcel in) {
         this.placeName = in.readString();
-        this.cityName = in.readString();
-        this.tripName = in.readString();
+        this.tripId = in.readInt();
     }
 
     public static final Creator<CityPlace> CREATOR = new Creator<CityPlace>() {
