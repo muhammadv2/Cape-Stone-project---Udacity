@@ -22,6 +22,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.CityPlace;
@@ -34,12 +41,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-import static android.app.Activity.RESULT_OK;
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
 
 
 public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.OnItemClickListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     @BindView(R.id.rv_trip_details)
     RecyclerView recyclerView;
@@ -53,12 +59,12 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
 
     private int tripPosition;
 
-    private String placeId;
+    private ArrayList<CityPlace> mPlaces;
 
-    private String placeName;
 
-    private String placeAddress;
-    private float placeRating;
+    private GoogleApiClient mClient;
+
+    private PlaceBuffer placeBuffer;
 
 
     @Override
@@ -71,15 +77,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         // Required empty public constructor
     }
 
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        // Save The array list of trips as a bundle to be retrieved when rotation happens
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelableArrayList(Constants.TRIPS_ARRAY_ID, trips);
-//        outState.putBundle(Constants.TRIPS_ARRAY_ID, bundle);
-//    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -107,6 +104,17 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Build up the LocationServices API client
+        // Uses the addApi method to request the LocationServices API
+        // Also uses enableAutoManage to automatically when to connect/suspend the client
+        mClient = new GoogleApiClient.Builder(getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Places.GEO_DATA_API)
+                .enableAutoManage(getActivity(), this)
+                .build();
+
 
         btnAddPlace.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,27 +188,49 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data == null) return; // If data is null don't go any further and return
 
-        Timber.d("onLoadFinished " + extractTripsFromCursor(data));
+        mPlaces = extractPlacesfromCursor(data);
         // When data done loading Use the helper method to extract the data from the cursor and then
         // instantiate new Adapter with that data and set the adapter on the recycler view
-        adapter = new TripDetailsAdapter(extractTripsFromCursor(data), this);
+        adapter = new TripDetailsAdapter(mPlaces, this);
         recyclerView.setAdapter(adapter);
+
+        ArrayList<String> strings = new ArrayList<>();
+        for (CityPlace place : mPlaces) {
+            strings.add(place.getPlaceId());
+        }
+        String[] placeIds = new String[mPlaces.size()];
+        placeIds = strings.toArray(placeIds);
+
+        for (int i = 0; i < mPlaces.size(); i++) {
+            placeIds[i] = mPlaces.get(i).getPlaceId();
+        }
+
+        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mClient,
+                placeIds);
+        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+            @Override
+            public void onResult(@NonNull PlaceBuffer places) {
+                placeBuffer = places;
+            }
+        });
     }
 
     /**
      * @param cursor with the returned data from the database
      * @return ArrayList populated with this data
      */
-    private ArrayList<CityPlace> extractTripsFromCursor(Cursor cursor) {
+    private ArrayList<CityPlace> extractPlacesfromCursor(Cursor cursor) {
 
         ArrayList<CityPlace> places = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
                 int nameColId = cursor.getColumnIndex(PlaceEntry.COLUMN_PLACE_NAME);
                 int tripNameColId = cursor.getColumnIndex(PlaceEntry.COLUMN_TRIP_ID);
+                int placeIdColId = cursor.getColumnIndex(PlaceEntry.COLUMN_PLACE_ID);
 
                 String placeTitle = cursor.getString(nameColId);
                 int tripId = cursor.getInt(tripNameColId);
+                String placeId = cursor.getString(placeIdColId);
 
                 places.add(new CityPlace(placeId, placeTitle, tripId));
 
@@ -216,26 +246,12 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     //endregion
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onClick(int position) {
 
-        if (requestCode == Constants.DIALOG_FRAGMENT_REQUEST) {
-            if (resultCode == RESULT_OK) {
-
-                placeId = data.getStringExtra(Constants.PLACE_ID);
-                placeName = data.getStringExtra(Constants.PLACE_NAME);
-                placeAddress = data.getStringExtra(Constants.PLACE_ADRESS);
-                placeRating = data.getFloatExtra(Constants.PLACE_RATING, 2.5f);
-
-                getActivity().getSupportLoaderManager()
-                        .restartLoader(Constants.TRIPS_LOADER_INIT, null, this);
-            }
-        }
-
+        extractPlaceDetailsFromId(position);
     }
 
-    @Override
-    public void onClick(int position) {
+    private void extractPlaceDetailsFromId(int placePosition) {
         // DialogFragment.show() will take care of adding the fragment
         // in a transaction.  We also want to remove any currently showing
         // dialog, so make our own transaction and take care of that here.
@@ -246,9 +262,16 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
             ft.remove(prev);
         }
         ft.addToBackStack(null);
+
+
+        Place place = placeBuffer.get(placePosition);
+        String placeName = place.getName().toString();
+        String placeAddress = place.getAddress().toString();
+        float placeRating = place.getRating();
+
         PlaceDetailsDialog detailsDialog =
-                PlaceDetailsDialog.newInstance(placeName, placeAddress, placeRating, null);
-        Timber.d("ss" + placeName);
+                PlaceDetailsDialog.newInstance(
+                        mPlaces.get(placePosition).getPlaceId(),placeName, placeAddress, placeRating);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         int width = metrics.widthPixels;
@@ -261,5 +284,30 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
 
         Dialog yourDialog = detailsDialog.getDialog();
         yourDialog.getWindow().setLayout((10 * width) / 10, (4 * height) / 5);
+
+
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        placeBuffer.release();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

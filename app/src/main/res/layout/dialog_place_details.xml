@@ -1,82 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/image_place"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_240"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/desc_main_img"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/text_place_title"
-        style="@style/main_card_text"
-        android:layout_marginStart="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_24"
-        android:drawablePadding="@dimen/dp_8"
-        android:drawableStart="@drawable/ic_title_black_24dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_place" />
+        <ImageView
+            android:id="@+id/image_place"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_200"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/desc_main_img"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
 
-    <TextView
-        android:id="@+id/text_place_adress"
-        style="@style/main_card_text"
-        android:layout_marginTop="@dimen/dp_24"
-        android:drawablePadding="@dimen/dp_8"
-        android:drawableStart="@drawable/ic_place_adress"
-        android:text="place adress"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-        app:layout_constraintStart_toStartOf="@+id/text_place_title"
-        app:layout_constraintTop_toBottomOf="@+id/text_place_title" />
+        <TextView
+            android:id="@+id/text_place_title"
+            android:layout_width="@dimen/dp_280"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_24"
+            android:drawablePadding="@dimen/dp_8"
+            android:drawableStart="@drawable/ic_title_black_24dp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_place" />
 
-    <RatingBar
-        android:id="@+id/tex_place_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_24"
-        android:scaleX="0.5"
-        android:scaleY="0.5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_place_adress" />
+        <TextView
+            android:id="@+id/text_place_adress"
+            android:layout_width="@dimen/dp_280"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="@dimen/dp_24"
+            android:drawablePadding="@dimen/dp_8"
+            android:drawableStart="@drawable/ic_place_adress"
+            android:text="place adress"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_place_title" />
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tex_place_rating" />
+        <RatingBar
+            android:id="@+id/tex_place_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_24"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_place_adress" />
 
-    <Button
-        android:id="@+id/btn_edit_place"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/lightBackground"
-        android:drawablePadding="@dimen/dp_8"
-        android:drawableStart="@drawable/ic_edit_location"
-        android:padding="@dimen/dp_8"
-        android:text="@string/edit_place"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tex_place_rating" />
+
+        <Button
+            android:id="@+id/btn_edit_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/lightBackground"
+            android:drawablePadding="@dimen/dp_8"
+            android:drawableStart="@drawable/ic_edit_location"
+            android:padding="@dimen/dp_8"
+            android:text="@string/edit_place"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
 
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

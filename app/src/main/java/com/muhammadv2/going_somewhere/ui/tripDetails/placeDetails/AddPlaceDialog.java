@@ -57,6 +57,9 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
     private CityPlace cPlace;
 
     private int tripId;
+
+    private String placeID;
+
     private Intent receivedIntent;
 
     public AddPlaceDialog() {
@@ -106,12 +109,6 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
 
         intent = new Intent();
 
-//        receivedIntent = getActivity().getIntent();
-//        tripId = receivedIntent.getStringExtra(Constants.TRIPS_ARRAY_ID);
-//
-//        if (receivedIntent != null) {
-//            etPlaceTitle.setText(cPlace.getPlaceName());
-//        }
     }
 
 
@@ -125,7 +122,7 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
                 if (!placeTitle.isEmpty()) {
                     Timber.d("add place clicked");
 
-                    cPlace = new CityPlace("", placeTitle, tripId);
+                    cPlace = new CityPlace(placeID, placeTitle, tripId);
 
                     if (receivedIntent == null) {
                         Uri uri = interactor.insertIntoPlaceTable(cPlace);
@@ -145,7 +142,6 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
-                    getTargetFragment().onActivityResult(Constants.DIALOG_FRAGMENT_REQUEST, RESULT_OK, intent);
                     this.dismiss();
 
 
@@ -175,16 +171,7 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
         if (requestCode == Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getContext(), data);
-                String placeID = place.getId();
-                String placeName = place.getName().toString();
-                String placeAddress = place.getAddress().toString();
-                float placeRating = place.getRating();
-
-                intent = new Intent();
-                intent.putExtra(Constants.PLACE_NAME, placeName);
-                intent.putExtra(Constants.PLACE_ID, placeID);
-                intent.putExtra(Constants.PLACE_ADRESS, placeAddress);
-                intent.putExtra(Constants.PLACE_RATING, placeRating);
+                placeID = place.getId();
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 getActivity().setResult(RESULT_CANCELED);
