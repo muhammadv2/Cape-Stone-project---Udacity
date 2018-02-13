@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.Trip;
-import com.muhammadv2.going_somewhere.ui.tripDetails.TripDetailsActivity;
+import com.muhammadv2.going_somewhere.ui.trips.addTrip.AddTripActivity;
 import com.muhammadv2.going_somewhere.utils.FormattingUtils;
 import com.muhammadv2.going_somewhere.utils.ImageUtils;
 
@@ -82,12 +82,20 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
             String cities = trip.getCities().size() + " Cities";
             holder.cityCount.setText(cities);
 
+            holder.itemView.setTag(position);
+
             holder.btnPlans.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, TripDetailsActivity.class);
-                    intent.putExtra(Constants.TRIP_POSITION, position);
-                    intent.putExtra(Constants.ADD_TRIP_NAME, trip.getTripName());
+
+                    // To update the current trip
+
+                    Intent intent = new Intent(mContext, AddTripActivity.class);
+
+                    // Set the URI on the data field of the intent
+                    intent.putExtra(Constants.TRIPS_ARRAY_ID, trip);
+
+                    // Launch the {@link AddTripActivity} to display the data for the current Trip.
                     mContext.startActivity(intent);
                 }
             });
@@ -116,7 +124,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
         TextView tripDuration;
         @BindView(R.id.btn_edit_trip)
         Button btnPlans;
-        @BindView(R.id.btn_trip_notes)
+        @BindView(R.id.btn_add_trip_widget)
         Button btnNotes;
         @BindView(R.id.tex_place_rating)
         TextView cityCount;

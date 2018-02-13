@@ -50,13 +50,11 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
     @Inject
     DataInteractor interactor;
 
-    private Intent intent;
-
     private int placePosition;
 
     private CityPlace cPlace;
 
-    private int tripId;
+    private int tripId = -1;
 
     private String placeID;
 
@@ -87,6 +85,8 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
 
         tripId = getArguments().getInt(Constants.TRIP_POSITION);
 
+        receivedIntent = getActivity().getIntent();
+
         //inject this fragment into the app component
         App.getInstance().getAppComponent().inject(this);
 
@@ -107,8 +107,6 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
         btnSearchLocation.setOnClickListener(this);
         btnSavePlace.setOnClickListener(this);
 
-        intent = new Intent();
-
     }
 
 
@@ -124,7 +122,7 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
 
                     cPlace = new CityPlace(placeID, placeTitle, tripId);
 
-                    if (receivedIntent == null) {
+                    if (tripId != -1) {
                         Uri uri = interactor.insertIntoPlaceTable(cPlace);
                         if (uri != null)
                             Toast.makeText(getActivity(), R.string.place_added, Toast.LENGTH_LONG).show();

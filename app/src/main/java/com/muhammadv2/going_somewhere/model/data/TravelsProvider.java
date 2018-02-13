@@ -74,6 +74,9 @@ public class TravelsProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
 
+        Timber.d("return uri " + returnUri);
+        Timber.d("return cv " + values.getAsString(TripEntry.COLUMN_TRIP_NAME));
+
         //notify resolver with the uri
         getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
@@ -137,8 +140,8 @@ public class TravelsProvider extends ContentProvider {
         //Using selection and selectionArgs to specify which row to query
 
         String id = uri.getPathSegments().get(1);
-        String mSelection = PlaceEntry.COLUMN_TRIP_ID + "=?";
-        String[] mSelectionArgs = {id};
+        String mSelection = PlaceEntry.COLUMN_TRIP_ID + " = ?";
+        String[] mSelectionArgs = new String[]{id};
 
         return readDb.query(PlaceEntry.TABLE_NAME,
                 null,

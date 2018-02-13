@@ -13,15 +13,25 @@ public final class Trip implements Parcelable {
     long endTime;
     ArrayList<City> cities;
     String imgUrl;
+    int tripId;
 
-    public Trip(String tripName, long startTime, long endTime, ArrayList<City> cities, String imgUrl) {
+    public Trip(String tripName,
+                long startTime,
+                long endTime,
+                ArrayList<City> cities,
+                String imgUrl,
+                int tripId) {
         this.tripName = tripName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.cities = cities;
         this.imgUrl = imgUrl;
+        this.tripId = tripId;
     }
 
+    public int getTripId() {
+        return tripId;
+    }
 
     public String getImageUrl() {
         return imgUrl;
@@ -43,6 +53,7 @@ public final class Trip implements Parcelable {
         return cities;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -55,6 +66,7 @@ public final class Trip implements Parcelable {
         dest.writeLong(this.endTime);
         dest.writeTypedList(this.cities);
         dest.writeString(this.imgUrl);
+        dest.writeInt(this.tripId);
     }
 
     protected Trip(Parcel in) {
@@ -63,6 +75,7 @@ public final class Trip implements Parcelable {
         this.endTime = in.readLong();
         this.cities = in.createTypedArrayList(City.CREATOR);
         this.imgUrl = in.readString();
+        this.tripId = in.readInt();
     }
 
     public static final Creator<Trip> CREATOR = new Creator<Trip>() {

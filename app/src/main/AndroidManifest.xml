@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:name=".App"
@@ -16,6 +18,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB_ZLQO3YBMItwIiTfG1xeex4S1O7LMhkI" />
+
+        <!--<meta-data-->
+            <!--android:name="com.google.android.gms.version"-->
+            <!--android:value="@integer/google_play_services_version" />-->
 
         <activity
             android:name=".ui.trips.TripsActivity"
@@ -40,6 +46,8 @@
         <activity
             android:name=".ui.tripDetails.TripDetailsActivity"
             android:parentActivityName=".ui.trips.TripsActivity" />
+
+        <activity android:name="com.google.android.gms.ads.AdActivity" />
     </application>
 
 </manifest>

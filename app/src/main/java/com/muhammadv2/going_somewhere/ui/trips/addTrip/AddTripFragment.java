@@ -135,6 +135,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
         allAddedViews = new ArrayList<>();
 
+        Timber.plant(new Timber.DebugTree());
+
         // Inject this fragment into the app component
         App.getInstance().getAppComponent().inject(this);
 
@@ -175,11 +177,10 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
     private void newTrip_EditTrip_Checker() {
         Intent intent = getActivity().getIntent();
         trip = intent.getParcelableExtra(Constants.TRIPS_ARRAY_ID);
-        tripId = intent.getIntExtra(Constants.TRIP_POSITION, 0);
-        Timber.plant(new Timber.DebugTree());
         if (trip != null) {
             City city = trip.getCities().get(0);
             etAddCity.setText(city.getCityName());
+            tripId = trip.getTripId();
 
             for (int i = 1; i < trip.getCities().size(); i++) {
                 city = trip.getCities().get(i);
@@ -291,9 +292,8 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
             String imageUrl = requestImage(title);
             if (trip == null) {
                 // Check if there's any field not populated
-                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
-                Timber.plant(new Timber.DebugTree());
-                Timber.d("null? " + (trip == null));
+                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl,0);
+
                 // Everything is fine use the interactor and insert the data using its helper method
                 Uri uri = interactor.insertIntoTripTable(trip);
                 if (uri != null)
@@ -301,9 +301,10 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
                 getActivity().finish();
 
             } else {
-                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl);
+                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl,tripId);
                 // Otherwise this is an EXISTING Trip, so update the trip
-                int rowsAffected = interactor.updateTripTable(trip, tripId + 1);
+                int rowsAffected = interactor.updateTripTable(trip, tripId);
+                Timber.d("update this trip id " + tripId);
 
                 // Show a toast message depending on whether or not the update was successful.
                 if (rowsAffected == 0) {
@@ -370,9 +371,9 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         alertDialog.show();
     }
 
-    //Todo error deleting the first trip see why
     private void deleteAllData() {
         int id = interactor.deleteFromTripTable(tripId);
+        Timber.d("delete this trip id " + tripId);
         if (id > 0) {
             Toast.makeText(getContext(), getString(R.string.trip_deleted), Toast.LENGTH_SHORT).show();
             getActivity().finish();

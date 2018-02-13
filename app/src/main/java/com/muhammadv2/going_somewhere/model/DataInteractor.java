@@ -82,6 +82,7 @@ public class DataInteractor {
 
         ContentValues cv = new ContentValues();
         cv.put(PlaceEntry.COLUMN_PLACE_NAME, place.getPlaceName());
+        cv.put(PlaceEntry.COLUMN_PLACE_ID, place.getPlaceId());
         cv.put(PlaceEntry.COLUMN_TRIP_ID, place.getTripId());
         Uri updateUri = buildAssociatedUri(PlaceEntry.CONTENT_URI, id);
 

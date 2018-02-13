@@ -77,18 +77,31 @@
             android:id="@+id/btn_edit_trip"
             style="@style/main_card_buttons"
             android:layout_marginStart="@dimen/dp_24"
-            android:text="@string/button_text_plan"
+            android:text="@string/edit_trip"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <Button
-            android:id="@+id/btn_trip_notes"
+            android:id="@+id/btn_add_trip_widget"
             style="@style/main_card_buttons"
             android:layout_marginStart="@dimen/dp_8"
-            android:text="@string/button_text_notes"
+            android:text="@string/add_as_widget"
             app:layout_constraintStart_toEndOf="@+id/btn_edit_trip"
             app:layout_constraintTop_toTopOf="@+id/btn_edit_trip" />
+
+        <ImageButton
+            android:id="@+id/btn_share_trip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:background="@drawable/ic_action_share"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btn_edit_trip"
+            android:contentDescription="@string/share_trip" />
 
 
     </android.support.constraint.ConstraintLayout>

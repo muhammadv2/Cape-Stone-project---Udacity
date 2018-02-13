@@ -16,12 +16,16 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -34,6 +38,7 @@ import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.CityPlace;
 import com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails.AddPlaceDialog;
 import com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails.PlaceDetailsDialog;
+import com.muhammadv2.going_somewhere.utils.NetworkUtils;
 
 import java.util.ArrayList;
 
@@ -54,6 +59,9 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
 
     @BindView(R.id.btn_edit_trip)
     TextView btnAddPlace;
+
+    @BindView(R.id.adView)
+    AdView adView;
 
     private Fragment fragment;
 
@@ -90,11 +98,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         createRecyclerView();
         Intent intent = getActivity().getIntent();
         tripPosition = intent.getIntExtra(Constants.TRIP_POSITION, 0);
-
-        // Retrieve the bundle and extract the ArrayList and restart the loader using it
-//        if (savedInstanceState != null) {
-//            Bundle bundle = savedInstanceState.getBundle(Constants.TRIPS_ARRAY_ID);
-//        }
 
         fragment = this;
 
@@ -146,6 +149,12 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
 
             }
         });
+
+        AdRequest adRequest = new AdRequest.Builder()
+//                .addTestDevice(getResources().getString(R.string.ad_id))
+                .build();
+
+        adView.loadAd(adRequest);
     }
 
     /**
@@ -157,7 +166,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         recyclerView.setHasFixedSize(true);
         adapter = new TripDetailsAdapter(null, this);
         recyclerView.setAdapter(adapter);
-
     }
 
 
@@ -173,6 +181,7 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
+        Timber.d("trip position " + tripPosition);
         Uri queryUri = PlaceEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(tripPosition)).build();
 
         // Create cursor loader with the URI from trip table
@@ -194,6 +203,51 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         adapter = new TripDetailsAdapter(mPlaces, this);
         recyclerView.setAdapter(adapter);
 
+        /* Add a touch helper to the RecyclerView to recognize when a user swipes to delete an item.
+         An ItemTouchHelper enables touch behavior (like swipe and move) on each ViewHolder,
+         and uses callbacks to signal when a user is performing these actions.
+         */
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback
+                (0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView,
+                                  RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            // Called when a user swipes left or right on a ViewHolder
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                // Here is where you'll implement swipe to delete
+
+                //  Construct the URI for the item to delete
+                //[Hint] Use getTag (from the adapter code) to get the id of the swiped item
+                // Retrieve the id of the task to delete
+                int id = (int) viewHolder.itemView.getTag();
+
+                // Build appropriate uri with String row id appended
+                String stringId = Integer.toString(id);
+                Uri uri = PlaceEntry.CONTENT_URI;
+                uri = uri.buildUpon().appendPath(stringId).build();
+
+                //Delete a single row of data using a ContentResolver
+                int deletedRows = getActivity().getContentResolver().delete(uri, null, null);
+                if (deletedRows == 0) {
+                    Toast.makeText(getContext(), "This place deleted ", Toast.LENGTH_SHORT).show();
+                } else {
+                    Timber.d("Error delete this place ");
+                }
+
+            }
+        }).attachToRecyclerView(recyclerView); // Attach this delete function to our recyclerView
+
+        adapter = new TripDetailsAdapter(mPlaces, this);
+        recyclerView.setAdapter(adapter);
+
+        if (mPlaces.size() == 0 || mPlaces == null) return;
+        Timber.d("place list " + (mPlaces.size() == 0) + " is null ?" + (mPlaces == null));
+
         ArrayList<String> strings = new ArrayList<>();
         for (CityPlace place : mPlaces) {
             strings.add(place.getPlaceId());
@@ -205,14 +259,17 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
             placeIds[i] = mPlaces.get(i).getPlaceId();
         }
 
-        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mClient,
-                placeIds);
-        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-            @Override
-            public void onResult(@NonNull PlaceBuffer places) {
-                placeBuffer = places;
-            }
-        });
+        if (placeIds != null && placeIds.length > 0) {
+
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mClient,
+                    placeIds);
+            placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+                @Override
+                public void onResult(@NonNull PlaceBuffer places) {
+                    placeBuffer = places;
+                }
+            });
+        }
     }
 
     /**
@@ -232,6 +289,7 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
                 int tripId = cursor.getInt(tripNameColId);
                 String placeId = cursor.getString(placeIdColId);
 
+                Timber.d("Trip name " + tripId);
                 places.add(new CityPlace(placeId, placeTitle, tripId));
 
             } while (cursor.moveToNext());
@@ -243,12 +301,17 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
     }
-    //endregion
+//endregion
 
     @Override
     public void onClick(int position) {
 
-        extractPlaceDetailsFromId(position);
+        if (NetworkUtils.isNetworkAvailable(getContext())) {
+
+            extractPlaceDetailsFromId(position);
+        } else {
+            Toast.makeText(getContext(), getString(R.string.need_connection), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void extractPlaceDetailsFromId(int placePosition) {
@@ -271,7 +334,11 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
 
         PlaceDetailsDialog detailsDialog =
                 PlaceDetailsDialog.newInstance(
-                        mPlaces.get(placePosition).getPlaceId(),placeName, placeAddress, placeRating);
+                        mPlaces.get(placePosition).getPlaceId(),
+                        placeName,
+                        placeAddress,
+                        placeRating
+                        , tripPosition);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         int width = metrics.widthPixels;
@@ -292,7 +359,8 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     @Override
     public void onDestroy() {
         super.onDestroy();
-        placeBuffer.release();
+        if (placeBuffer != null)
+            placeBuffer.release();
     }
 
     @Override

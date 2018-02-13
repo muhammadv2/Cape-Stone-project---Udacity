@@ -6,18 +6,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginTop="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_8"
-    android:layout_marginEnd="@dimen/dp_8"
     android:layout_marginBottom="@dimen/dp_4"
+    android:layout_marginEnd="@dimen/dp_8"
+    android:layout_marginStart="@dimen/dp_8"
     card_view:cardCornerRadius="@dimen/dp_4"
     card_view:cardElevation="@dimen/dp_4">
 
-    <TextView
-        android:id="@+id/text_place_name"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="@dimen/dp_4"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/text_place_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/dp_16"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/ic_action_sweap_delete" />
+
+    </RelativeLayout>
+
 </android.support.v7.widget.CardView>

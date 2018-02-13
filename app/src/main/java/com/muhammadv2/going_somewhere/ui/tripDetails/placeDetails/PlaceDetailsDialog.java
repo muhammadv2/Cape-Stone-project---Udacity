@@ -22,10 +22,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
+import com.muhammadv2.going_somewhere.model.CityPlace;
+import com.muhammadv2.going_somewhere.model.DataInteractor;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class PlaceDetailsDialog extends DialogFragment {
 
@@ -36,7 +37,7 @@ public class PlaceDetailsDialog extends DialogFragment {
     @BindView(R.id.text_place_title)
     TextView tvPlaceTitle;
     @BindView(R.id.text_place_adress)
-    TextView tvplaceAddress;
+    TextView tvPlaceAddress;
     @BindView(R.id.tex_place_rating)
     RatingBar rbPlaceRating;
     @BindView(R.id.btn_edit_place)
@@ -46,7 +47,8 @@ public class PlaceDetailsDialog extends DialogFragment {
     public static PlaceDetailsDialog newInstance(String placeId,
                                                  String placeName,
                                                  String placeAddress,
-                                                 float placeRating) {
+                                                 float placeRating,
+                                                 int tripPosition) {
         PlaceDetailsDialog f = new PlaceDetailsDialog();
 
         // Supply tripPosition input as an argument.
@@ -55,6 +57,7 @@ public class PlaceDetailsDialog extends DialogFragment {
         args.putString(Constants.PLACE_ADRESS, placeAddress);
         args.putFloat(Constants.PLACE_RATING, placeRating);
         args.putString(Constants.PLACE_PHOTO, placeId);
+        args.putInt(Constants.TRIP_POSITION, tripPosition);
         f.setArguments(args);
 
         return f;
@@ -62,18 +65,22 @@ public class PlaceDetailsDialog extends DialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.dialog_place_details, container, false);
 
+        // ButterKnife binding
         ButterKnife.bind(this, view);
-        Timber.plant(new Timber.DebugTree());
 
+        // GeoData Client the one we use to request place photos
         mClient = Places.getGeoDataClient(getActivity(), null);
 
         return view;
     }
 
+    // Method copied for places Api docs to retrieve photo from associated placeID
     private void getPhotos(String placeID) {
         final Task<PlacePhotoMetadataResponse> photoMetadataResponse =
                 mClient.getPlacePhotos(placeID);
@@ -86,8 +93,8 @@ public class PlaceDetailsDialog extends DialogFragment {
                         // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
                         PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
                         // Get the first photo in the list.
-                        Timber.plant(new Timber.DebugTree());
-                        Timber.d("sss " + (photoMetadataBuffer.getCount() == 0));
+
+                        // Check if the photo buffer null or not first to not call .get on null obj
                         if (photoMetadataBuffer.getCount() != 0) {
                             PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
                             // Get a full-size bitmap for the photo.
@@ -102,6 +109,7 @@ public class PlaceDetailsDialog extends DialogFragment {
                             });
 
                         } else {
+                            // If null use place holder photo
                             ivPlacePhoto.setImageDrawable(getResources().
                                     getDrawable(R.drawable.trip_place_holder));
                         }
@@ -112,20 +120,28 @@ public class PlaceDetailsDialog extends DialogFragment {
 
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String placeName = getArguments().getString(Constants.PLACE_NAME);
-        String placeAddress = getArguments().getString(Constants.PLACE_ADRESS);
-        float placeRating = getArguments().getFloat(Constants.PLACE_RATING);
-        String placeId = getArguments().getString(Constants.PLACE_PHOTO);
+        // Retrieve the passed data from the Details fragment and then populate the views
+        final String placeName = getArguments().getString(Constants.PLACE_NAME);
+        final String placeAddress = getArguments().getString(Constants.PLACE_ADRESS);
+        final float placeRating = getArguments().getFloat(Constants.PLACE_RATING);
+        final String placeId = getArguments().getString(Constants.PLACE_PHOTO);
+        final int tripPosition = getArguments().getInt(Constants.TRIP_POSITION);
 
         tvPlaceTitle.setText(placeName);
-        tvplaceAddress.setText(placeAddress);
+        tvPlaceAddress.setText(placeAddress);
         rbPlaceRating.setRating(placeRating);
         getPhotos(placeId);
 
+
+        btnEditPlace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DataInteractor dataInteractor = new DataInteractor(getActivity());
+                dataInteractor.updatePlaceTable(new CityPlace(placeId, placeName, tripPosition), tripPosition);
+            }
+        });
     }
-
-
 }

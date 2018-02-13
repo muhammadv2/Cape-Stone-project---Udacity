@@ -22,6 +22,7 @@ import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.DataInteractor;
 import com.muhammadv2.going_somewhere.model.Trip;
 import com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEntry;
+import com.muhammadv2.going_somewhere.ui.tripDetails.TripDetailsActivity;
 import com.muhammadv2.going_somewhere.ui.trips.addTrip.AddTripActivity;
 import com.muhammadv2.going_somewhere.utils.FormattingUtils;
 
@@ -31,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -57,6 +59,9 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public TripsFragment() {
     }
+
+    private int tripId;
+
 
     @Override
     public void onResume() {
@@ -112,6 +117,8 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Timber.plant(new Timber.DebugTree());
+
         // Listen on the fab clicks and open AddTrip to add new Trip
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,102 +132,101 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     //region Loader
 
-        /**
-         * Init the loader to start query the database and retrieve a cursor object
-         */
-        private void initLoader() {
-            getActivity().getSupportLoaderManager()
-                    .initLoader(Constants.TRIPS_LOADER_INIT, null, this);
-        }
+    /**
+     * Init the loader to start query the database and retrieve a cursor object
+     */
+    private void initLoader() {
+        getActivity().getSupportLoaderManager()
+                .initLoader(Constants.TRIPS_LOADER_INIT, null, this);
+    }
 
-
-        @Override
-        public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-            // Create cursor loader with the URI from trip table
-            return new CursorLoader(getContext(),
-                    TripEntry.CONTENT_URI,
-                    null,
-                    null,
-                    null,
-                    null);
-        }
-
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            if (data == null) return; // If data is null don't go any further and return
-
-            //if the count of the data equals 0 set the empty view to be visible else set rv visible
-            if (data.getCount() == 0) {
-                emptyView.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
-                return;
-            } else {
-                emptyView.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-            }
-
-            // When data done loading Use the helper method to extract the data from the cursor and then
-            // instantiate new Adapter with that data and set the adapter on the recycler view
-            adapter = new TripsAdapter(getActivity(), extractTripsFromCursor(data), this);
-            adapter.notifyDataSetChanged();
-            recyclerView.setAdapter(adapter);
-        }
-
-        /**
-         * @param cursor with the returned data from the database
-         * @return ArrayList populated with this data
-         */
-        private ArrayList<Trip> extractTripsFromCursor(Cursor cursor) {
-
-            ArrayList<Trip> trips = new ArrayList<>();
-            if (cursor.moveToFirst()) {
-                do {
-                    int nameColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_TRIP_NAME);
-                    int startColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_TIME_START);
-                    int endColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_TIME_END);
-                    int citiesColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_CITIES_NAMES);
-                    int imageColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_IMAGE_URL);
-                    String tripTitle = cursor.getString(nameColumnInd);
-                    long startTime = cursor.getLong(startColumnInd);
-                    long endTime = cursor.getLong(endColumnInd);
-                    String cities = cursor.getString(citiesColumnInd);
-                    String imageUrl = cursor.getString(imageColumnInd);
-
-                    Trip trip = new Trip(
-                            tripTitle,
-                            startTime,
-                            endTime,
-                            FormattingUtils.stringCitiesToArrayList(cities),
-                            imageUrl);
-
-                    trips.add(trip);
-                } while (cursor.moveToNext());
-            }
-
-            this.trips = trips;
-            return trips;
-        }
-
-
-        @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
-        }
-        //endregion
 
     @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        // Create cursor loader with the URI from trip table
+        return new CursorLoader(getContext(),
+                TripEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data == null) return; // If data is null don't go any further and return
+
+        //if the count of the data equals 0 set the empty view to be visible else set rv visible
+        if (data.getCount() == 0) {
+            emptyView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            return;
+        } else {
+            emptyView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+
+        // When data done loading Use the helper method to extract the data from the cursor and then
+        // instantiate new Adapter with that data and set the adapter on the recycler view
+        adapter = new TripsAdapter(getActivity(), extractTripsFromCursor(data), this);
+        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * @param cursor with the returned data from the database
+     * @return ArrayList populated with this data
+     */
+    private ArrayList<Trip> extractTripsFromCursor(Cursor cursor) {
+
+        ArrayList<Trip> trips = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                int nameColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_TRIP_NAME);
+                int startColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_TIME_START);
+                int endColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_TIME_END);
+                int citiesColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_CITIES_NAMES);
+                int imageColumnInd = cursor.getColumnIndex(TripEntry.COLUMN_IMAGE_URL);
+
+                int idColumnId = cursor.getColumnIndex(TripEntry._ID);
+                tripId = cursor.getInt(idColumnId);
+
+                String tripTitle = cursor.getString(nameColumnInd);
+                long startTime = cursor.getLong(startColumnInd);
+                long endTime = cursor.getLong(endColumnInd);
+                String cities = cursor.getString(citiesColumnInd);
+                String imageUrl = cursor.getString(imageColumnInd);
+
+                Trip trip = new Trip(
+                        tripTitle,
+                        startTime,
+                        endTime,
+                        FormattingUtils.stringCitiesToArrayList(cities),
+                        imageUrl,
+                        tripId);
+
+                trips.add(trip);
+            } while (cursor.moveToNext());
+        }
+
+        this.trips = trips;
+        return trips;
+    }
+
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+    }
+    //endregion
+
+
+    // To reach details activity upon clicking on the card of each trip
+    @Override
     public void onClick(int position) {
-        //When click on the card holding
 
-        Trip trip = trips.get(position);
-
-        Intent intent = new Intent(getActivity(), AddTripActivity.class);
-
-        // Set the URI on the data field of the intent
-        intent.putExtra(Constants.TRIPS_ARRAY_ID, trip);
+        Intent intent = new Intent(getContext(), TripDetailsActivity.class);
         intent.putExtra(Constants.TRIP_POSITION, position);
-
-        // Launch the {@link AddTripActivity} to display the data for the current Trip.
-        startActivity(intent);
-
+        intent.putExtra(Constants.ADD_TRIP_NAME, trips.get(position).getTripName());
+        getActivity().startActivity(intent);
     }
 }
