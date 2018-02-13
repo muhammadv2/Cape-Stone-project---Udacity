@@ -36,7 +36,7 @@
     <string name="error_updating_place">Nothing to update</string>
     <string name="update_place_successful">Place updated successfully</string>
     <string name="save_this_place">Save this place</string>
-    <string name="err_add_title">Please add place title</string>
+    <string name="err_add_title">Please add place details</string>
     <string name="edit_place">Edit Place</string>
     <string name="edit_trip">Edit Trip</string>
     <string name="add_as_widget">Add as widget</string>

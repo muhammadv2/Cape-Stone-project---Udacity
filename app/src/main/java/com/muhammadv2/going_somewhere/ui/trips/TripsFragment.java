@@ -197,6 +197,8 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
                 String cities = cursor.getString(citiesColumnInd);
                 String imageUrl = cursor.getString(imageColumnInd);
 
+                Timber.d("trip id " + tripId);
+
                 Trip trip = new Trip(
                         tripTitle,
                         startTime,
@@ -224,8 +226,10 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onClick(int position) {
 
+        tripId = trips.get(position).getTripId();
+
         Intent intent = new Intent(getContext(), TripDetailsActivity.class);
-        intent.putExtra(Constants.TRIP_POSITION, position);
+        intent.putExtra(Constants.TRIP_POSITION, tripId);
         intent.putExtra(Constants.ADD_TRIP_NAME, trips.get(position).getTripName());
         getActivity().startActivity(intent);
     }

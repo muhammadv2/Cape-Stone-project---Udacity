@@ -8,11 +8,17 @@ public final class CityPlace implements Parcelable {
     String placeId;
     String placeName;
     int tripId;
+    int placeDbId;
 
-    public CityPlace(String placeId, String placeName, int tripId) {
+    public CityPlace(String placeId, String placeName, int tripId,int placeDbId) {
         this.placeId = placeId;
         this.placeName = placeName;
         this.tripId = tripId;
+        this.placeDbId = placeDbId;
+    }
+
+    public int getPlaceDbId() {
+        return placeDbId;
     }
 
     public String getPlaceId() {
@@ -39,12 +45,14 @@ public final class CityPlace implements Parcelable {
         dest.writeString(this.placeId);
         dest.writeString(this.placeName);
         dest.writeInt(this.tripId);
+        dest.writeInt(this.placeDbId);
     }
 
     protected CityPlace(Parcel in) {
         this.placeId = in.readString();
         this.placeName = in.readString();
         this.tripId = in.readInt();
+        this.placeDbId = in.readInt();
     }
 
     public static final Creator<CityPlace> CREATOR = new Creator<CityPlace>() {

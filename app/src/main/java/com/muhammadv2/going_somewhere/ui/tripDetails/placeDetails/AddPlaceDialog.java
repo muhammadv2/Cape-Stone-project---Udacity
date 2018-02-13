@@ -117,10 +117,10 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
             case R.id.btn_edit_trip:
                 String placeTitle = etPlaceTitle.getText().toString();
 
-                if (!placeTitle.isEmpty()) {
+                if (!placeTitle.isEmpty() && placeID != null) {
                     Timber.d("add place clicked");
 
-                    cPlace = new CityPlace(placeID, placeTitle, tripId);
+                    cPlace = new CityPlace(placeID, placeTitle, tripId, 0);
 
                     if (tripId != -1) {
                         Uri uri = interactor.insertIntoPlaceTable(cPlace);

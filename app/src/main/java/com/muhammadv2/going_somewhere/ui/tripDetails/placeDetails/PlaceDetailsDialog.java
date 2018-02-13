@@ -140,7 +140,7 @@ public class PlaceDetailsDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 DataInteractor dataInteractor = new DataInteractor(getActivity());
-                dataInteractor.updatePlaceTable(new CityPlace(placeId, placeName, tripPosition), tripPosition);
+                dataInteractor.updatePlaceTable(new CityPlace(placeId, placeName, tripPosition,0), tripPosition);
             }
         });
     }

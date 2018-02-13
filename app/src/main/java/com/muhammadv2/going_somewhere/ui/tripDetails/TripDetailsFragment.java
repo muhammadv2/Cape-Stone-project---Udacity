@@ -66,6 +66,7 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     private Fragment fragment;
 
     private int tripPosition;
+    private int placePosition;
 
     private ArrayList<CityPlace> mPlaces;
 
@@ -245,31 +246,36 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         adapter = new TripDetailsAdapter(mPlaces, this);
         recyclerView.setAdapter(adapter);
 
-        if (mPlaces.size() == 0 || mPlaces == null) return;
-        Timber.d("place list " + (mPlaces.size() == 0) + " is null ?" + (mPlaces == null));
+        if (mPlaces.size() != 0) {
+            Timber.d(" size " + (mPlaces.size()));
+            if (mPlaces.get(0).getPlaceId() == null || mPlaces == null) return;
 
-        ArrayList<String> strings = new ArrayList<>();
-        for (CityPlace place : mPlaces) {
-            strings.add(place.getPlaceId());
+            Timber.d("place list " + (mPlaces.size() == 0) + " is null ?" + (mPlaces == null));
+
+            ArrayList<String> strings = new ArrayList<>();
+            for (CityPlace place : mPlaces) {
+                strings.add(place.getPlaceId());
+            }
+            String[] placeIds = new String[mPlaces.size()];
+            placeIds = strings.toArray(placeIds);
+
+            for (int i = 0; i < mPlaces.size(); i++) {
+                placeIds[i] = mPlaces.get(i).getPlaceId();
+            }
+
+            if (placeIds != null && placeIds.length > 0) {
+
+                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mClient,
+                        placeIds);
+                placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+                    @Override
+                    public void onResult(@NonNull PlaceBuffer places) {
+                        placeBuffer = places;
+                    }
+                });
+            }
         }
-        String[] placeIds = new String[mPlaces.size()];
-        placeIds = strings.toArray(placeIds);
 
-        for (int i = 0; i < mPlaces.size(); i++) {
-            placeIds[i] = mPlaces.get(i).getPlaceId();
-        }
-
-        if (placeIds != null && placeIds.length > 0) {
-
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mClient,
-                    placeIds);
-            placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-                @Override
-                public void onResult(@NonNull PlaceBuffer places) {
-                    placeBuffer = places;
-                }
-            });
-        }
     }
 
     /**
@@ -285,12 +291,15 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
                 int tripNameColId = cursor.getColumnIndex(PlaceEntry.COLUMN_TRIP_ID);
                 int placeIdColId = cursor.getColumnIndex(PlaceEntry.COLUMN_PLACE_ID);
 
+                int idColId = cursor.getColumnIndex(PlaceEntry._ID);
+                int placeDbId = cursor.getInt(idColId);
+
                 String placeTitle = cursor.getString(nameColId);
                 int tripId = cursor.getInt(tripNameColId);
                 String placeId = cursor.getString(placeIdColId);
 
-                Timber.d("Trip name " + tripId);
-                places.add(new CityPlace(placeId, placeTitle, tripId));
+                Timber.d("Trip name " + placeTitle);
+                places.add(new CityPlace(placeId, placeTitle, tripId, placeDbId));
 
             } while (cursor.moveToNext());
         }
@@ -307,7 +316,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     public void onClick(int position) {
 
         if (NetworkUtils.isNetworkAvailable(getContext())) {
-
             extractPlaceDetailsFromId(position);
         } else {
             Toast.makeText(getContext(), getString(R.string.need_connection), Toast.LENGTH_LONG).show();
