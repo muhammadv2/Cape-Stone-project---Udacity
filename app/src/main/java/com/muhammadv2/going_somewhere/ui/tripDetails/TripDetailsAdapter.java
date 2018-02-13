@@ -57,6 +57,7 @@ public class TripDetailsAdapter extends RecyclerView.Adapter<TripDetailsAdapter.
 
         CityPlace place = mPlaces.get(position);
         holder.placeName.setText(place.getPlaceName());
+        holder.itemView.setTag(position);
     }
 
 
@@ -86,7 +87,8 @@ public class TripDetailsAdapter extends RecyclerView.Adapter<TripDetailsAdapter.
 
         @Override
         public void onClick(View view) {
-            mItemClickListener.onClick(getAdapterPosition()); //pass the adapter position to our interface
+            //pass the adapter position to our interface
+            mItemClickListener.onClick(getAdapterPosition());
         }
     }
 }

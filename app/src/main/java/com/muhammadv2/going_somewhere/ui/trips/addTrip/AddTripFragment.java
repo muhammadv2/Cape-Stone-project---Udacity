@@ -45,7 +45,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 /**
  * This fragment responsible of get the trip details from the user as Trip name and how many cities
@@ -95,6 +94,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         // Save how many city fields have been added and save they names if found
         outState.putInt(Constants.CITY_COUNT_ID, cityCount);
         outState.putParcelableArrayList(Constants.CITY_NAMES_ID, extractCityNames());
+        outState.putParcelable(Constants.TRIPS_ARRAY_ID, trip);
     }
 
     /**
@@ -108,9 +108,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
             return null;
         }
         ArrayList<City> cityNames = new ArrayList<>();
-        cityNames.add(new City(
-                etAddCity.getText().toString(),
-                0));//use 0 cuz this the first field already there
 
         int cityId = 1; //start counting from 1 for the generated fields
         for (int i = 0; i < allAddedViews.size(); i++) {
@@ -135,8 +132,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
         allAddedViews = new ArrayList<>();
 
-        Timber.plant(new Timber.DebugTree());
-
         // Inject this fragment into the app component
         App.getInstance().getAppComponent().inject(this);
 
@@ -156,6 +151,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
         // If the bundle not null re instantiate the view with the populated data
         if (savedInstanceState != null) {
+            trip = savedInstanceState.getParcelable(Constants.TRIPS_ARRAY_ID);
             ArrayList<City> cities = savedInstanceState.getParcelableArrayList(Constants.CITY_NAMES_ID);
             for (int i = 0; i < savedInstanceState.getInt(Constants.CITY_COUNT_ID); i++) {
                 String cityName = cities.get(i).getCityName();
@@ -283,7 +279,10 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         // Extract the data from fields
         String title = etAddTripTitle.getText().toString();
 
-        ArrayList<City> cities = extractCityNames();
+        ArrayList<City> cities = new ArrayList<>();
+        City cityFromFirstField = new City("asd", 2);
+        cities.add(cityFromFirstField);
+        cities.addAll(extractCityNames());
 
 
         if (timeStart != 0 && timeEnd != 0 && !title.isEmpty() &&
@@ -292,7 +291,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
             String imageUrl = requestImage(title);
             if (trip == null) {
                 // Check if there's any field not populated
-                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl,0);
+                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl, 0);
 
                 // Everything is fine use the interactor and insert the data using its helper method
                 Uri uri = interactor.insertIntoTripTable(trip);
@@ -301,10 +300,9 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
                 getActivity().finish();
 
             } else {
-                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl,tripId);
+                Trip trip = new Trip(title, timeStart, timeEnd, cities, imageUrl, tripId);
                 // Otherwise this is an EXISTING Trip, so update the trip
                 int rowsAffected = interactor.updateTripTable(trip, tripId);
-                Timber.d("update this trip id " + tripId);
 
                 // Show a toast message depending on whether or not the update was successful.
                 if (rowsAffected == 0) {
@@ -373,7 +371,6 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
 
     private void deleteAllData() {
         int id = interactor.deleteFromTripTable(tripId);
-        Timber.d("delete this trip id " + tripId);
         if (id > 0) {
             Toast.makeText(getContext(), getString(R.string.trip_deleted), Toast.LENGTH_SHORT).show();
             getActivity().finish();

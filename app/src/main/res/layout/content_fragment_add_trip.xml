@@ -23,7 +23,7 @@
                 android:layout_marginTop="@dimen/dp_24"
                 android:ems="25"
                 android:hint="@string/trip_title"
-                android:inputType="textCapSentences"
+                android:inputType="textCapWords"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 tools:ignore="LabelFor" />
 
@@ -49,7 +49,7 @@
                         android:layout_marginBottom="@dimen/dp_16"
                         android:ems="25"
                         android:hint="@string/cities"
-                        android:inputType="textCapSentences"
+                        android:inputType="textCapWords"
                         tools:ignore="LabelFor" />
 
                     <ImageButton

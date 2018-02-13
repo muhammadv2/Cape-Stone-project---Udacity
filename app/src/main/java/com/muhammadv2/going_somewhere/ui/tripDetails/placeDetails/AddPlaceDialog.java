@@ -29,7 +29,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -50,20 +49,26 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
     @Inject
     DataInteractor interactor;
 
-    private int placePosition;
+    private int placeDbPosition;
 
-    private CityPlace cPlace;
-
-    private int tripId = -1;
+    private int tripId;
 
     private String placeID;
+    private String placeName;
 
-    private Intent receivedIntent;
 
     public AddPlaceDialog() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.PLACE_ID, placeID); //save the place id upon rotation
+    }
+
+    //region Instances
+    // New instance called from the parent fragment to add new place
     public static AddPlaceDialog newInstance(int tripPosition) {
         AddPlaceDialog f = new AddPlaceDialog();
 
@@ -75,22 +80,44 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
         return f;
     }
 
+    // New instance called from place details dialog to edit the current place
+    public static AddPlaceDialog newEditInstance(int tripPosition, int placePosition, String placeId,
+                                                 String placeName) {
+        AddPlaceDialog f = new AddPlaceDialog();
+
+        // Supply tripPosition input as an argument.
+        Bundle args = new Bundle();
+        args.putInt(Constants.TRIP_POSITION, tripPosition);
+        args.putInt(Constants.PLACE_DB_ID, placePosition);
+        args.putString(Constants.PLACE_ID, placeId);
+        args.putString(Constants.PLACE_NAME, placeName);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    //endregion
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_place, container, false);
 
-        ButterKnife.bind(this, view);
+        ButterKnife.bind(this, view); // Bind butter knife to this dialog
 
+        // Retrieve the data passed to this instance of dialog
         tripId = getArguments().getInt(Constants.TRIP_POSITION);
+        placeDbPosition = getArguments().getInt(Constants.PLACE_DB_ID);
+        placeID = getArguments().getString(Constants.PLACE_ID);
+        placeName = getArguments().getString(Constants.PLACE_NAME);
 
-        receivedIntent = getActivity().getIntent();
+        if (placeName != null) etPlaceTitle.setText(placeName);
 
         //inject this fragment into the app component
         App.getInstance().getAppComponent().inject(this);
 
-        Timber.plant(new Timber.DebugTree());
+        if (savedInstanceState != null) placeID = savedInstanceState.getString(Constants.PLACE_ID);
 
         return view;
     }
@@ -104,30 +131,32 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Set listeners on this dialog buttons
         btnSearchLocation.setOnClickListener(this);
         btnSavePlace.setOnClickListener(this);
-
     }
-
 
     @Override
     public void onClick(View view) {
 
         switch (view.getId()) {
             case R.id.btn_edit_trip:
+
+                // Extract the text form et and check the if any field null before work against the db
                 String placeTitle = etPlaceTitle.getText().toString();
-
                 if (!placeTitle.isEmpty() && placeID != null) {
-                    Timber.d("add place clicked");
 
-                    cPlace = new CityPlace(placeID, placeTitle, tripId, 0);
-
-                    if (tripId != -1) {
+                    CityPlace cPlace;
+                    if (placeName == null) {
+                        // If the title is null then create a new CityPlace and insert it into db
+                        cPlace = new CityPlace(placeID, placeTitle, tripId, 0);
                         Uri uri = interactor.insertIntoPlaceTable(cPlace);
-                        if (uri != null)
+                        if (uri != null) // Successfully inserted show a toast
                             Toast.makeText(getActivity(), R.string.place_added, Toast.LENGTH_LONG).show();
                     } else {
-                        int rowsAffected = interactor.updatePlaceTable(cPlace, placePosition);
+                        // If the title not null then update the place with the ned data
+                        cPlace = new CityPlace(placeID, placeName, tripId, placeDbPosition);
+                        int rowsAffected = interactor.updatePlaceTable(cPlace, placeDbPosition);
 
                         // Show a toast message depending on whether or not the update was successful.
                         if (rowsAffected == 0) {
@@ -138,18 +167,20 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
                             // Otherwise, the update was successful and we can display a toast.
                             Toast.makeText(getContext(), getString(R.string.update_place_successful),
                                     Toast.LENGTH_SHORT).show();
+
+                            //Todo the updated placed not showing directly in the tripdetails rv
                         }
                     }
                     this.dismiss();
 
-
-                } else {
+                } else { // When there's missing details notify the user to add them with a toast
                     Toast.makeText(getContext(), R.string.err_add_title, Toast.LENGTH_SHORT).show();
                 }
                 break;
+            // On the search location button clicked use the google places api to let the user
+            //choose a place
             case R.id.btn_search_location:
                 try {
-                    Timber.d("add search clicked");
                     Intent intent =
                             new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
                                     .build(getActivity());
@@ -161,15 +192,18 @@ public class AddPlaceDialog extends android.support.v4.app.DialogFragment
         }
     }
 
+    /**
+     * When the user open the dialog to add new place this method will be a listener if successfully
+     * choose place then the result will be okay if not the result will be canceled
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Timber.d("onActivity invoked");
         if (requestCode == Constants.PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getContext(), data);
-                placeID = place.getId();
+                placeID = place.getId(); // Update the member variable with the retrieved placeId
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 getActivity().setResult(RESULT_CANCELED);

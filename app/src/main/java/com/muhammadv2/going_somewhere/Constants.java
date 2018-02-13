@@ -47,4 +47,5 @@ public final class Constants {
     public static final String PLACE_ADRESS = "placeAddress";
     public static final String PLACE_PHOTO = "placePhotos";
 
+    public static final String PLACE_DB_ID = "dbId";
 }

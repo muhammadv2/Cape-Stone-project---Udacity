@@ -1,9 +1,14 @@
 package com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +27,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
-import com.muhammadv2.going_somewhere.model.CityPlace;
-import com.muhammadv2.going_somewhere.model.DataInteractor;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,21 +46,22 @@ public class PlaceDetailsDialog extends DialogFragment {
     @BindView(R.id.btn_edit_place)
     Button btnEditPlace;
 
-
     public static PlaceDetailsDialog newInstance(String placeId,
                                                  String placeName,
                                                  String placeAddress,
                                                  float placeRating,
-                                                 int tripPosition) {
+                                                 int tripPosition,
+                                                 int placeDbId) {
         PlaceDetailsDialog f = new PlaceDetailsDialog();
 
-        // Supply tripPosition input as an argument.
+        // Create a new instance with the needed data show the place details dialog
         Bundle args = new Bundle();
         args.putString(Constants.PLACE_NAME, placeName);
         args.putString(Constants.PLACE_ADRESS, placeAddress);
         args.putFloat(Constants.PLACE_RATING, placeRating);
         args.putString(Constants.PLACE_PHOTO, placeId);
         args.putInt(Constants.TRIP_POSITION, tripPosition);
+        args.putInt(Constants.PLACE_ID, placeDbId);
         f.setArguments(args);
 
         return f;
@@ -129,19 +133,44 @@ public class PlaceDetailsDialog extends DialogFragment {
         final float placeRating = getArguments().getFloat(Constants.PLACE_RATING);
         final String placeId = getArguments().getString(Constants.PLACE_PHOTO);
         final int tripPosition = getArguments().getInt(Constants.TRIP_POSITION);
+        final int placeDbId = getArguments().getInt(Constants.PLACE_ID);
 
         tvPlaceTitle.setText(placeName);
         tvPlaceAddress.setText(placeAddress);
         rbPlaceRating.setRating(placeRating);
         getPhotos(placeId);
 
-
         btnEditPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DataInteractor dataInteractor = new DataInteractor(getActivity());
-                dataInteractor.updatePlaceTable(new CityPlace(placeId, placeName, tripPosition,0), tripPosition);
+                // DialogFragment.show() will take care of adding the fragment
+                // in a transaction.  We also want to remove any currently showing
+                // dialog, so make our own transaction and take care of that here.
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                Fragment prev = fm.findFragmentByTag(Constants.ADD_TRIP_DIALOG);
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+
+                DisplayMetrics metrics = getResources().getDisplayMetrics();
+                int width = metrics.widthPixels;
+                int height = metrics.heightPixels;
+
+                // Create and show the dialog.
+                AddPlaceDialog dialog =
+                        AddPlaceDialog.newEditInstance(tripPosition, placeDbId, placeId, placeName);
+
+                dialog.setTargetFragment(getParentFragment(), Constants.DIALOG_FRAGMENT_REQUEST);
+
+                dialog.show(ft, Constants.ADD_TRIP_DIALOG);
+                getActivity().getSupportFragmentManager().executePendingTransactions();
+
+                Dialog yourDialog = dialog.getDialog();
+                yourDialog.getWindow().setLayout((6 * width) / 7, (2 * height) / 5);
             }
         });
+
     }
 }

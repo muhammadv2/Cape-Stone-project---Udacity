@@ -43,4 +43,6 @@
     <string name="share_trip">share_trip</string>
     <string name="need_connection">Need connection to show place details</string>
     <string name="ad_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="place_deleted">This place deleted</string>
+    <string name="error_deleing">Error deleting this place</string>
 </resources>

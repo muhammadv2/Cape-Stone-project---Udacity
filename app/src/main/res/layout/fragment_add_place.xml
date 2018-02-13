@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/dp_48"
         android:ems="25"
         android:hint="@string/place_name_txt"
-        android:inputType="textCapSentences"
+        android:inputType="textCapWords"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

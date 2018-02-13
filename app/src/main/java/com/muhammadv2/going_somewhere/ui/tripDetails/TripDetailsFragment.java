@@ -94,7 +94,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         View view = inflater.inflate(R.layout.fragment_trip_details, container, false);
 
         ButterKnife.bind(this, view);
-        Timber.plant(new Timber.DebugTree());
 
         createRecyclerView();
         Intent intent = getActivity().getIntent();
@@ -158,6 +157,14 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         adView.loadAd(adRequest);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Timber.d("result called");
+        restartLoader();
+    }
+
     /**
      * Method that create recycler view and set the layoutManager and an empty adapter on it
      */
@@ -178,11 +185,15 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
                 .initLoader(Constants.TRIPS_LOADER_INIT, null, this);
     }
 
+    public void restartLoader() {
+        getActivity().getSupportLoaderManager()
+                .restartLoader(Constants.TRIPS_LOADER_INIT, null, this);
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
-        Timber.d("trip position " + tripPosition);
         Uri queryUri = PlaceEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(tripPosition)).build();
 
         // Create cursor loader with the URI from trip table
@@ -228,29 +239,25 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
                 int id = (int) viewHolder.itemView.getTag();
 
                 // Build appropriate uri with String row id appended
-                String stringId = Integer.toString(id);
+                String stringId = Integer.toString(mPlaces.get(id).getPlaceDbId());
                 Uri uri = PlaceEntry.CONTENT_URI;
                 uri = uri.buildUpon().appendPath(stringId).build();
 
                 //Delete a single row of data using a ContentResolver
                 int deletedRows = getActivity().getContentResolver().delete(uri, null, null);
-                if (deletedRows == 0) {
-                    Toast.makeText(getContext(), "This place deleted ", Toast.LENGTH_SHORT).show();
+                if (deletedRows > 0) {
+                    Toast.makeText(getContext(), R.string.place_deleted, Toast.LENGTH_SHORT).show();
+                    restartLoader();
+
                 } else {
-                    Timber.d("Error delete this place ");
+                    Toast.makeText(getContext(), R.string.error_deleing, Toast.LENGTH_SHORT).show();
                 }
 
             }
         }).attachToRecyclerView(recyclerView); // Attach this delete function to our recyclerView
 
-        adapter = new TripDetailsAdapter(mPlaces, this);
-        recyclerView.setAdapter(adapter);
-
         if (mPlaces.size() != 0) {
-            Timber.d(" size " + (mPlaces.size()));
             if (mPlaces.get(0).getPlaceId() == null || mPlaces == null) return;
-
-            Timber.d("place list " + (mPlaces.size() == 0) + " is null ?" + (mPlaces == null));
 
             ArrayList<String> strings = new ArrayList<>();
             for (CityPlace place : mPlaces) {
@@ -272,6 +279,7 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
                     public void onResult(@NonNull PlaceBuffer places) {
                         placeBuffer = places;
                     }
+
                 });
             }
         }
@@ -298,7 +306,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
                 int tripId = cursor.getInt(tripNameColId);
                 String placeId = cursor.getString(placeIdColId);
 
-                Timber.d("Trip name " + placeTitle);
                 places.add(new CityPlace(placeId, placeTitle, tripId, placeDbId));
 
             } while (cursor.moveToNext());
@@ -334,19 +341,22 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         }
         ft.addToBackStack(null);
 
-
         Place place = placeBuffer.get(placePosition);
         String placeName = place.getName().toString();
         String placeAddress = place.getAddress().toString();
         float placeRating = place.getRating();
+
+        int placeDbId = mPlaces.get(placePosition).getPlaceDbId();
 
         PlaceDetailsDialog detailsDialog =
                 PlaceDetailsDialog.newInstance(
                         mPlaces.get(placePosition).getPlaceId(),
                         placeName,
                         placeAddress,
-                        placeRating
-                        , tripPosition);
+                        placeRating,
+                        tripPosition,
+                        placeDbId
+                );
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         int width = metrics.widthPixels;
@@ -362,7 +372,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
 
 
     }
-
 
     @Override
     public void onDestroy() {

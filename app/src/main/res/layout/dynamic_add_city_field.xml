@@ -11,7 +11,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:ems="25"
         android:hint="@string/cities"
-        android:inputType="textCapSentences"
+        android:inputType="textCapWords"
         tools:ignore="LabelFor" />
 
     <ImageButton

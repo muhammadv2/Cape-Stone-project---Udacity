@@ -74,15 +74,16 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
         if (mData.size() != 0 && mData != null) {
             final Trip trip = mData.get(position);
 
+            // Using this helper method and passing the image url and the card reference to help
+            //choose a color to set on this background
             ImageUtils.bindImage(trip.getImageUrl(), mContext, holder.tripImage, holder.cardView);
+
             holder.tripTitle.setText(trip.getTripName());
             holder.tripDuration.setText
                     (FormattingUtils.countHowManyDays(trip.getStartTime(), trip.getEndTime()));
 
             String cities = trip.getCities().size() + " Cities";
             holder.cityCount.setText(cities);
-
-            holder.itemView.setTag(position);
 
             holder.btnPlans.setOnClickListener(new View.OnClickListener() {
                 @Override
