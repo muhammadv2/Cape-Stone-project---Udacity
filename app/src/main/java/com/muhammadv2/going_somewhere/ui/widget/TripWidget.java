@@ -40,6 +40,7 @@ public class TripWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.widget_trip_name, tripName);
 
         Intent intent = new Intent(context, TripDetailsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(Constants.TRIP_POSITION, tripPosition);
         intent.putExtra(Constants.ADD_TRIP_NAME, tripName);
         intent.putExtra(Constants.ADD_TRIP_IMAGE, imageUrl);

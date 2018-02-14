@@ -34,7 +34,7 @@
             android:theme="@style/AddTripTheme" />
         <activity
             android:name=".ui.tripDetails.TripDetailsActivity"
-            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
             android:parentActivityName=".ui.trips.TripsActivity" />
         <activity android:name="com.google.android.gms.ads.AdActivity" />
 
