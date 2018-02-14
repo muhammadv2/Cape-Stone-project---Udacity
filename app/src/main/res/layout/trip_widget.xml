@@ -1,21 +1,38 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/dp_8"
+    android:background="@color/lightBackground"
     android:padding="@dimen/widget_margin">
 
     <TextView
-        android:id="@+id/appwidget_text"
+        android:id="@+id/widget_trip_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="#09C"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_16"
+        android:text="Trip name"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/widget_city_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="Cities"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/widget_photo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_240"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/trip_place_holder"
+        android:contentDescription="@string/trip_widget"
+        android:scaleType="centerCrop" />
+
+</LinearLayout>

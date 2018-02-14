@@ -1,25 +1,20 @@
-package com.muhammadv2.going_somewhere.ui.widget;
+package com.muhammadv2.going_somewhere;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.widget.RemoteViews;
 
-import com.muhammadv2.going_somewhere.R;
-
 /**
  * Implementation of App Widget functionality.
- * App Widget Configuration implemented in {@link TripWidgetConfigureActivity TripWidgetConfigureActivity}
  */
 public class TripWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = TripWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.trip_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -30,14 +25,6 @@ public class TripWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-    }
-
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        // When the user deletes the widget, delete the preference associated with it.
-        for (int appWidgetId : appWidgetIds) {
-            TripWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
         }
     }
 
