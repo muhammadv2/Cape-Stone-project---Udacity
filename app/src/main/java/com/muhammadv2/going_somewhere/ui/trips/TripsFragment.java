@@ -1,5 +1,6 @@
 package com.muhammadv2.going_somewhere.ui.trips;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.muhammadv2.going_somewhere.App;
 import com.muhammadv2.going_somewhere.Constants;
@@ -231,13 +233,31 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     // To reach details activity upon clicking on the card of each trip
     @Override
-    public void onClick(int position) {
+    public void onClick(int position, ImageView iv) {
 
         tripId = trips.get(position).getTripId();
 
+        Bundle bundle = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            bundle = ActivityOptions
+                    .makeSceneTransitionAnimation(
+                            getActivity(),
+                            iv,
+                            iv.getTransitionName()
+                    ).toBundle();
+        }
+
+
         Intent intent = new Intent(getContext(), TripDetailsActivity.class);
         intent.putExtra(Constants.TRIP_POSITION, tripId);
+        intent.putExtra(Constants.PLACE_PHOTO, trips.get(position).getImageUrl());
         intent.putExtra(Constants.ADD_TRIP_NAME, trips.get(position).getTripName());
-        getActivity().startActivity(intent);
+        if (bundle != null) {
+            getActivity().startActivity(intent, bundle);
+        } else {
+            getActivity().startActivity(intent);
+        }
     }
+
+
 }

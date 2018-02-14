@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.muhammadv2.going_somewhere.widget.TripWidgetConfigureActivity"
+    android:configure="com.muhammadv2.going_somewhere.ui.widget.TripWidgetConfigureActivity"
     android:initialKeyguardLayout="@layout/trip_widget"
     android:initialLayout="@layout/trip_widget"
     android:minHeight="110dp"

@@ -1,4 +1,4 @@
-package com.muhammadv2.going_somewhere.widget;
+package com.muhammadv2.going_somewhere.ui.widget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
@@ -16,7 +16,7 @@ import com.muhammadv2.going_somewhere.R;
  */
 public class TripWidgetConfigureActivity extends Activity {
 
-    private static final String PREFS_NAME = "com.muhammadv2.going_somewhere.widget.TripWidget";
+    private static final String PREFS_NAME = "com.muhammadv2.going_somewhere.ui.widget.TripWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     EditText mAppWidgetText;

@@ -48,7 +48,7 @@
             android:parentActivityName=".ui.trips.TripsActivity" />
         <activity android:name="com.google.android.gms.ads.AdActivity" />
 
-        <receiver android:name=".widget.TripWidget">
+        <receiver android:name=".ui.widget.TripWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -58,7 +58,7 @@
                 android:resource="@xml/trip_widget_info" />
         </receiver>
 
-        <activity android:name=".widget.TripWidgetConfigureActivity">
+        <activity android:name=".ui.widget.TripWidgetConfigureActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

@@ -1,4 +1,4 @@
-package com.muhammadv2.going_somewhere.widget;
+package com.muhammadv2.going_somewhere.ui.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;

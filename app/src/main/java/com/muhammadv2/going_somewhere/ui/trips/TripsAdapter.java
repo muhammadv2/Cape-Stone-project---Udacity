@@ -48,7 +48,8 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
      * interface that will define our listener
      */
     public interface OnItemClickListener {
-        void onClick(int position);
+        void onClick(int position, ImageView iv);
+
     }
 
     /**
@@ -144,7 +145,9 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
 
         @Override
         public void onClick(View view) {
-            mItemClickListener.onClick(getAdapterPosition()); //pass the adapter position to our interface
+            //pass the adapter position to our interface
+            // Also pass the trip image reference to be able to run transition on it in the fragment
+            mItemClickListener.onClick(getAdapterPosition(), tripImage);
         }
     }
 }

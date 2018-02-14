@@ -66,10 +66,8 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     private Fragment fragment;
 
     private int tripPosition;
-    private int placePosition;
 
     private ArrayList<CityPlace> mPlaces;
-
 
     private GoogleApiClient mClient;
 

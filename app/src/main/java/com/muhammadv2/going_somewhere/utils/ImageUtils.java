@@ -28,4 +28,12 @@ public final class ImageUtils {
 
                 );
     }
+
+    public static void bindImageWithoutBackground(String url, Context context, ImageView intoImage) {
+
+        Picasso.with(context)
+                .load(url)
+                .placeholder(R.drawable.trip_place_holder)
+                .into(intoImage);
+    }
 }
