@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -62,6 +63,7 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private int tripId;
 
+    private boolean isTablet;
 
     @Override
     public void onResume() {
@@ -86,6 +88,8 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         View view = inflater.inflate(R.layout.fragment_trips, container, false);
         ButterKnife.bind(this, view);
 
+        isTablet = getResources().getBoolean(R.bool.large_layout);
+
         // Injecting this fragment to the app component so the interactor class can be injected
         App.getInstance().getAppComponent().inject(this);
         createRecyclerView();
@@ -105,7 +109,12 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
      * Method that create recycler view and set the layoutManager and an empty adapter on it
      */
     private void createRecyclerView() {
-        layoutManager = new LinearLayoutManager(getActivity());
+
+        if (isTablet) {
+            layoutManager = new GridLayoutManager(getContext(), 3);
+        } else {
+            layoutManager = new LinearLayoutManager(getActivity());
+        }
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         adapter = new TripsAdapter(getContext(), null, this);
@@ -196,8 +205,6 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
                 long endTime = cursor.getLong(endColumnInd);
                 String cities = cursor.getString(citiesColumnInd);
                 String imageUrl = cursor.getString(imageColumnInd);
-
-                Timber.d("trip id " + tripId);
 
                 Trip trip = new Trip(
                         tripTitle,

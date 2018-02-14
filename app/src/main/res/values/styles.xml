@@ -17,6 +17,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AddTripTheme" parent="Theme.AppCompat.Light.DarkActionBar" />
+
     <style name="main_card_buttons">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textColor">@color/colorAccent</item>
