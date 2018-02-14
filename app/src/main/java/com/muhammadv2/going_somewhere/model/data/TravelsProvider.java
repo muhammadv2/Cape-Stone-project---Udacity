@@ -57,7 +57,6 @@ public class TravelsProvider extends ContentProvider {
         // Find a matching uri using the helper method of UriMatcher
         int match = sUriMatcher.match(uri);
 
-        Timber.d("insert uri " + uri);
 
         Uri returnUri;
         // Switch between the different tables and insert into the one that matches received uri
@@ -73,9 +72,6 @@ public class TravelsProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
-
-        Timber.d("return uri " + returnUri);
-        Timber.d("return cv " + values.getAsString(TripEntry.COLUMN_TRIP_NAME));
 
         //notify resolver with the uri
         getContext().getContentResolver().notifyChange(uri, null);
@@ -220,8 +216,6 @@ public class TravelsProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-
-        Timber.d("updated uri " + uri);
 
         // Find a matching uri using the helper method of UriMatcher
         int match = sUriMatcher.match(uri);

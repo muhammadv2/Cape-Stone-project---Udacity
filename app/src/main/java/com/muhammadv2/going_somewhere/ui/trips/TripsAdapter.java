@@ -1,6 +1,8 @@
 package com.muhammadv2.going_somewhere.ui.trips;
 
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -16,6 +18,7 @@ import com.muhammadv2.going_somewhere.Constants;
 import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.Trip;
 import com.muhammadv2.going_somewhere.ui.trips.addTrip.AddTripActivity;
+import com.muhammadv2.going_somewhere.ui.widget.TripWidget;
 import com.muhammadv2.going_somewhere.utils.FormattingUtils;
 import com.muhammadv2.going_somewhere.utils.ImageUtils;
 
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHolder> {
 
@@ -72,6 +76,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
     @Override
     public void onBindViewHolder(TripsViewHolder holder, final int position) {
 
+
         if (mData.size() != 0 && mData != null) {
             final Trip trip = mData.get(position);
 
@@ -86,7 +91,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
             String cities = trip.getCities().size() + " Cities";
             holder.cityCount.setText(cities);
 
-            holder.btnPlans.setOnClickListener(new View.OnClickListener() {
+            holder.btnEditTrip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -99,6 +104,24 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
 
                     // Launch the {@link AddTripActivity} to display the data for the current Trip.
                     mContext.startActivity(intent);
+                }
+            });
+
+            holder.btnAddToWidget.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, TripWidget.class);
+                    intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                    // Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    // since it seems the onUpdate() is only fired on that:
+                    int[] ids = AppWidgetManager.getInstance(mContext)
+                            .getAppWidgetIds(new ComponentName(mContext, TripWidget.class));
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+                    intent.putExtra(Constants.ADD_TRIP_NAME, trip.getTripName());
+                    intent.putExtra(Constants.ADD_TRIP_IMAGE, trip.getImageUrl());
+                    intent.putExtra(Constants.TRIP_POSITION, trip.getTripId());
+                    mContext.sendBroadcast(intent);
+
                 }
             });
 
@@ -125,9 +148,9 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
         @BindView(R.id.text_place_adress)
         TextView tripDuration;
         @BindView(R.id.btn_edit_trip)
-        Button btnPlans;
+        Button btnEditTrip;
         @BindView(R.id.btn_add_trip_widget)
-        Button btnNotes;
+        Button btnAddToWidget;
         @BindView(R.id.tex_place_rating)
         TextView cityCount;
         @BindView(R.id.trips_card_view)

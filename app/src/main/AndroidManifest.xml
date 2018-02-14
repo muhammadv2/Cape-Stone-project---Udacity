@@ -34,10 +34,11 @@
             android:theme="@style/AddTripTheme" />
         <activity
             android:name=".ui.tripDetails.TripDetailsActivity"
+            android:launchMode="singleTask"
             android:parentActivityName=".ui.trips.TripsActivity" />
         <activity android:name="com.google.android.gms.ads.AdActivity" />
 
-        <receiver android:name=".TripWidget">
+        <receiver android:name=".ui.widget.TripWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -46,6 +47,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/trip_widget_info" />
         </receiver>
+
+        <provider
+            android:name=".model.data.TravelsProvider"
+            android:authorities="com.muhammadv2.going_somewhere"
+            android:exported="false" />
     </application>
 
 </manifest>
