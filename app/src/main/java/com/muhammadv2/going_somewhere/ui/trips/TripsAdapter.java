@@ -172,7 +172,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
 
         @Override
         public void onClick(View view) {
-            //pass the adapter position to our interface
+            //pass the mAdapter position to our interface
             // Also pass the trip image reference to be able to run transition on it in the fragment
             mItemClickListener.onClick(getAdapterPosition(), tripImage);
         }

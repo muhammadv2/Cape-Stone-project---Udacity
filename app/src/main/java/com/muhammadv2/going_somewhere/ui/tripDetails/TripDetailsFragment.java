@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,15 +39,14 @@ import com.muhammadv2.going_somewhere.R;
 import com.muhammadv2.going_somewhere.model.CityPlace;
 import com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails.AddPlaceDialog;
 import com.muhammadv2.going_somewhere.ui.tripDetails.placeDetails.PlaceDetailsDialog;
-import com.muhammadv2.going_somewhere.utils.NetworkUtils;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.PlaceEntry;
+import static com.muhammadv2.going_somewhere.utils.NetworkUtils.isNetworkAvailable;
 
 
 public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.OnItemClickListener,
@@ -84,6 +84,14 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         // Required empty public constructor
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(Constants.KEY_RV_POSITION, layoutManager.onSaveInstanceState());
+        outState.putParcelableArrayList(Constants.PLACES_ARRAY_REQ, mPlaces);
+
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -96,6 +104,21 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         createRecyclerView();
         Intent intent = getActivity().getIntent();
         tripPosition = intent.getIntExtra(Constants.TRIP_POSITION, 0);
+
+        if (savedInstanceState != null) {
+            mPlaces = savedInstanceState.getParcelableArrayList(Constants.TRIPS_ARRAY_ID);
+
+            Parcelable lmState =
+                    savedInstanceState.getParcelable(Constants.KEY_RV_POSITION);
+            if (lmState != null) {
+                layoutManager.onRestoreInstanceState(lmState);
+                recyclerView.setLayoutManager(layoutManager);
+
+            }
+
+            adapter = new TripDetailsAdapter(mPlaces, this);
+            recyclerView.setAdapter(adapter);
+        }
 
         fragment = this;
 
@@ -149,7 +172,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
         });
 
         AdRequest adRequest = new AdRequest.Builder()
-//                .addTestDevice(getResources().getString(R.string.ad_id))
                 .build();
 
         adView.loadAd(adRequest);
@@ -159,7 +181,6 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Timber.d("result called");
         restartLoader();
     }
 
@@ -320,7 +341,7 @@ public class TripDetailsFragment extends Fragment implements TripDetailsAdapter.
     @Override
     public void onClick(int position) {
 
-        if (NetworkUtils.isNetworkAvailable(getContext())) {
+        if (isNetworkAvailable(getContext())) {
             extractPlaceDetailsFromId(position);
         } else {
             Toast.makeText(getContext(), getString(R.string.need_connection), Toast.LENGTH_LONG).show();

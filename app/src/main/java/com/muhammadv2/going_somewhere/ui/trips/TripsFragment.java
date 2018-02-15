@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -45,9 +46,9 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         , TripsAdapter.OnItemClickListener {
 
     @BindView(R.id.rv_trip)
-    RecyclerView recyclerView;
-    RecyclerView.LayoutManager layoutManager;
-    TripsAdapter adapter;
+    RecyclerView mRecyclerView;
+    RecyclerView.LayoutManager mLayoutManager;
+    TripsAdapter mAdapter;
 
     @BindView(R.id.empty_view_trips)
     View emptyView;
@@ -78,9 +79,10 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onSaveInstanceState(outState);
 
         // Save The array list of trips as a bundle to be retrieved when rotation happens
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(Constants.TRIPS_ARRAY_ID, trips);
-        outState.putBundle(Constants.TRIPS_ARRAY_ID, bundle);
+
+        outState.putParcelableArrayList(Constants.TRIPS_ARRAY_ID, trips);
+        outState.putParcelable(Constants.KEY_RV_POSITION, mLayoutManager.onSaveInstanceState());
+
     }
 
     //region CreateView
@@ -94,33 +96,43 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         // Injecting this fragment to the app component so the interactor class can be injected
         App.getInstance().getAppComponent().inject(this);
-        createRecyclerView();
+
         trips = new ArrayList<>();
 
-        // Retrieve the bundle and extract the ArrayList and restart the loader using it
-        if (savedInstanceState != null) {
-            Bundle bundle = savedInstanceState.getBundle(Constants.TRIPS_ARRAY_ID);
-            getActivity().getSupportLoaderManager()
-                    .restartLoader(Constants.TRIPS_LOADER_INIT, bundle, this);
-        }
+        createRecyclerView();
 
+        if (savedInstanceState != null) {
+
+            trips = savedInstanceState.getParcelableArrayList(Constants.TRIPS_ARRAY_ID);
+
+            Parcelable lmState =
+                    savedInstanceState.getParcelable(Constants.KEY_RV_POSITION);
+            if (lmState != null) {
+                mLayoutManager.onRestoreInstanceState(lmState);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+
+            }
+
+            mAdapter = new TripsAdapter(getContext(), trips, this);
+            mRecyclerView.setAdapter(mAdapter);
+        }
         return view;
     }
 
     /**
-     * Method that create recycler view and set the layoutManager and an empty adapter on it
+     * Method that create recycler view and set the mLayoutManager and an empty mAdapter on it
      */
     private void createRecyclerView() {
 
         if (isTablet) {
-            layoutManager = new GridLayoutManager(getContext(), 3);
+            mLayoutManager = new GridLayoutManager(getContext(), 2);
         } else {
-            layoutManager = new LinearLayoutManager(getActivity());
+            mLayoutManager = new LinearLayoutManager(getActivity());
         }
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        adapter = new TripsAdapter(getContext(), null, this);
-        recyclerView.setAdapter(adapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mAdapter = new TripsAdapter(getContext(), null, this);
+        mRecyclerView.setAdapter(mAdapter);
 
     }
 
@@ -170,18 +182,18 @@ public class TripsFragment extends Fragment implements LoaderManager.LoaderCallb
         //if the count of the data equals 0 set the empty view to be visible else set rv visible
         if (data.getCount() == 0) {
             emptyView.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.GONE);
             return;
         } else {
             emptyView.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
         }
 
         // When data done loading Use the helper method to extract the data from the cursor and then
-        // instantiate new Adapter with that data and set the adapter on the recycler view
-        adapter = new TripsAdapter(getActivity(), extractTripsFromCursor(data), this);
-        adapter.notifyDataSetChanged();
-        recyclerView.setAdapter(adapter);
+        // instantiate new Adapter with that data and set the mAdapter on the recycler view
+        mAdapter = new TripsAdapter(getActivity(), extractTripsFromCursor(data), this);
+        mAdapter.notifyDataSetChanged();
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     /**

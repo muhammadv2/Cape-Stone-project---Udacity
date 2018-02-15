@@ -31,13 +31,15 @@ public class TripWidget extends AppWidgetProvider {
 
         if (tripName == null) {
             views.setTextViewText(R.id.widget_trip_name, context.getString(R.string.specify_trip));
+        }else{
+            views.setTextViewText(R.id.widget_trip_name, tripName);
+
         }
         if (imageUrl != null)
             Picasso.with(context)
                     .load(imageUrl)
                     .into(views, R.id.widget_photo, new int[]{appWidgetId});
 
-        views.setTextViewText(R.id.widget_trip_name, tripName);
 
         Intent intent = new Intent(context, TripDetailsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
