@@ -93,18 +93,6 @@
             app:layout_constraintStart_toEndOf="@+id/btn_edit_trip"
             app:layout_constraintTop_toTopOf="@+id/btn_edit_trip" />
 
-        <ImageButton
-            android:id="@+id/btn_share_trip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/ic_action_share"
-            android:contentDescription="@string/share_trip"
-            android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/image_place" />
-
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

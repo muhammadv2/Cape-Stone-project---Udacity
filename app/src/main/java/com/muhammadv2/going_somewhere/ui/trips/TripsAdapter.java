@@ -33,6 +33,8 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
     private final OnItemClickListener mItemClickListener;
     private final ArrayList<Trip> mData;
 
+    private View view;
+
 
     /**
      * Adapter constructor helping setup the Adapter and ViewHolder with
@@ -63,7 +65,8 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
 
         int id = R.layout.card_trip;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(id, parent, false);
+        view = inflater.inflate(id, parent, false);
+
 
         return new TripsAdapter.TripsViewHolder(view);
     }
@@ -126,7 +129,9 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
 
             holder.itemView.setTag(position);
         }
+
     }
+
 
     @Override
     public int getItemCount() {
