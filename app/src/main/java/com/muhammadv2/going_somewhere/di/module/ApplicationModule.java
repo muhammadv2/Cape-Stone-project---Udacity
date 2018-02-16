@@ -13,7 +13,7 @@ import dagger.Provides;
 
 @Module
 public class ApplicationModule {
-    private Application mApp;
+    private final Application mApp;
 
     // Passing the application instance, this instance used to to provide other dependencies
     public ApplicationModule(Application app) {

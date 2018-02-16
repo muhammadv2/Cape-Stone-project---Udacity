@@ -29,8 +29,7 @@ public class ContractClassUnitTest {
         Class[] innerClasses = TravelsDbContract.class.getDeclaredClasses();
         assertEquals("Cannot find inner class to complete unit test", 4, innerClasses.length);
 
-        for (int i = 0; i < innerClasses.length; i++) {
-            Class entryClass = innerClasses[i];
+        for (Class entryClass : innerClasses) {
             assertTrue("Inner class should implement the BaseColumns interface", BaseColumns.class.isAssignableFrom(entryClass));
             assertTrue("Inner class should be final", Modifier.isFinal(entryClass.getModifiers()));
             assertTrue("Inner class should be static", Modifier.isStatic(entryClass.getModifiers()));

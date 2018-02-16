@@ -12,8 +12,6 @@ import android.support.annotation.NonNull;
 
 import com.muhammadv2.going_somewhere.App;
 
-import java.util.Arrays;
-
 import javax.inject.Inject;
 
 import timber.log.Timber;
@@ -256,8 +254,6 @@ public class TravelsProvider extends ContentProvider {
 
         String mSelection = TripEntry._ID + "=?";
         String[] mSelectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-
-        Timber.d("mselection " + mSelection + "selectionArgs " + Arrays.toString(mSelectionArgs));
 
         return writeDb.update(tableName, values, mSelection, mSelectionArgs);
     }

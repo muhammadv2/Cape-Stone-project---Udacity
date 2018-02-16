@@ -77,7 +77,7 @@ public class TripWidget extends AppWidgetProvider {
                 tripPosition = intent.getIntExtra(Constants.TRIP_POSITION, 0);
                 imageUrl = intent.getStringExtra(Constants.ADD_TRIP_IMAGE);
 
-                Toast.makeText(context, "Widget updated", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.widget_updated, Toast.LENGTH_LONG).show();
                 onUpdate(context, appWidgetManager, appWidgetIds);
             }
         }

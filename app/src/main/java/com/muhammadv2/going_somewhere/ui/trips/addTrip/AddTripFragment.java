@@ -280,7 +280,7 @@ public class AddTripFragment extends Fragment implements View.OnClickListener {
         String title = etAddTripTitle.getText().toString();
 
         ArrayList<City> cities = new ArrayList<>();
-        City cityFromFirstField = new City("asd", 2);
+        City cityFromFirstField = new City(etAddCity.getText().toString(), 0);
         cities.add(cityFromFirstField);
         cities.addAll(extractCityNames());
 

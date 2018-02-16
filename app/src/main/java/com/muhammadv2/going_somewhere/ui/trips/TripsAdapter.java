@@ -29,11 +29,9 @@ import butterknife.ButterKnife;
 
 public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHolder> {
 
-    private Context mContext;
+    private final Context mContext;
     private final OnItemClickListener mItemClickListener;
     private final ArrayList<Trip> mData;
-
-    private View view;
 
 
     /**
@@ -65,7 +63,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
 
         int id = R.layout.card_trip;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        view = inflater.inflate(id, parent, false);
+        View view = inflater.inflate(id, parent, false);
 
 
         return new TripsAdapter.TripsViewHolder(view);
@@ -90,7 +88,7 @@ public class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.TripsViewHol
             holder.tripDuration.setText
                     (FormattingUtils.countHowManyDays(trip.getStartTime(), trip.getEndTime()));
 
-            String cities = trip.getCities().size() + " Cities";
+            String cities = trip.getCities().size() + mContext.getString(R.string.cities_array);
             holder.cityCount.setText(cities);
 
             holder.btnEditTrip.setOnClickListener(new View.OnClickListener() {

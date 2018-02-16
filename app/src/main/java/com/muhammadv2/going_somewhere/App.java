@@ -9,7 +9,7 @@ import com.muhammadv2.going_somewhere.di.module.ApplicationModule;
 
 public class App extends Application {
 
-    public static App sApp;
+    private static App sApp;
     private AppComponent mAppComponent;
 
     public static App getInstance() {
@@ -17,7 +17,7 @@ public class App extends Application {
     }
 
     //return application module which takes application as parameter
-    ApplicationModule getApplicationModule() {
+    private ApplicationModule getApplicationModule() {
         return new ApplicationModule(this);
     }
 
@@ -25,7 +25,7 @@ public class App extends Application {
         return mAppComponent;
     }
 
-    void initComponent() {
+    private void initComponent() {
         mAppComponent = DaggerAppComponent.builder()
                 .applicationModule(getApplicationModule())
                 .build();

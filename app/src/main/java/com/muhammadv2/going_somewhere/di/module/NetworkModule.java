@@ -11,7 +11,7 @@ import okhttp3.OkHttpClient;
 @Module
 public class NetworkModule {
 
-    private String userTripName;
+    private final String userTripName;
 
     public NetworkModule(String userTripName) {
         this.userTripName = userTripName;

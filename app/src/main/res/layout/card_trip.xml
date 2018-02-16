@@ -24,10 +24,10 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/desc_main_img"
             android:scaleType="centerCrop"
+            android:transitionName="@string/transition_photo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:transitionName="@string/transition_photo"
             tools:targetApi="lollipop" />
 
         <TextView
@@ -80,6 +80,7 @@
             style="@style/main_card_buttons"
             android:layout_marginStart="@dimen/dp_24"
             android:text="@string/edit_trip"
+            android:contentDescription="@string/edit_this_trip"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view" />
@@ -88,6 +89,7 @@
             android:id="@+id/btn_add_trip_widget"
             style="@style/main_card_buttons"
             android:layout_marginStart="@dimen/dp_16"
+            android:contentDescription="@string/add_as_widget"
             android:text="@string/add_as_widget"
             app:layout_constraintStart_toEndOf="@+id/btn_edit_trip"
             app:layout_constraintTop_toTopOf="@+id/btn_edit_trip" />

@@ -5,10 +5,10 @@ import android.os.Parcelable;
 
 public final class CityPlace implements Parcelable {
 
-    String placeId;
-    String placeName;
-    int tripId;
-    int placeDbId;
+    final String placeId;
+    final String placeName;
+    final int tripId;
+    final int placeDbId;
 
     public CityPlace(String placeId, String placeName, int tripId,int placeDbId) {
         this.placeId = placeId;

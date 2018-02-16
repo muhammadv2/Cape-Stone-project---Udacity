@@ -53,4 +53,14 @@
     <string name="trip_widget">trip widget</string>
     <string name="specify_trip">Please specify a trip from inside the app</string>
     <string name="add_the_new_place">Add the new place</string>
+    <string name="cities_array">Cities</string>
+    <string name="widget_updated">Widget updated</string>
+    <string name="edit_trip_hard_string">Edit Trip</string>
+    <string name="save_trip">Save trip</string>
+    <string name="coordinator_layout">coordinator layout</string>
+    <string name="adview_test_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="rating_bar">rating bar</string>
+    <string name="add_new_city">add new city</string>
+    <string name="edit_this_trip">Edit this trip</string>
+    <string name="add_new_trip">Add new trip</string>
 </resources>

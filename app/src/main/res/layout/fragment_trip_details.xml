@@ -64,7 +64,7 @@
             android:layout_gravity="bottom|center"
             android:layout_marginTop="@dimen/dp_32"
             ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+            ads:adUnitId="@string/adview_test_id" />
 
     </LinearLayout>
 </ScrollView>

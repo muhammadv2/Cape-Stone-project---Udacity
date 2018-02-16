@@ -17,7 +17,7 @@ import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.TripEn
 // Business logic for the application
 public class DataInteractor {
 
-    private ContentResolver resolver;
+    private final ContentResolver resolver;
 
     @Inject
     public DataInteractor(@ApplicationContext Context context) {

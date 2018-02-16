@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 public final class City implements Parcelable {
 
-    String cityName;
-    int cityId;
+    final String cityName;
+    final int cityId;
 
 
     public City(String cityName, int cityId) {

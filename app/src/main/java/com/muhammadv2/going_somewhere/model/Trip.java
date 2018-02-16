@@ -8,12 +8,12 @@ import java.util.List;
 
 public final class Trip implements Parcelable {
 
-    String tripName;
-    long startTime;
-    long endTime;
-    ArrayList<City> cities;
-    String imgUrl;
-    int tripId;
+    final String tripName;
+    final long startTime;
+    final long endTime;
+    final ArrayList<City> cities;
+    final String imgUrl;
+    final int tripId;
 
     public Trip(String tripName,
                 long startTime,

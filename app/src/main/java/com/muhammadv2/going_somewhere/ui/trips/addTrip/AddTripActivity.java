@@ -27,7 +27,7 @@ public class AddTripActivity extends AppCompatActivity {
         if (trip == null) {
             setTitle(Constants.ADD_TRIP_NAME);
         } else {
-            setTitle("Edit Trip " + trip.getTripName());
+            setTitle(getString(R.string.edit_trip_hard_string) + trip.getTripName());
         }
     }
 

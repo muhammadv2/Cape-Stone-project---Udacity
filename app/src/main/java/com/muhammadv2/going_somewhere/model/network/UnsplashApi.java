@@ -22,8 +22,8 @@ import okhttp3.Response;
 public class UnsplashApi {
 
     // String for the trip name to be added as a query
-    private String tripName;
-    private OkHttpClient client;
+    private final String tripName;
+    private final OkHttpClient client;
 
     // Both client and tripName are injected to this class by the constructor
     @Inject

@@ -7,11 +7,7 @@ import com.muhammadv2.going_somewhere.model.data.TravelsDbContract;
 
 import static com.muhammadv2.going_somewhere.model.data.TravelsDbContract.AUTHORITY;
 
-/**
- * Utility class that take care of defining the different possible URIs and expose
- *
- * @buildUriMatcher method that return the complete UriMatcher
- */
+
 public final class UriMatcherUtils {
 
     //Defining final integers for the directory of tables and each item
